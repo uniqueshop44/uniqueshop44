@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unique Shop - Games Top Up</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            padding-bottom: 70px;
+        }
+
+        /* Header Style */
+        header {
+            background-color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a46e5;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo span {
+            color: #e51a1a;
+        }
+
+        .auth-buttons .btn {
+            padding: 6px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .btn-login {
+            color: #e51a1a;
+            border: 1px solid #e51a1a;
+            margin-right: 8px;
+        }
+
+        .btn-register {
+            background-color: #e51a1a;
+            color: white;
+        }
+
+        /* Notice Board */
+        .notice-board {
+            background: linear-gradient(135deg, #ff6a00, #ee0979);
+            color: white;
+            padding: 12px 15px;
+            margin: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.5;
+            position: relative;
+        }
+
+        .notice-board h4 {
+            font-size: 15px;
+            margin-bottom: 3px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Banner Slider Style */
+        .banner-container {
+            margin: 10px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background: #001f3f;
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        .banner-container h2 {
+            font-size: 20px;
+            color: #00ffcc;
+            margin-bottom: 10px;
+        }
+
+        .banner-btn {
+            display: inline-block;
+            background-color: #00c853;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        /* Wallet Dashboard */
+        .wallet-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 0 10px;
+            margin-top: 15px;
+        }
+
+        .wallet-box {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            border: 1px solid #eaeaea;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .wallet-label {
+            font-size: 12px;
+            color: #666;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .wallet-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #222;
+        }
+
+        .wallet-value i {
+            margin-right: 4px;
+        }
+
+        .wallet-btn {
+            width: 100%;
+            max-width: 120px;
+            padding: 6px 0;
+            border-radius: 5px;
+            border: none;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+        }
+
+        .btn-add {
+            background-color: #00c853;
+        }
+
+        .btn-redeem {
+            background-color: #1a46e5;
+        }
+
+        /* Section Title */
+        .section-title {
+            text-align: center;
+            margin: 25px 0 15px 0;
+            font-size: 20px;
+            color: #111;
+            position: relative;
+            font-weight: bold;
+        }
+
+        .section-title::before, .section-title::after {
+            content: "";
+            display: inline-block;
+            width: 40px;
+            height: 3px;
+            background-color: #e51a1a;
+            vertical-align: middle;
+            margin: 0 10px;
+        }
+
+        /* Grid System - 7 Custom Boxes */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 0 10px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            text-align: center;
+            padding-bottom: 15px;
+            transition: transform 0.2s;
+            border: 1px solid #eaeaea;
+            cursor: pointer;
+        }
+
+        .card:active {
+            transform: scale(0.98);
+        }
+
+        .card img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            background-color: #eaeaea;
+        }
+
+        .card h3 {
+            font-size: 13px;
+            margin: 12px 5px 5px 5px;
+            color: #222;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        /* Regular Modal Style */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        /* Full Screen Modal Style for Add Money */
+        .full-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            z-index: 300;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .full-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+        }
+
+        .close-modal {
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background-color: #00c853;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Add Money Page Amount UI */
+        .amount-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .amount-box {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 12px 5px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .amount-box.selected {
+            background-color: #1a46e5;
+            color: white;
+            border-color: #1a46e5;
+        }
+
+        /* Payment Method Grid */
+        .method-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .method-box {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .method-box.selected {
+            border-color: #e51a1a;
+            background-color: #fff5f5;
+            color: #e51a1a;
+            box-shadow: 0 0 8px rgba(229, 26, 26, 0.15);
+        }
+
+        .method-box i {
+            font-size: 24px;
+        }
+
+        /* Payment Gateway Instructions View */
+        .gateway-card {
+            background-color: #fdfdfd;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .gateway-instruction {
+            font-size: 13px;
+            line-height: 1.6;
+            margin-top: 10px;
+            color: #4a5568;
+            background: #fff7ed;
+            padding: 10px;
+            border-left: 4px solid #f97316;
+            border-radius: 4px;
+        }
+
+        .copy-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: #f1f5f9;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border: 1px dashed #cbd5e1;
+        }
+
+        .copy-number {
+            font-size: 16px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            flex-grow: 1;
+        }
+
+        .btn-copy {
+            background-color: #1a46e5;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Custom Animated Error Toast Notification */
+        .custom-toast {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #e51a1a;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 4px 15px rgba(229, 26, 26, 0.3);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .custom-toast.show {
+            top: 25px;
+        }
+
+        /* NEW NEW NEW FULL-SCREEN ADMIN ROUTE INTERFACE STYLES */
+        .admin-route-page {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f8fafc;
+            z-index: 9999;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .admin-nav-tabs {
+            display: flex;
+            background-color: #e2e8f0;
+            border-radius: 8px;
+            padding: 5px;
+            margin-bottom: 20px;
+            gap: 5px;
+        }
+
+        .admin-tab-btn {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            background: none;
+            border: none;
+            font-weight: bold;
+            font-size: 14px;
+            color: #64748b;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .admin-tab-btn.active {
+            background-color: white;
+            color: #1a46e5;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .admin-tab-content {
+            display: none;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        .admin-tab-content.active {
+            display: block;
+        }
+
+        .admin-sub-menu {
+            border-left: 3px solid #1a46e5;
+            padding-left: 10px;
+            margin-bottom: 20px;
+            color: #1e293b;
+        }
+
+        .admin-prod-row {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 12px;
+        }
+
+        .admin-prod-row label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #475569;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .admin-close-btn {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #666;
+            text-decoration: none;
+            font-size: 11px;
+            gap: 4px;
+        }
+
+        .nav-item i {
+            font-size: 18px;
+        }
+
+        .nav-item.active {
+            color: #1a46e5;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="errorToast" class="custom-toast">
+        <i class="fa-solid fa-circle-exclamation"></i> <span id="toastMessage">ত্রুটি বার্তা</span>
+    </div>
+
+    <header>
+        <div class="logo"><i class="fa-solid fa-bolt"></i> UNIQUE <span>SHOP</span></div>
+        <div class="auth-buttons">
+            <a href="#" class="btn btn-login">Login</a>
+            <a href="#" class="btn btn-register">Register</a>
+        </div>
+    </header>
+
+    <div class="notice-board">
+        <h4><i class="fa-solid fa-circle-bell"></i> Notice:</h4>
+        <p>Unique Shop এ ২৪ ঘণ্টাই টপআপ চালু থাকে...!!! যেকোনো সমস্যায় আমাদের WhatsApp এ মেসেজ দিন। বিঃদ্রঃ বাবা-মা বা ফ্যামিলির কারো ফোন থেকে টাকা চুরি করে টপআপ করা সম্পূর্ণ নিষিদ্ধ।</p>
+    </div>
+
+    <div class="banner-container">
+        <h2>ইউনিক বাজার থেকে সকল আপডেট ও গিভওয়েতে যুক্ত থাকুন আমাদের</h2>
+        <p>সবচেয়ে কম মূল্যে দ্রুত ডেলিভারি!</p>
+        <a href="https://t.me/your_group" class="banner-btn" target="_blank"><i class="fa-brands fa-telegram"></i> টেলিগ্রাম গ্রুপে যোগ দিন</a>
+    </div>
+
+    <div class="wallet-container">
+        <div class="wallet-box" onclick="openAddMoneyModal()">
+            <span class="wallet-label">Balance</span>
+            <div class="wallet-value">৳ 0.00</div>
+            <button class="wallet-btn btn-add" onclick="event.stopPropagation(); openAddMoneyModal()">Add</button>
+        </div>
+        
+        <div class="wallet-box">
+            <span class="wallet-label">Diamond</span>
+            <div class="wallet-value"><i class="fa-solid fa-gem" style="color: #00d2ff;"></i> 0</div>
+            <button class="wallet-btn btn-redeem" onclick="alert('Redeem Code অপশনটি খুব শীঘ্রই আসছে!')">Redeem</button>
+        </div>
+    </div>
+
+    <div class="section-title">GAMES TOP UP</div>
+
+    <div class="grid-container">
+        <div class="card" id="card-item1" onclick="openOrderModal('Rafer & Earn Diamond', ['100 Diamonds', '200 Diamonds', '500 Diamonds'])">
+            <img id="img-item1" src="https://placehold.co/300x180?text=Rafer+And+Earn" alt="Rafer & Earn">
+            <h3>Rafer & Earn Diamond</h3>
+        </div>
+
+        <div class="card" id="card-item2" onclick="openOrderModal('Uid Topup (Bd Server)', ['25 Diamonds', '50 Diamonds', '115 Diamonds', '240 Diamonds', '610 Diamonds'])">
+            <img id="img-item2" src="https://placehold.co/300x180?text=UID+Topup+BD" alt="UID Topup">
+            <h3>Uid Topup ( Bd Server)</h3>
+        </div>
+
+        <div class="card" id="card-item3" onclick="openOrderModal('Unipin Voucher (Bd Server)', ['100 BDT', '200 BDT', '500 BDT'])">
+            <img id="img-item3" src="https://placehold.co/300x180?text=UniPin+Voucher+BD" alt="UniPin Voucher">
+            <h3>Unipin Voucher ( Bd Server )</h3>
+        </div>
+
+        <div class="card" id="card-item4" onclick="openOrderModal('Weekly Lite (Bd Server)', ['1 Weekly Lite', '2 Weekly Lite'])">
+            <img id="img-item4" src="https://placehold.co/300x180?text=Weekly+Lite+BD" alt="Weekly Lite">
+            <h3>Weekly Lite ( Bd Server)</h3>
+        </div>
+
+        <div class="card" id="card-item5" onclick="openOrderModal('Weekly & Monthly (Bd Server)', ['1 Weekly Membership', '1 Monthly Membership', 'Weekly + Monthly Combo'])">
+            <img id="img-item5" src="https://placehold.co/300x180?text=Weekly+And+Monthly" alt="Weekly & Monthly">
+            <h3>Weekly & Monthly ( Bd Server)</h3>
+        </div>
+
+        <div class="card" id="card-item6" onclick="openOrderModal('Level Up Pass (Bd Server)', ['Level Up Pass Pack'])">
+            <img id="img-item6" src="https://placehold.co/300x180?text=Level+Up+Pass+BD" alt="Level Up Pass">
+            <h3>Level Up Pass ( Bd Server)</h3>
+        </div>
+
+        <div class="card" id="card-item7" onclick="openOrderModal('Uid Evo acces', ['Evo Access Pack 1', 'Evo Access Pack 2'])">
+            <img id="img-item7" src="https://placehold.co/300x180?text=UID+Evo+Access" alt="Uid Evo acces">
+            <h3>Uid Evo acces</h3>
+        </div>
+    </div>
+
+    <div class="modal" id="orderModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h3 id="modalProductTitle" style="margin-bottom: 15px; color: #1a46e5;">Order Form</h3>
+            <form id="purchaseForm">
+                <input type="hidden" id="productName">
+                
+                <div class="form-group">
+                    <label for="packageSelect">প্যাকেজ নির্বাচন করুন:</label>
+                    <select id="packageSelect" required></select>
+                </div>
+
+                <div class="form-group">
+                    <label for="playerID">প্লেয়ার আইডি (Player ID):</label>
+                    <input type="number" id="playerID" placeholder="যেমন: 12345678" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="whatsappNumber">হোয়াটসঅ্যাপ নম্বর (WhatsApp No):</label>
+                    <input type="tel" id="whatsappNumber" placeholder="যেমন: 017XXXXXXXX" required>
+                </div>
+
+                <button type="submit" class="btn-submit">অর্ডার সাবমিট করুন</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="full-modal" id="addMoneyModal">
+        <div class="full-modal-header">
+            <h2><i class="fa-solid fa-wallet" style="color: #00c853;"></i> Add Money</h2>
+            <span class="close-modal" onclick="closeAddMoneyModal()">&times;</span>
+        </div>
+        
+        <div class="form-group">
+            <label>টাকার পরিমাণ নির্বাচন করুন (Amount):</label>
+            <div class="amount-grid">
+                <div class="amount-box" onclick="selectAmount(50)">৳৫০</div>
+                <div class="amount-box" onclick="selectAmount(100)">৳১০০</div>
+                <div class="amount-box" onclick="selectAmount(200)">৳২০০</div>
+                <div class="amount-box" onclick="selectAmount(300)">৳৩০০</div>
+                <div class="amount-box" onclick="selectAmount(500)">৳৫০০</div>
+                <div class="amount-box" onclick="selectAmount(700)">৳৭০০</div>
+                <div class="amount-box" onclick="selectAmount(1000)">৳১০০০</div>
+                <div class="amount-box" onclick="selectAmount(1500)">৳১৫০০</div>
+                <div class="amount-box" onclick="selectAmount(2000)">৳২০০০</div>
+                <div class="amount-box" onclick="selectAmount(3000)">৳৩০০০</div>
+                <div class="amount-box" onclick="selectAmount(5000)">৳৫০০০</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>পেমেন্ট মেথড (Payment Method):</label>
+            <div class="method-grid">
+                <div class="method-box" onclick="selectMethod('Bikash')">
+                    <i class="fa-solid fa-money-bill-wave" style="color: #e2125d;"></i> Bkash
+                </div>
+                <div class="method-box" onclick="selectMethod('Nagad')">
+                    <i class="fa-solid fa-money-bill-transfer" style="color: #f7941d;"></i> Nagad
+                </div>
+                <div class="method-box" onclick="selectMethod('Rocket')">
+                    <i class="fa-solid fa-building-columns" style="color: #8c3c96;"></i> Rocket
+                </div>
+                <div class="method-box" onclick="selectMethod('Upay')">
+                    <i class="fa-solid fa-mobile-screen-button" style="color: #0056b3;"></i> Upay
+                </div>
+            </div>
+        </div>
+
+        <button class="btn-submit" onclick="goToGatewayStep()">পরবর্তী ধাপে যান</button>
+    </div>
+
+    <div class="full-modal" id="gatewayModal" style="background-color: #f8fafc;">
+        <div class="full-modal-header">
+            <h2 id="gatewayTitle">Payment Gateway</h2>
+            <span class="close-modal" onclick="closeGatewayModal()">&times;</span>
+        </div>
+
+        <div class="gateway-card">
+            <h3 style="color: #1e293b; margin-bottom: 5px;">অ্যামাউন্ট: <span id="displayAmount" style="color: #e51a1a;">৳0</span></h3>
+            <p style="font-size: 13px; color: #64748b;">মেথড: <span id="displayMethod" style="font-weight: bold;">None</span></p>
+            
+            <div class="gateway-instruction">
+                <strong>নির্দেশনা:</strong> নিচে দেওয়া আমাদের অফিশিয়াল পার্সোনাল নম্বরে উক্ত টাকাটি <strong>Send Money</strong> করুন। টাকা পাঠানো সম্পন্ন হলে নিচে ট্রানজেকশন আইডি (TrxID) বসিয়ে ভেরিফাই করুন।
+            </div>
+
+            <div class="copy-container">
+                <span class="copy-number" id="gatewayNumber">017XXXXXXXX</span>
+                <button class="btn-copy" onclick="copyNumberText()">Copy</button>
+            </div>
+        </div>
+
+        <div class="gateway-card" style="background-color: white;">
+            <div class="form-group">
+                <label for="trxIDInput" style="color: #1e293b;"><i class="fa-solid fa-key" style="color: #1a46e5;"></i> ট্রানজেকশন আইডি (Transaction ID):</label>
+                <input type="text" id="trxIDInput" placeholder="যেমন: 8N3489X72" required>
+            </div>
+
+            <button class="btn-submit" style="background-color: #1a46e5;" onclick="verifyPaymentSubmission()">ভেরিফাই করুন</button>
+        </div>
+    </div>
+
+    <div class="admin-route-page" id="adminRoutePage">
+        <h2 style="color: #1e293b; margin-bottom: 15px; text-align: center;"><i class="fa-solid fa-user-shield"></i> Unique Shop Admin</h2>
+        
+        <div class="admin-nav-tabs">
+            <button class="admin-tab-btn active" onclick="switchAdminTab('logoTab')"><i class="fa-solid fa-images"></i> Logo Tab</button>
+            <button class="admin-tab-btn" onclick="switchAdminTab('otherTab')"><i class="fa-solid fa-gears"></i> Other Tab</button>
+        </div>
+
+        <div class="admin-tab-content active" id="logoTab">
+            <div class="admin-sub-menu">
+                <h3><i class="fa-solid fa-layer-group"></i> Product Page Setting</h3>
+                <p style="font-size: 12px; color: #64748b;">গেমস টপআপ প্রোডাক্টের লোগো চেঞ্জ করার জন্য ইমেজের URL লিঙ্কগুলো বসান।</p>
+            </div>
+
+            <form id="adminLogosForm">
+                <div class="admin-prod-row">
+                    <label>১. Rafer & Earn Diamond (Logo Link):</label>
+                    <input type="url" id="link-item1" placeholder="ইমেজ লিঙ্ক বসান (URL)">
+                </div>
+                <div class="admin-prod-row">
+                    <label>২. Uid Topup BD Server (Logo Link):</label>
+                    <input type="url" id="link-item2" placeholder="ইমেজ লিঙ্ক বসান (URL)">
+                </div>
+                <div class="admin-prod-row">
+                    <label>৩. Unipin Voucher BD Server (Logo Link):</label>
+                    <input type="url" id="link-item3" placeholder="ইমেজ লিঙ্ক বসান (URL)">
+                </div>
+                <div class="admin-prod-row">
+                    <label>৪. Weekly Lite BD Server (Logo Link):</label>
+                    <input type="url" id="link-item4" placeholder="ইমেজ লিঙ্ক বসান (URL)">
+                </div>
+                <div class="admin-prod-row">
+                    <label>৫. Weekly & Monthly BD Server (Logo Link):</label>
+                    <input type="url" id="link-item5" placeholder="ইমেজ লিঙ্ক বসান (URL)">
+                </div>
+                <div class="admin-prod-row">
+                    <label>৬. Level Up Pass BD Server (Logo Link):</label>
+                    <input type="url" id="link-item6" placeholder="ইমেজ লিঙ্ক বসান (URL)">
+                </div>
+                <div class="admin-prod-row">
+                    <label>৭. Uid Evo acces (Logo Link):</label>
+                    <input type="url" id="link-item7" placeholder="ইমেজ লিঙ্ক বসান (URL)">
+                </div>
+                <button type="submit" class="btn-submit" style="background-color: #1a46e5; margin-top: 10px;">Update Logos</button>
+            </form>
+        </div>
+
+        <div class="admin-tab-content" id="otherTab">
+            <div class="admin-sub-menu">
+                <h3><i class="fa-solid fa-sliders"></i> Other Controls</h3>
+                <p style="font-size: 13px; color: #475569; margin-top: 10px;">অন্যান্য ফিচার এবং সেটিংস এখানে পরবর্তীতে যুক্ত করা যাবে।</p>
+            </div>
+        </div>
+
+        <button class="admin-close-btn" onclick="exitAdminView()"><i class="fa-solid fa-right-from-bracket"></i> Exit Admin Dashboard</button>
+    </div>
+
+    <div class="bottom-nav">
+        <a href="#" class="nav-item active"><i class="fa-solid fa-house"></i>Home</a>
+        <a href="https://wa.me/your_number" class="nav-item" target="_blank"><i class="fa-solid fa-circle-play"></i>Tutorial</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-gamepad"></i>TopUp</a>
+        <a href="https://wa.me/your_number" class="nav-item" target="_blank"><i class="fa-solid fa-comments"></i>Contact Us</a>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+        // Your Firebase Configuration (Uniqueshop44)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAihR-8QjslhjSAHPAPERRD68LQvF2dC7s",
+            authDomain: "uniqueshop44.firebaseapp.com",
+            projectId: "uniqueshop44",
+            databaseURL: "https://uniqueshop44-default-rtdb.firebaseio.com/",
+            storageBucket: "uniqueshop44.firebasestorage.app",
+            messagingSenderId: "574506419832",
+            appId: "1:574506419832:web:5ca7093caec4e404830f8d",
+            measurementId: "G-2W8LM2DS22"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // Listen for Realtime Product Logos update from Firebase
+        const logosRef = ref(database, 'productLogos');
+        onValue(logosRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                for (let i = 1; i <= 7; i++) {
+                    if (data['item' + i]) {
+                        document.getElementById('img-item1' .replace('1', i)).src = data['item' + i];
+                        // If admin panel fields exist on load, populate them
+                        if(document.getElementById('link-item' + i)) {
+                            document.getElementById('link-item' + i).value = data['item' + i];
+                        }
+                    }
+                }
+            }
+        });
+
+        // Global function to update logos via admin tap form
+        window.updateLogosInFirebase = function(logosData) {
+            return set(ref(database, 'productLogos'), logosData);
+        };
+
+        // Global functions for firebase submittion window context
+        window.saveAddMoneyToFirebase = function(amount, method, trx) {
+            const addMoneyRef = ref(database, 'addMoneyRequests');
+            const newRequestRef = push(addMoneyRef);
+
+            return set(newRequestRef, {
+                amount: amount,
+                method: method,
+                transactionId: trx,
+                status: "Pending",
+                time: new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka' })
+            });
+        };
+
+        // Submit Order to Firebase
+        document.getElementById('purchaseForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const pName = document.getElementById('productName').value;
+            const pPackage = document.getElementById('packageSelect').value;
+            const pID = document.getElementById('playerID').value;
+            const pWhatsapp = document.getElementById('whatsappNumber').value;
+
+            const ordersRef = ref(database, 'orders');
+            const newOrderRef = push(ordersRef);
+
+            set(newOrderRef, {
+                product: pName,
+                package: pPackage,
+                playerId: pID,
+                whatsapp: pWhatsapp,
+                status: "Pending",
+                time: new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka' })
+            }).then(() => {
+                alert("আপনার অর্ডারটি সফলভাবে সাবমিট হয়েছে! আমাদের অ্যাডমিন খুব দ্রুত এটি সম্পন্ন করে দেবে।");
+                closeModal();
+                document.getElementById('purchaseForm').reset();
+            }).catch((error) => {
+                alert("অর্ডার সাবমিট করতে সমস্যা হয়েছে: " + error.message);
+            });
+        });
+    </script>
+
+    <script>
+        let selectedAmountValue = 0;
+        let selectedMethodValue = '';
+
+        // অফিশিয়াল ওয়ালেট পার্সোনাল নম্বরসমূহ
+        const merchantNumbers = {
+            Bikash: "01700000000 (Personal)",
+            Nagad: "01800000000 (Personal)",
+            Rocket: "01900000000 (Personal)",
+            Upay: "01500000000 (Personal)"
+        };
+
+        // Custom Error Toast Function
+        function showCustomToast(message) {
+            const toast = document.getElementById('errorToast');
+            document.getElementById('toastMessage').innerText = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3500);
+        }
+
+        // Modal UI Open/Close Control
+        function openOrderModal(productName, packages) {
+            document.getElementById('productName').value = productName;
+            document.getElementById('modalProductTitle').innerText = productName + " - Order";
+            
+            const selectBox = document.getElementById('packageSelect');
+            selectBox.innerHTML = "";
+            
+            packages.forEach(pkg => {
+                let option = document.createElement('option');
+                option.value = pkg;
+                option.innerText = pkg;
+                selectBox.appendChild(option);
+            });
+
+            document.getElementById('orderModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('orderModal').style.display = 'none';
+        }
+
+        // Add Money Modal UI Control
+        function openAddMoneyModal() {
+            document.getElementById('addMoneyModal').style.display = 'flex';
+        }
+
+        function closeAddMoneyModal() {
+            document.getElementById('addMoneyModal').style.display = 'none';
+            selectedAmountValue = 0;
+            selectedMethodValue = '';
+            document.querySelectorAll('.amount-box').forEach(b => b.classList.remove('selected'));
+            document.querySelectorAll('.method-box').forEach(b => b.classList.remove('selected'));
+        }
+
+        function selectAmount(amount) {
+            selectedAmountValue = amount;
+            document.querySelectorAll('.amount-box').forEach(b => b.classList.remove('selected'));
+            event.target.classList.add('selected');
+        }
+
+        function selectMethod(method) {
+            selectedMethodValue = method;
+            document.querySelectorAll('.method-box').forEach(b => b.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+        }
+
+        // Step 2: Gateway Configuration View
+        function goToGatewayStep() {
+            if(selectedAmountValue === 0) {
+                showCustomToast("অনুগ্রহ করে টাকার পরিমাণ নির্বাচন করুন!");
+                return;
+            }
+            if(selectedMethodValue === '') {
+                showCustomToast("অনুগ্রহ করে একটি পেমেন্ট মেথড নির্বাচন করুন!");
+                return;
+            }
+
+            document.getElementById('displayAmount').innerText = "৳" + selectedAmountValue;
+            document.getElementById('displayMethod').innerText = selectedMethodValue;
+            document.getElementById('gatewayTitle').innerText = selectedMethodValue + " Payment";
+            document.getElementById('gatewayNumber').innerText = merchantNumbers[selectedMethodValue] || "017XXXXXXXX";
+            
+            document.getElementById('addMoneyModal').style.display = 'none';
+            document.getElementById('gatewayModal').style.display = 'flex';
+        }
+
+        function closeGatewayModal() {
+            document.getElementById('gatewayModal').style.display = 'none';
+            closeAddMoneyModal();
+        }
+
+        function copyNumberText() {
+            const rawText = document.getElementById('gatewayNumber').innerText;
+            const cleanNumber = rawText.split(' ')[0];
+            navigator.clipboard.writeText(cleanNumber).then(() => {
+                alert("নম্বরটি কপি করা হয়েছে: " + cleanNumber);
+            });
+        }
+
+        // Final Submission Verification
+        function verifyPaymentSubmission() {
+            const trxID = document.getElementById('trxIDInput').value.trim();
+
+            if(trxID === "") {
+                showCustomToast("অনুগ্রহ করে ট্রানজেকশন আইডিটি সঠিকভাবে পূরণ করুন!");
+                return;
+            }
+
+            window.saveAddMoneyToFirebase(selectedAmountValue, selectedMethodValue, trxID)
+            .then(() => {
+                alert("আপনার ট্রানজেকশন আইডিটি সফলভাবে ভেরিফিকেশনের জন্য পাঠানো হয়েছে! অ্যাডমিন যাচাই করে ব্যালেন্স যোগ করে দেবে।");
+                document.getElementById('trxIDInput').value = "";
+                closeGatewayModal();
+            }).catch((error) => {
+                alert("ভেরিফিকেশন রিকোয়েস্ট পাঠাতে সমস্যা হয়েছে: " + error.message);
+            });
+        }
+
+        // NEW NEW NEW SEPARATE LINK SYSTEM AND TAB CONTROLLER FOR ADMIN
+        function checkAdminRoute() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('admin') === 'true') {
+                const password = prompt("অ্যাডমিন ড্যাশবোর্ডে প্রবেশ করতে পাসওয়ার্ড দিন:");
+                if (password === "admin44") {
+                    document.getElementById('adminRoutePage').style.display = 'block';
+                } else {
+                    alert("ভুল পাসওয়ার্ড! হোমপেজে রিডাইরেক্ট করা হচ্ছে।");
+                    window.location.href = window.location.pathname; // রিমুভ ?admin=true
+                }
+            }
+        }
+
+        // উইন্ডো লোড হওয়ার সাথে সাথে চেক করবে অ্যাডমিন প্যারামিটার আছে কিনা
+        window.addEventListener('DOMContentLoaded', checkAdminRoute);
+
+        function switchAdminTab(tabId) {
+            // সকল ট্যাব কন্টেন্ট হাইড করুন
+            document.querySelectorAll('.admin-tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            // সকল বাটন থেকে একটিভ ক্লাস রিমুভ করুন
+            document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // কাঙ্ক্ষিত ট্যাব ওপেন করুন
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        function exitAdminView() {
+            // অ্যাডমিন মোড থেকে বের হয়ে মেইন হোমে ফিরে যাবে
+            window.location.href = window.location.pathname;
+        }
+
+        // Admin form handling to save link changes
+        document.getElementById('adminLogosForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const logosData = {
+                item1: document.getElementById('link-item1').value.trim(),
+                item2: document.getElementById('link-item2').value.trim(),
+                item3: document.getElementById('link-item3').value.trim(),
+                item4: document.getElementById('link-item4').value.trim(),
+                item5: document.getElementById('link-item5').value.trim(),
+                item6: document.getElementById('link-item6').value.trim(),
+                item7: document.getElementById('link-item7').value.trim()
+            };
+
+            window.updateLogosInFirebase(logosData)
+            .then(() => {
+                alert("সবগুলো প্রোডাক্ট লোগো সফলভাবে ডেটাবেসে আপডেট হয়েছে!");
+            })
+            .catch((err) => {
+                alert("আপডেট করতে সমস্যা হয়েছে: " + err.message);
+            });
+        });
+    </script>
+</body>
+</html>
