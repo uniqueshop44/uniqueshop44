@@ -550,6 +550,223 @@
             cursor: pointer;
         }
 
+        /* RAFER PAGE STYLES */
+        .rafer-page {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 500;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .rafer-page.show {
+            display: block;
+        }
+
+        .rafer-header {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .rafer-stat {
+            text-align: center;
+        }
+
+        .rafer-stat-label {
+            font-size: 12px;
+            color: #666;
+            font-weight: 600;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .rafer-stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .rafer-rules-box {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .rafer-rules-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .rafer-rules-header h3 {
+            font-size: 16px;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .rafer-edit-btn {
+            background-color: #1a46e5;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .rafer-rules-content {
+            font-size: 13px;
+            color: #475569;
+            line-height: 1.6;
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .rafer-table {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            margin-bottom: 20px;
+        }
+
+        .rafer-table-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .rafer-table-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 13px;
+            align-items: center;
+        }
+
+        .rafer-table-row:last-child {
+            border-bottom: none;
+        }
+
+        .rafer-table-row:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .rafer-table-col {
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        .rafer-link-box {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .rafer-link-label {
+            font-size: 12px;
+            color: #666;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .rafer-link-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: #f1f5f9;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 1px dashed #cbd5e1;
+        }
+
+        .rafer-link-text {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1a46e5;
+            word-break: break-all;
+            flex-grow: 1;
+        }
+
+        .rafer-btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .rafer-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .rafer-btn-copy {
+            background-color: #1a46e5;
+            color: white;
+        }
+
+        .rafer-btn-share {
+            background-color: #00c853;
+            color: white;
+        }
+
+        .rafer-home-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            margin-bottom: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
         /* Bottom Navigation Bar */
         .bottom-nav {
             position: fixed;
@@ -599,11 +816,11 @@
 
     <div class="notice-board">
         <h4><i class="fa-solid fa-circle-bell"></i> Notice:</h4>
-        <p>Unique Shop এ ২৪ ঘণ্টাই টপআপ চালু থাকে...!!! যেকোনো সমস্যায় আমাদের WhatsApp এ মেসেজ দিন। বিঃদ্রঃ বাবা-মা বা ফ্যামিলির কারো ফোন থেকে টাকা চুরি করে টপআপ করা সম্পূর্ণ নিষিদ্ধ।</p>
+        <p>Unique Shop এ ২৪ ঘণ্টাই টপআপ চালু থাকে...!!! যেকোনো সমস্যায় আমাদের WhatsApp এ মেসেজ দিন। বিঃদ্রঃ বাবা-মা বা ফ্যামিলির কারো ফোন থেকে টাকা চুরি করে টপআপ করা সম্পূর্ণ নিষিদ্ধ।</p>
     </div>
 
     <div class="banner-container">
-        <h2>ইউনিক বাজার থেকে সকল আপডেট ও গিভওয়েতে যুক্ত থাকুন আমাদের</h2>
+        <h2>ইউনিক বাজার থেকে সকল আপডেট ও গিভওয়েতে যুক্ত থাকুন আমাদের</h2>
         <p>সবচেয়ে কম মূল্যে দ্রুত ডেলিভারি!</p>
         <a href="https://t.me/your_group" class="banner-btn" target="_blank"><i class="fa-brands fa-telegram"></i> টেলিগ্রাম গ্রুপে যোগ দিন</a>
     </div>
@@ -625,7 +842,7 @@
     <div class="section-title">GAMES TOP UP</div>
 
     <div class="grid-container">
-        <div class="card" id="card-item1" onclick="openOrderModal('Rafer & Earn Diamond', ['100 Diamonds', '200 Diamonds', '500 Diamonds'])">
+        <div class="card" id="card-item1" onclick="openRaferPage()">
             <img id="img-item1" src="https://placehold.co/300x180?text=Rafer+And+Earn" alt="Rafer & Earn">
             <h3>Rafer & Earn Diamond</h3>
         </div>
@@ -674,12 +891,12 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="playerID">প্লেয়ার আইডি (Player ID):</label>
+                    <label for="playerID">প্লেয়ার আইডি (Player ID):</label>
                     <input type="number" id="playerID" placeholder="যেমন: 12345678" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="whatsappNumber">হোয়াটসঅ্যাপ নম্বর (WhatsApp No):</label>
+                    <label for="whatsappNumber">হোয়াটসঅ্যাপ নম্বর (WhatsApp No):</label>
                     <input type="tel" id="whatsappNumber" placeholder="যেমন: 017XXXXXXXX" required>
                 </div>
 
@@ -743,7 +960,7 @@
             <p style="font-size: 13px; color: #64748b;">মেথড: <span id="displayMethod" style="font-weight: bold;">None</span></p>
             
             <div class="gateway-instruction">
-                <strong>নির্দেশনা:</strong> নিচে দেওয়া আমাদের অফিশিয়াল পার্সোনাল নম্বরে উক্ত টাকাটি <strong>Send Money</strong> করুন। টাকা পাঠানো সম্পন্ন হলে নিচে ট্রানজেকশন আইডি (TrxID) বসিয়ে ভেরিফাই করুন।
+                <strong>নির্দেশনা:</strong> নিচে দেওয়া আমাদের অফিশিয়াল পার্সোনাল নম্বরে উক্ত টাকাটি <strong>Send Money</strong> করুন। টাকা পাঠানো সম্পন্ন হলে নিচে ট্রানজেকশন আইডি (TrxID) বসিয়ে ভেরিফাই করুন।
             </div>
 
             <div class="copy-container">
@@ -760,6 +977,96 @@
 
             <button class="btn-submit" style="background-color: #1a46e5;" onclick="verifyPaymentSubmission()">ভেরিফাই করুন</button>
         </div>
+    </div>
+
+    <!-- RAFER PAGE -->
+    <div class="rafer-page" id="raferPage">
+        <div class="rafer-header">
+            <div class="rafer-stat">
+                <div class="rafer-stat-label"><i class="fa-solid fa-users"></i> Rafer Count</div>
+                <div class="rafer-stat-value" id="raferCount">0</div>
+            </div>
+            <div class="rafer-stat">
+                <div class="rafer-stat-label"><i class="fa-solid fa-gem"></i> Total Diamond</div>
+                <div class="rafer-stat-value" id="totalDiamond">0</div>
+            </div>
+        </div>
+
+        <div class="rafer-rules-box">
+            <div class="rafer-rules-header">
+                <h3><i class="fa-solid fa-book"></i> নিয়ম এবং শর্তাবলী</h3>
+                <button class="rafer-edit-btn" onclick="editRulesAdmin()"><i class="fa-solid fa-pen"></i> Edit</button>
+            </div>
+            <div class="rafer-rules-content" id="rulesContent">
+                প্রতিটি সফল রেফারেলের জন্য আপনি ১০০ ডায়মন্ড পাবেন। আপনার বন্ধু যখন আমাদের প্ল্যাটফর্মে যোগদান করবে এবং প্রথম অর্ডার সম্পন্ন করবে তখন ডায়মন্ড যোগ হবে।
+            </div>
+        </div>
+
+        <div class="rafer-table">
+            <div class="rafer-table-header">
+                <div>ক্রমিক নম্বর</div>
+                <div>অর্জিত অংশ</div>
+            </div>
+            <div class="rafer-table-row">
+                <div class="rafer-table-col">১</div>
+                <div class="rafer-table-col">১০০ ডায়মন্ড</div>
+            </div>
+            <div class="rafer-table-row">
+                <div class="rafer-table-col">২</div>
+                <div class="rafer-table-col">১০০ ডায়মন্ড</div>
+            </div>
+            <div class="rafer-table-row">
+                <div class="rafer-table-col">৩</div>
+                <div class="rafer-table-col">১০০ ডায়মন্ড</div>
+            </div>
+            <div class="rafer-table-row">
+                <div class="rafer-table-col">৪</div>
+                <div class="rafer-table-col">১০০ ডায়মন্ড</div>
+            </div>
+            <div class="rafer-table-row">
+                <div class="rafer-table-col">৫</div>
+                <div class="rafer-table-col">১০০ ডায়মন্ড</div>
+            </div>
+            <div class="rafer-table-row">
+                <div class="rafer-table-col">৬</div>
+                <div class="rafer-table-col">১০০ ডায়মন্ড</div>
+            </div>
+            <div class="rafer-table-row">
+                <div class="rafer-table-col">৭</div>
+                <div class="rafer-table-col">১০০ ডায়মন্ড</div>
+            </div>
+            <div class="rafer-table-row">
+                <div class="rafer-table-col">৮</div>
+                <div class="rafer-table-col">১০০ ডায়মন্ড</div>
+            </div>
+            <div class="rafer-table-row">
+                <div class="rafer-table-col">৯</div>
+                <div class="rafer-table-col">১০০ ডায়মন্ড</div>
+            </div>
+            <div class="rafer-table-row">
+                <div class="rafer-table-col">১০</div>
+                <div class="rafer-table-col">১০০ ডায়মন্ড</div>
+            </div>
+        </div>
+
+        <div class="rafer-link-box">
+            <div class="rafer-link-label"><i class="fa-solid fa-link"></i> আপনার রেফারেল লিঙ্ক</div>
+            <div class="rafer-link-container">
+                <div class="rafer-link-text" id="raferLink">https://uniqueshop.com/?ref=USER123456</div>
+            </div>
+            <div class="rafer-btn-group">
+                <button class="rafer-btn rafer-btn-copy" onclick="copyRaferLink()">
+                    <i class="fa-solid fa-copy"></i> Copy Link
+                </button>
+                <button class="rafer-btn rafer-btn-share" onclick="shareRaferLink()">
+                    <i class="fa-solid fa-share-nodes"></i> Share
+                </button>
+            </div>
+        </div>
+
+        <button class="rafer-home-btn" onclick="closeRaferPage()">
+            <i class="fa-solid fa-house"></i> হোমপেজে ফিরুন
+        </button>
     </div>
 
     <div class="admin-route-page" id="adminRoutePage">
@@ -782,27 +1089,27 @@
                     <input type="url" id="link-item1" placeholder="ইমেজ লিঙ্ক বসান (URL)">
                 </div>
                 <div class="admin-prod-row">
-                    <label>২. Uid Topup BD Server (Logo Link):</label>
+                    <label>२. Uid Topup BD Server (Logo Link):</label>
                     <input type="url" id="link-item2" placeholder="ইমেজ লিঙ্ক বসান (URL)">
                 </div>
                 <div class="admin-prod-row">
-                    <label>৩. Unipin Voucher BD Server (Logo Link):</label>
+                    <label>३. Unipin Voucher BD Server (Logo Link):</label>
                     <input type="url" id="link-item3" placeholder="ইমেজ লিঙ্ক বসান (URL)">
                 </div>
                 <div class="admin-prod-row">
-                    <label>৪. Weekly Lite BD Server (Logo Link):</label>
+                    <label>४. Weekly Lite BD Server (Logo Link):</label>
                     <input type="url" id="link-item4" placeholder="ইমেজ লিঙ্ক বসান (URL)">
                 </div>
                 <div class="admin-prod-row">
-                    <label>৫. Weekly & Monthly BD Server (Logo Link):</label>
+                    <label>५. Weekly & Monthly BD Server (Logo Link):</label>
                     <input type="url" id="link-item5" placeholder="ইমেজ লিঙ্ক বসান (URL)">
                 </div>
                 <div class="admin-prod-row">
-                    <label>৬. Level Up Pass BD Server (Logo Link):</label>
+                    <label>६. Level Up Pass BD Server (Logo Link):</label>
                     <input type="url" id="link-item6" placeholder="ইমেজ লিঙ্ক বসান (URL)">
                 </div>
                 <div class="admin-prod-row">
-                    <label>৭. Uid Evo acces (Logo Link):</label>
+                    <label>७. Uid Evo acces (Logo Link):</label>
                     <input type="url" id="link-item7" placeholder="ইমেজ লিঙ্ক বসান (URL)">
                 </div>
                 <button type="submit" class="btn-submit" style="background-color: #1a46e5; margin-top: 10px;">Update Logos</button>
@@ -852,7 +1159,7 @@
             if (data) {
                 for (let i = 1; i <= 7; i++) {
                     if (data['item' + i]) {
-                        document.getElementById('img-item1' .replace('1', i)).src = data['item' + i];
+                        document.getElementById('img-item' + i).src = data['item' + i];
                         // If admin panel fields exist on load, populate them
                         if(document.getElementById('link-item' + i)) {
                             document.getElementById('link-item' + i).value = data['item' + i];
@@ -901,11 +1208,11 @@
                 status: "Pending",
                 time: new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka' })
             }).then(() => {
-                alert("আপনার অর্ডারটি সফলভাবে সাবমিট হয়েছে! আমাদের অ্যাডমিন খুব দ্রুত এটি সম্পন্ন করে দেবে।");
+                alert("আপনার অর্ডারটি সফলভাবে সাবমিট হয়েছে! আমাদের অ্যাডমিন খুব দ্রুত এটি সম্পন্ন করে দেবে।");
                 closeModal();
                 document.getElementById('purchaseForm').reset();
             }).catch((error) => {
-                alert("অর্ডার সাবমিট করতে সমস্যা হয়েছে: " + error.message);
+                alert("অর্ডার সাবমিট করতে সমস্যা হয়েছে: " + error.message);
             });
         });
     </script>
@@ -914,7 +1221,7 @@
         let selectedAmountValue = 0;
         let selectedMethodValue = '';
 
-        // অফিশিয়াল ওয়ালেট পার্সোনাল নম্বরসমূহ
+        // অফিশিয়াল ওয়ালেট পার্সোনাল নম্বরসমূহ
         const merchantNumbers = {
             Bikash: "01700000000 (Personal)",
             Nagad: "01800000000 (Personal)",
@@ -931,6 +1238,52 @@
             setTimeout(() => {
                 toast.classList.remove('show');
             }, 3500);
+        }
+
+        // RAFER PAGE FUNCTIONS
+        function openRaferPage() {
+            document.getElementById('raferPage').classList.add('show');
+        }
+
+        function closeRaferPage() {
+            document.getElementById('raferPage').classList.remove('show');
+        }
+
+        function copyRaferLink() {
+            const link = document.getElementById('raferLink').innerText;
+            navigator.clipboard.writeText(link).then(() => {
+                alert("রেফারেল লিঙ্ক কপি করা হয়েছে!");
+            });
+        }
+
+        function shareRaferLink() {
+            const link = document.getElementById('raferLink').innerText;
+            const text = "আমাদের প্ল্যাটফর্মে যোগদান করুন এবং ডায়মন্ড অর্জন করুন!";
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Unique Shop',
+                    text: text,
+                    url: link
+                });
+            } else {
+                // Fallback for browsers that don't support Web Share API
+                const whatsappLink = `https://wa.me/?text=${encodeURIComponent(text + " " + link)}`;
+                window.open(whatsappLink, '_blank');
+            }
+        }
+
+        function editRulesAdmin() {
+            const password = prompt("রুলস এডিট করতে অ্যাডমিন পাসওয়ার্ড দিন:");
+            if (password === "admin44") {
+                const newRules = prompt("নতুন রুলস লিখুন:", document.getElementById('rulesContent').innerText);
+                if (newRules) {
+                    document.getElementById('rulesContent').innerText = newRules;
+                    alert("রুলস সফলভাবে আপডেট হয়েছে!");
+                }
+            } else {
+                alert("ভুল পাসওয়ার্ড!");
+            }
         }
 
         // Modal UI Open/Close Control
@@ -1009,7 +1362,7 @@
             const rawText = document.getElementById('gatewayNumber').innerText;
             const cleanNumber = rawText.split(' ')[0];
             navigator.clipboard.writeText(cleanNumber).then(() => {
-                alert("নম্বরটি কপি করা হয়েছে: " + cleanNumber);
+                alert("নম্বরটি কপি করা হয়েছে: " + cleanNumber);
             });
         }
 
@@ -1024,11 +1377,11 @@
 
             window.saveAddMoneyToFirebase(selectedAmountValue, selectedMethodValue, trxID)
             .then(() => {
-                alert("আপনার ট্রানজেকশন আইডিটি সফলভাবে ভেরিফিকেশনের জন্য পাঠানো হয়েছে! অ্যাডমিন যাচাই করে ব্যালেন্স যোগ করে দেবে।");
+                alert("আপনার ট্রানজেকশন আইডিটি সফলভাবে ভেরিফিকেশনের জন্য পাঠানো হয়েছে! অ্যাডমিন যাচাই করে ব্যালেন্স যোগ করে দেবে।");
                 document.getElementById('trxIDInput').value = "";
                 closeGatewayModal();
             }).catch((error) => {
-                alert("ভেরিফিকেশন রিকোয়েস্ট পাঠাতে সমস্যা হয়েছে: " + error.message);
+                alert("ভেরিফিকেশন রিকোয়েস্ট পাঠাতে সমস্যা হয়েছে: " + error.message);
             });
         }
 
@@ -1041,12 +1394,12 @@
                     document.getElementById('adminRoutePage').style.display = 'block';
                 } else {
                     alert("ভুল পাসওয়ার্ড! হোমপেজে রিডাইরেক্ট করা হচ্ছে।");
-                    window.location.href = window.location.pathname; // রিমুভ ?admin=true
+                    window.location.href = window.location.pathname;
                 }
             }
         }
 
-        // উইন্ডো লোড হওয়ার সাথে সাথে চেক করবে অ্যাডমিন প্যারামিটার আছে কিনা
+        // উইন্ডো লোড হওয়ার সাথে সাথে চেক করবে অ্যাডমিন প্যারামিটার আছে কিনা
         window.addEventListener('DOMContentLoaded', checkAdminRoute);
 
         function switchAdminTab(tabId) {
@@ -1065,7 +1418,7 @@
         }
 
         function exitAdminView() {
-            // অ্যাডমিন মোড থেকে বের হয়ে মেইন হোমে ফিরে যাবে
+            // অ্যাডমিন মোড থেকে বের হয়ে মেইন হোমে ফিরে যাবে
             window.location.href = window.location.pathname;
         }
 
@@ -1085,10 +1438,10 @@
 
             window.updateLogosInFirebase(logosData)
             .then(() => {
-                alert("সবগুলো প্রোডাক্ট লোগো সফলভাবে ডেটাবেসে আপডেট হয়েছে!");
+                alert("সবগুলো প্রোডাক্ট লোগো সফলভাবে ডেটাবেসে আপডেট হয়েছে!");
             })
             .catch((err) => {
-                alert("আপডেট করতে সমস্যা হয়েছে: " + err.message);
+                alert("আপডেট করতে সমস্যা হয়েছে: " + err.message);
             });
         });
     </script>
