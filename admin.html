@@ -775,11 +775,9 @@
 </div><!-- dashboard -->
 
 <!-- ── Firebase + Script ── -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { getDatabase, ref, onValue, update, remove, set, get }
-    from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
-
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
+<script>
 const firebaseConfig = {
     apiKey: "AIzaSyAihR-8QjslhjSAHPAPERRD68LQvF2dC7s",
     authDomain: "uniqueshop44.firebaseapp.com",
@@ -789,16 +787,27 @@ const firebaseConfig = {
     messagingSenderId: "574506419832",
     appId: "1:574506419832:web:5ca7093caec4e404830f8d",
     measurementId: "G-2W8LM2DS22"
-};
+}
 
-const app = initializeApp(firebaseConfig);
-const db  = getDatabase(app);
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// Helper wrappers to match modular API used below
+function ref(dbOrPath, path) { 
+    if (path !== undefined) return db.ref(path); 
+    return db.ref(dbOrPath); 
+}
+function onValue(r, cb) { r.on('value', snap => cb(snap)); }
+function get(r) { return r.once('value'); }
+function update(r, data) { return r.update(data); }
+function remove(r) { return r.remove(); }
+function set(r, data) { return r.set(data); }
 
 // ─── Auth ───
 const ADMIN_CREDS_KEY = 'us_admin_creds';
 let storedCreds = JSON.parse(localStorage.getItem(ADMIN_CREDS_KEY) || '{"user":"admin","pass":"admin44"}');
 
-window.doLogin = function() {
+function doLogin() {
     const u = document.getElementById('adminUser').value.trim();
     const p = document.getElementById('adminPass').value.trim();
     // Also check Firebase for updated creds
@@ -824,14 +833,14 @@ window.doLogin = function() {
             setTimeout(() => document.getElementById('loginError').style.display = 'none', 3000);
         }
     });
-};
+}
 
-window.doLogout = function() {
+function doLogout() {
     document.getElementById('dashboard').style.display = 'none';
     document.getElementById('loginScreen').style.display = 'flex';
     document.getElementById('adminUser').value = '';
     document.getElementById('adminPass').value = '';
-};
+}
 
 // ─── Data stores ───
 let allOrders = {};
@@ -913,13 +922,13 @@ function renderRecentOrders(orders) {
         </tr>`).join('');
 }
 
-window.updateOrderStatus = function(key, status) {
+function updateOrderStatus(key, status) {
     update(ref(db, `orders/${key}`), { status }).then(() => showToast(`অর্ডার ${status} করা হয়েছে!`, 'success'));
-};
-window.deleteOrder = function(key) {
+}
+function deleteOrder(key) {
     if (!confirm('এই অর্ডারটি মুছে দেবেন?')) return;
     remove(ref(db, `orders/${key}`)).then(() => showToast('অর্ডার ডিলিট হয়েছে।', 'success'));
-};
+}
 
 // ─── Payments ───
 function renderPayments() {
@@ -943,13 +952,13 @@ function renderPayments() {
         </tr>`).join('');
 }
 
-window.updatePayStatus = function(key, status) {
+function updatePayStatus(key, status) {
     update(ref(db, `addMoneyRequests/${key}`), { status }).then(() => showToast(`পেমেন্ট ${status} করা হয়েছে!`, 'success'));
-};
-window.deletePay = function(key) {
+}
+function deletePay(key) {
     if (!confirm('এই রিকোয়েস্টটি মুছে দেবেন?')) return;
     remove(ref(db, `addMoneyRequests/${key}`)).then(() => showToast('মুছে দেওয়া হয়েছে।', 'success'));
-};
+}
 
 // ─── Logo Form ───
 const logoItems = [
@@ -971,7 +980,7 @@ function buildLogoForm(data) {
         </div>`).join('');
 }
 
-window.saveLogos = function() {
+function saveLogos() {
     const data = {};
     for (let i = 1; i <= 7; i++) {
         const val = document.getElementById(`logo-item${i}`)?.value.trim();
@@ -979,7 +988,7 @@ window.saveLogos = function() {
     }
     set(ref(db, 'productLogos'), data).then(() => showToast('লোগো সফলভাবে আপডেট হয়েছে!', 'success'))
         .catch(e => showToast('সমস্যা হয়েছে: ' + e.message, 'error'));
-};
+}
 
 // ─── Settings ───
 function loadSettings() {
@@ -1005,12 +1014,12 @@ function loadSettings() {
     });
 }
 
-window.saveNotice = function() {
+function saveNotice() {
     const text = document.getElementById('noticeText').value.trim();
     update(ref(db, 'adminSettings'), { notice: text }).then(() => showToast('Notice সেভ হয়েছে!', 'success'));
-};
+}
 
-window.savePaymentNums = function() {
+function savePaymentNums() {
     const nums = {
         Bikash: document.getElementById('bkashNum').value.trim(),
         Nagad:  document.getElementById('nagadNum').value.trim(),
@@ -1018,17 +1027,17 @@ window.savePaymentNums = function() {
         Upay:   document.getElementById('upayNum').value.trim()
     };
     update(ref(db, 'adminSettings'), { paymentNums: nums }).then(() => showToast('Payment numbers সেভ হয়েছে!', 'success'));
-};
+}
 
-window.saveLinks = function() {
+function saveLinks() {
     const links = {
         whatsapp: document.getElementById('waNum').value.trim(),
         telegram: document.getElementById('tgLink').value.trim()
     };
     update(ref(db, 'adminSettings'), { links }).then(() => showToast('Links সেভ হয়েছে!', 'success'));
-};
+}
 
-window.saveAdminCreds = function() {
+function saveAdminCreds() {
     const u = document.getElementById('newAdminUser').value.trim();
     const p = document.getElementById('newAdminPass').value.trim();
     if (!u || !p) { showToast('Username ও Password দিন!', 'error'); return; }
@@ -1039,7 +1048,7 @@ window.saveAdminCreds = function() {
         document.getElementById('newAdminUser').value = '';
         document.getElementById('newAdminPass').value = '';
     });
-};
+}
 
 // ─── Helpers ───
 function statusBadge(status) {
@@ -1065,7 +1074,7 @@ function showToast(msg, type = 'success') {
 }
 
 // ─── Tab + Filter ───
-window.switchTab = function(name, btn) {
+function switchTab(name, btn) {
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('tab-' + name).classList.add('active');
@@ -1073,22 +1082,22 @@ window.switchTab = function(name, btn) {
     const titles = { overview:'Overview', orders:'Orders', payments:'Add Money Requests', logos:'Product Logos', settings:'Site Settings' };
     const subs   = { overview:'ড্যাশবোর্ড সারসংক্ষেপ', orders:'সব অর্ডার দেখুন ও ম্যানেজ করুন', payments:'পেমেন্ট ভেরিফাই করুন', logos:'প্রোডাক্ট ইমেজ আপডেট', settings:'সাইট সেটিংস' };
     document.getElementById('pageTitle').innerHTML = `${titles[name]} <span>${subs[name]}</span>`;
-};
+}
 
-window.filterTable = function(tbodyId, query) {
+function filterTable(tbodyId, query) {
     const q = query.toLowerCase();
     document.querySelectorAll(`#${tbodyId} tr`).forEach(row => {
         row.style.display = row.dataset.text?.includes(q) ? '' : 'none';
     });
-};
+}
 
-window.filterByStatus = function(tbodyId, status, btn) {
+function filterByStatus(tbodyId, status, btn) {
     btn.closest('.filter-tabs').querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     document.querySelectorAll(`#${tbodyId} tr`).forEach(row => {
         row.style.display = (!status || row.dataset.status === status) ? '' : 'none';
     });
-};
+}
 </script>
 </body>
 </html>
