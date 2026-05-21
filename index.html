@@ -2912,19 +2912,61 @@ font-weight:700;
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
 
-        // Listen for Realtime Product Logos update from Firebase
+        // ── Product Logos ──
         const logosRef = ref(database, 'productLogos');
         onValue(logosRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {
                 for (let i = 1; i <= 7; i++) {
                     if (data['item' + i]) {
-                        document.getElementById('img-item' + i).src = data['item' + i];
-                        // If admin panel fields exist on load, populate them
-                        if(document.getElementById('link-item' + i)) {
-                            document.getElementById('link-item' + i).value = data['item' + i];
-                        }
+                        const imgEl = document.getElementById('img-item' + i);
+                        if (imgEl) imgEl.src = data['item' + i];
                     }
+                }
+            }
+        });
+
+        // ── Notice Board ──
+        const noticeRef = ref(database, 'adminSettings/notice');
+        onValue(noticeRef, (snapshot) => {
+            const notice = snapshot.val();
+            if (notice) {
+                const noticeEl = document.querySelector('.notice-board p');
+                if (noticeEl) noticeEl.textContent = notice;
+            }
+        });
+
+        // ── Admin Settings: Payment Numbers & Links ──
+        const settingsRef = ref(database, 'adminSettings');
+        onValue(settingsRef, (snapshot) => {
+            const s = snapshot.val();
+            if (!s) return;
+
+            // Payment numbers → update merchantNumbers object used in gateway
+            if (s.paymentNums) {
+                if (s.paymentNums.Bikash)  window._fbNums = window._fbNums || {};
+                window._fbNums = {
+                    Bikash:  s.paymentNums.Bikash  || merchantNumbers.Bikash,
+                    Nagad:   s.paymentNums.Nagad   || merchantNumbers.Nagad,
+                    Rocket:  s.paymentNums.Rocket  || merchantNumbers.Rocket,
+                    Upay:    s.paymentNums.Upay    || merchantNumbers.Upay
+                };
+                // Merge into merchantNumbers so gateway picks it up
+                Object.assign(merchantNumbers, window._fbNums);
+            }
+
+            // WhatsApp & Telegram links
+            if (s.links) {
+                if (s.links.whatsapp) {
+                    const waNum = s.links.whatsapp;
+                    document.querySelectorAll('a[href*="wa.me"]').forEach(el => {
+                        el.href = 'https://wa.me/' + waNum;
+                    });
+                }
+                if (s.links.telegram) {
+                    document.querySelectorAll('a[href*="t.me"], .banner-btn[href*="t.me"], a[href*="telegram"]').forEach(el => {
+                        el.href = s.links.telegram;
+                    });
                 }
             }
         });
