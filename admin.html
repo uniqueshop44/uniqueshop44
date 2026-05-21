@@ -292,6 +292,13 @@
         .tab-panel { display: none; }
         .tab-panel.active { display: block; }
 
+        /* Home (empty) panel */
+        .home-panel {
+            display: none;
+            min-height: 60vh;
+        }
+        .home-panel.active { display: block; }
+
         /* Stat Cards */
         .stat-grid {
             display: grid;
@@ -610,22 +617,21 @@
             <small>Admin Dashboard</small>
         </div>
         <nav class="sidebar-nav">
-            <button class="nav-btn active" onclick="switchTab('overview', this)">
-                <i class="fa-solid fa-chart-line"></i><span>Overview</span>
+            <button class="nav-btn" onclick="switchTab('notice', this)">
+                <i class="fa-solid fa-bullhorn"></i><span>Notice</span>
             </button>
-            <button class="nav-btn" onclick="switchTab('orders', this)">
-                <i class="fa-solid fa-box-open"></i><span>Orders</span>
+            <button class="nav-btn" onclick="switchTab('image', this)">
+                <i class="fa-solid fa-images"></i><span>Image</span>
+            </button>
+            <button class="nav-btn" onclick="switchTab('url', this)">
+                <i class="fa-solid fa-link"></i><span>URL</span>
+            </button>
+            <button class="nav-btn" onclick="switchTab('number', this)">
+                <i class="fa-solid fa-mobile-screen-button"></i><span>Number</span>
+            </button>
+            <button class="nav-btn" onclick="switchTab('product', this)">
+                <i class="fa-solid fa-box-open"></i><span>Product</span>
                 <span class="badge" id="orderBadge">0</span>
-            </button>
-            <button class="nav-btn" onclick="switchTab('payments', this)">
-                <i class="fa-solid fa-money-bill-wave"></i><span>Add Money Requests</span>
-                <span class="badge" id="payBadge">0</span>
-            </button>
-            <button class="nav-btn" onclick="switchTab('logos', this)">
-                <i class="fa-solid fa-images"></i><span>Product Logos</span>
-            </button>
-            <button class="nav-btn" onclick="switchTab('settings', this)">
-                <i class="fa-solid fa-sliders"></i><span>Site Settings</span>
             </button>
         </nav>
         <div class="sidebar-footer">
@@ -638,13 +644,80 @@
     <!-- Main -->
     <div class="main-content">
         <div class="topbar">
-            <div class="page-title" id="pageTitle">Overview <span>ড্যাশবোর্ড সারসংক্ষেপ</span></div>
+            <div class="page-title" id="pageTitle">Notice <span>সাইটের নোটিস আপডেট করুন</span></div>
             <div class="live-badge"><div class="live-dot"></div> Live Firebase</div>
         </div>
 
-        <!-- ── OVERVIEW ── -->
-        <div class="tab-panel active" id="tab-overview">
-            <div class="stat-grid">
+        <!-- ── NOTICE ── -->
+        <div class="tab-panel" id="tab-notice">
+            <div class="settings-card" style="max-width:700px;">
+                <h3><i class="fa-solid fa-bullhorn"></i> Notice Board</h3>
+                <p style="font-size:13px; color:var(--text2); margin-bottom:20px;">সাইটের নোটিস বোর্ডে যা দেখাতে চান তা এখানে লিখুন।</p>
+                <div class="form-row">
+                    <label>Notice Text</label>
+                    <textarea id="noticeText" placeholder="নোটিস টেক্সট লিখুন..."></textarea>
+                </div>
+                <div class="notice-preview" id="noticePreview">Preview এখানে দেখাবে...</div>
+                <br>
+                <button class="save-btn" onclick="saveNotice()"><i class="fa-solid fa-floppy-disk"></i> Notice সেভ করুন</button>
+            </div>
+        </div>
+
+        <!-- ── IMAGE ── -->
+        <div class="tab-panel" id="tab-image">
+            <div class="settings-card" style="max-width:700px;">
+                <h3><i class="fa-solid fa-images"></i> প্রোডাক্ট ইমেজ আপডেট</h3>
+                <p style="font-size:13px; color:var(--text2); margin-bottom:20px;">প্রতিটি প্রোডাক্টের ইমেজ URL দিন — Firebase এ সরাসরি সেভ হবে।</p>
+                <div id="logoFormRows"></div>
+                <button class="save-btn" onclick="saveLogos()"><i class="fa-solid fa-floppy-disk"></i> ইমেজ আপডেট করুন</button>
+            </div>
+        </div>
+
+        <!-- ── URL ── -->
+        <div class="tab-panel" id="tab-url">
+            <div class="settings-card" style="max-width:700px;">
+                <h3><i class="fa-solid fa-link"></i> WhatsApp & Telegram Links</h3>
+                <p style="font-size:13px; color:var(--text2); margin-bottom:20px;">সাইটের WhatsApp ও Telegram লিংক আপডেট করুন।</p>
+                <div class="form-row"><label>WhatsApp Number</label>
+                    <input type="text" id="waNum" placeholder="880XXXXXXXXXX"></div>
+                <div class="form-row"><label>Telegram Group Link</label>
+                    <input type="url" id="tgLink" placeholder="https://t.me/..."></div>
+                <button class="save-btn" onclick="saveLinks()"><i class="fa-solid fa-floppy-disk"></i> Links সেভ করুন</button>
+            </div>
+        </div>
+
+        <!-- ── NUMBER ── -->
+        <div class="tab-panel" id="tab-number">
+            <div class="settings-grid">
+                <div class="settings-card">
+                    <h3><i class="fa-solid fa-mobile-screen-button"></i> Payment Numbers</h3>
+                    <p style="font-size:13px; color:var(--text2); margin-bottom:20px;">পেমেন্ট মেথডের নম্বরগুলো আপডেট করুন।</p>
+                    <div class="form-row"><label>Bkash Number</label>
+                        <input type="text" id="bkashNum" placeholder="01XXXXXXXXX (Personal)"></div>
+                    <div class="form-row"><label>Nagad Number</label>
+                        <input type="text" id="nagadNum" placeholder="01XXXXXXXXX (Personal)"></div>
+                    <div class="form-row"><label>Rocket Number</label>
+                        <input type="text" id="rocketNum" placeholder="01XXXXXXXXX (Personal)"></div>
+                    <div class="form-row"><label>Upay Number</label>
+                        <input type="text" id="upayNum" placeholder="01XXXXXXXXX (Personal)"></div>
+                    <button class="save-btn" onclick="savePaymentNums()"><i class="fa-solid fa-floppy-disk"></i> Numbers সেভ করুন</button>
+                </div>
+                <div class="settings-card">
+                    <h3><i class="fa-solid fa-gem"></i> Admin Credentials</h3>
+                    <p style="font-size:13px; color:var(--text2); margin-bottom:20px;">Admin এর username ও password পরিবর্তন করুন।</p>
+                    <div class="form-row"><label>Username</label>
+                        <input type="text" id="newAdminUser" placeholder="নতুন Username"></div>
+                    <div class="form-row"><label>Password</label>
+                        <input type="password" id="newAdminPass" placeholder="নতুন Password"></div>
+                    <button class="save-btn" onclick="saveAdminCreds()"><i class="fa-solid fa-key"></i> Credentials আপডেট করুন</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── PRODUCT ── -->
+        <div class="tab-panel" id="tab-product">
+            <!-- Stats -->
+            <div class="stat-grid" style="margin-bottom:24px;">
                 <div class="stat-card blue">
                     <div class="stat-label">মোট অর্ডার</div>
                     <div class="stat-value" id="stat-orders">—</div>
@@ -666,23 +739,9 @@
                     <i class="fa-solid fa-hourglass-half stat-icon"></i>
                 </div>
             </div>
-            <!-- Recent Orders Preview -->
-            <div class="table-card">
-                <div class="table-header">
-                    <div class="table-title"><i class="fa-solid fa-clock-rotate-left" style="color:var(--accent); margin-right:8px;"></i> সাম্প্রতিক অর্ডার</div>
-                </div>
-                <table class="data-table">
-                    <thead><tr>
-                        <th>প্রোডাক্ট</th><th>প্যাকেজ</th><th>Player ID</th><th>WhatsApp</th><th>সময়</th><th>স্ট্যাটাস</th>
-                    </tr></thead>
-                    <tbody id="recentOrdersBody"></tbody>
-                </table>
-            </div>
-        </div>
 
-        <!-- ── ORDERS ── -->
-        <div class="tab-panel" id="tab-orders">
-            <div class="table-card">
+            <!-- Orders Table -->
+            <div class="table-card" style="margin-bottom:24px;">
                 <div class="table-header">
                     <div class="table-title"><i class="fa-solid fa-box-open" style="color:var(--accent);margin-right:8px;"></i> সব অর্ডার</div>
                     <input class="search-input" type="text" placeholder="🔍 অর্ডার খুঁজুন..." oninput="filterTable('ordersBody', this.value)">
@@ -700,10 +759,8 @@
                     <tbody id="ordersBody"></tbody>
                 </table>
             </div>
-        </div>
 
-        <!-- ── PAYMENTS ── -->
-        <div class="tab-panel" id="tab-payments">
+            <!-- Payments Table -->
             <div class="table-card">
                 <div class="table-header">
                     <div class="table-title"><i class="fa-solid fa-money-bill-wave" style="color:var(--green);margin-right:8px;"></i> Add Money Requests</div>
@@ -721,63 +778,6 @@
                     </tr></thead>
                     <tbody id="paymentsBody"></tbody>
                 </table>
-            </div>
-        </div>
-
-        <!-- ── LOGOS ── -->
-        <div class="tab-panel" id="tab-logos">
-            <div class="settings-card" style="max-width:700px;">
-                <h3><i class="fa-solid fa-images"></i> প্রোডাক্ট লোগো আপডেট</h3>
-                <p style="font-size:13px; color:var(--text2); margin-bottom:20px;">প্রতিটি প্রোডাক্টের ইমেজ URL দিন — Firebase এ সরাসরি সেভ হবে।</p>
-                <div id="logoFormRows"></div>
-                <button class="save-btn" onclick="saveLogos()"><i class="fa-solid fa-floppy-disk"></i> লোগো আপডেট করুন</button>
-            </div>
-        </div>
-
-        <!-- ── SETTINGS ── -->
-        <div class="tab-panel" id="tab-settings">
-            <div class="settings-grid">
-                <div class="settings-card">
-                    <h3><i class="fa-solid fa-bullhorn"></i> Notice Board</h3>
-                    <div class="form-row">
-                        <label>Notice Text</label>
-                        <textarea id="noticeText" placeholder="নোটিস টেক্সট লিখুন..."></textarea>
-                    </div>
-                    <div class="notice-preview" id="noticePreview">Preview এখানে দেখাবে...</div>
-                    <br>
-                    <button class="save-btn" onclick="saveNotice()"><i class="fa-solid fa-floppy-disk"></i> Notice সেভ করুন</button>
-                </div>
-
-                <div class="settings-card">
-                    <h3><i class="fa-solid fa-mobile-screen-button"></i> Payment Numbers</h3>
-                    <div class="form-row"><label>Bkash Number</label>
-                        <input type="text" id="bkashNum" placeholder="01XXXXXXXXX (Personal)"></div>
-                    <div class="form-row"><label>Nagad Number</label>
-                        <input type="text" id="nagadNum" placeholder="01XXXXXXXXX (Personal)"></div>
-                    <div class="form-row"><label>Rocket Number</label>
-                        <input type="text" id="rocketNum" placeholder="01XXXXXXXXX (Personal)"></div>
-                    <div class="form-row"><label>Upay Number</label>
-                        <input type="text" id="upayNum" placeholder="01XXXXXXXXX (Personal)"></div>
-                    <button class="save-btn" onclick="savePaymentNums()"><i class="fa-solid fa-floppy-disk"></i> Numbers সেভ করুন</button>
-                </div>
-
-                <div class="settings-card">
-                    <h3><i class="fa-solid fa-gem"></i> Admin Credentials</h3>
-                    <div class="form-row"><label>Username</label>
-                        <input type="text" id="newAdminUser" placeholder="নতুন Username"></div>
-                    <div class="form-row"><label>Password</label>
-                        <input type="password" id="newAdminPass" placeholder="নতুন Password"></div>
-                    <button class="save-btn" onclick="saveAdminCreds()"><i class="fa-solid fa-key"></i> Credentials আপডেট করুন</button>
-                </div>
-
-                <div class="settings-card">
-                    <h3><i class="fa-solid fa-link"></i> WhatsApp & Telegram Links</h3>
-                    <div class="form-row"><label>WhatsApp Number</label>
-                        <input type="text" id="waNum" placeholder="880XXXXXXXXXX"></div>
-                    <div class="form-row"><label>Telegram Group Link</label>
-                        <input type="url" id="tgLink" placeholder="https://t.me/..."></div>
-                    <button class="save-btn" onclick="saveLinks()"><i class="fa-solid fa-floppy-disk"></i> Links সেভ করুন</button>
-                </div>
             </div>
         </div>
     </div><!-- main content -->
@@ -856,6 +856,11 @@ let allOrders = {};
 let allPayments = {};
 
 function initDashboard() {
+    // Show empty home state (no tab active)
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('pageTitle').innerHTML = `Dashboard <span>স্বাগতম, Admin!</span>`;
+
     // Orders
     onValue(ref(db, 'orders'), snap => {
         allOrders = snap.val() || {};
@@ -887,11 +892,10 @@ function updateStats() {
     document.getElementById('stat-pending-pay').textContent = pays.filter(p => p.status === 'Pending').length;
 
     // Badges
-    document.getElementById('orderBadge').textContent = orders.filter(o => o.status === 'Pending').length;
-    document.getElementById('payBadge').textContent   = pays.filter(p => p.status === 'Pending').length;
+    const ob = document.getElementById('orderBadge');
+    if (ob) ob.textContent = orders.filter(o => o.status === 'Pending').length;
 
-    // Recent 5 orders in overview
-    renderRecentOrders(orders.slice(-5).reverse());
+    // Recent orders removed (no overview tab)
 }
 
 // ─── Orders ───
@@ -1088,8 +1092,8 @@ function switchTab(name, btn) {
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('tab-' + name).classList.add('active');
     btn.classList.add('active');
-    const titles = { overview:'Overview', orders:'Orders', payments:'Add Money Requests', logos:'Product Logos', settings:'Site Settings' };
-    const subs   = { overview:'ড্যাশবোর্ড সারসংক্ষেপ', orders:'সব অর্ডার দেখুন ও ম্যানেজ করুন', payments:'পেমেন্ট ভেরিফাই করুন', logos:'প্রোডাক্ট ইমেজ আপডেট', settings:'সাইট সেটিংস' };
+    const titles = { notice:'Notice', image:'Image', url:'URL', number:'Number', product:'Product' };
+    const subs   = { notice:'সাইটের নোটিস আপডেট করুন', image:'প্রোডাক্ট ইমেজ আপডেট করুন', url:'WhatsApp ও Telegram লিংক', number:'পেমেন্ট নম্বর ও Admin Credentials', product:'অর্ডার ও পেমেন্ট ম্যানেজ করুন' };
     document.getElementById('pageTitle').innerHTML = `${titles[name]} <span>${subs[name]}</span>`;
 }
 
