@@ -2945,8 +2945,12 @@ font-weight:700;
                         <i class="fa-solid fa-chevron-down" style="font-size:10px;color:#666;"></i>
                     </div>`;
                 // Close login/register pages if open
-                document.getElementById('loginPage').classList.remove('show');
+                closeLoginPage();
                 document.getElementById('registerPage').classList.remove('show');
+                document.body.style.overflow='';
+                document.body.style.position='';
+                document.body.style.top='';
+                document.body.style.width='';
 
                 // Balance box থেকে login করলে → auto Add Money open করো
                 if (window._pendingAction === 'openAddMoney') {
@@ -5054,12 +5058,20 @@ New user to unique shop? <span onclick="switchToRegister()" style="cursor:pointe
 
 <script>
 function openLoginPage(){
-document.getElementById('loginPage').classList.add('show');
-document.body.style.overflow='hidden';
+    window._savedScrollY = window.scrollY;
+    document.getElementById('loginPage').classList.add('show');
+    document.body.style.overflow='hidden';
+    document.body.style.position='fixed';
+    document.body.style.top='-'+window._savedScrollY+'px';
+    document.body.style.width='100%';
 }
 function closeLoginPage(){
-document.getElementById('loginPage').classList.remove('show');
-document.body.style.overflow='';
+    document.getElementById('loginPage').classList.remove('show');
+    document.body.style.overflow='';
+    document.body.style.position='';
+    document.body.style.top='';
+    document.body.style.width='';
+    window.scrollTo(0, window._savedScrollY || 0);
 }
 </script>
 
@@ -5123,13 +5135,21 @@ Already member? <span onclick="switchToLogin()" style="cursor:pointer;">Login</s
 
 <script>
 function openRegisterPage(){
-document.getElementById('registerPage').classList.add('show');
-document.body.style.overflow='hidden';
+    window._savedScrollY = window.scrollY;
+    document.getElementById('registerPage').classList.add('show');
+    document.body.style.overflow='hidden';
+    document.body.style.position='fixed';
+    document.body.style.top='-'+window._savedScrollY+'px';
+    document.body.style.width='100%';
 }
 
 function closeRegisterPage(){
-document.getElementById('registerPage').classList.remove('show');
-document.body.style.overflow='';
+    document.getElementById('registerPage').classList.remove('show');
+    document.body.style.overflow='';
+    document.body.style.position='';
+    document.body.style.top='';
+    document.body.style.width='';
+    window.scrollTo(0, window._savedScrollY || 0);
 }
 </script>
 
