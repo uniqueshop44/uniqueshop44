@@ -2895,9 +2895,19 @@ font-weight:700;
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+        import { getDatabase, ref, push, set, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+        import {
+            getAuth,
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword,
+            signInWithPopup,
+            GoogleAuthProvider,
+            onAuthStateChanged,
+            signOut,
+            updateProfile
+        } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-        // Your Firebase Configuration (Uniqueshop44)
+        // ── Firebase Config ──
         const firebaseConfig = {
             apiKey: "AIzaSyAihR-8QjslhjSAHPAPERRD68LQvF2dC7s",
             authDomain: "uniqueshop44.firebaseapp.com",
@@ -2911,6 +2921,136 @@ font-weight:700;
 
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
+        const auth = getAuth(app);
+        const googleProvider = new GoogleAuthProvider();
+
+        // ── Auth State Listener ──
+        onAuthStateChanged(auth, (user) => {
+            window._currentUser = user;
+            const authBtns = document.querySelector('.auth-buttons');
+            if (user) {
+                // Show user avatar + name in header
+                const name = user.displayName || user.email.split('@')[0];
+                const photo = user.photoURL || '';
+                authBtns.innerHTML = `
+                    <div class="user-avatar-wrap" onclick="openUserMenu()" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                        ${photo ? `<img src="${photo}" style="width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid #1a46e5;">` : `<div style="width:34px;height:34px;border-radius:50%;background:#1a46e5;color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">${name[0].toUpperCase()}</div>`}
+                        <span style="font-size:13px;font-weight:600;color:#333;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${name}</span>
+                        <i class="fa-solid fa-chevron-down" style="font-size:10px;color:#666;"></i>
+                    </div>`;
+                // Close login/register pages if open
+                document.getElementById('loginPage').classList.remove('show');
+                document.getElementById('registerPage').classList.remove('show');
+            } else {
+                authBtns.innerHTML = `
+                    <a href="#" class="btn btn-login" onclick="openLoginPage()">Login</a>
+                    <a href="#" class="btn btn-register" onclick="openRegisterPage()">Register</a>`;
+            }
+        });
+
+        // ── User Dropdown Menu ──
+        window.openUserMenu = function() {
+            let menu = document.getElementById('userDropMenu');
+            if (menu) { menu.remove(); return; }
+            const user = window._currentUser;
+            if (!user) return;
+            const name = user.displayName || user.email.split('@')[0];
+            menu = document.createElement('div');
+            menu.id = 'userDropMenu';
+            menu.style.cssText = `position:fixed;top:64px;right:14px;background:white;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,0.15);z-index:9999;padding:14px;min-width:200px;border:1px solid #eee;`;
+            menu.innerHTML = `
+                <div style="font-weight:700;font-size:14px;color:#111;margin-bottom:4px;">${name}</div>
+                <div style="font-size:12px;color:#888;margin-bottom:14px;">${user.email}</div>
+                <button onclick="doSignOut()" style="width:100%;background:#fff0f0;color:#e51a1a;border:1px solid #ffd0d0;border-radius:8px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </button>`;
+            document.body.appendChild(menu);
+            setTimeout(() => document.addEventListener('click', function rm(e) {
+                if (!menu.contains(e.target) && !e.target.closest('.user-avatar-wrap')) {
+                    menu.remove(); document.removeEventListener('click', rm);
+                }
+            }), 100);
+        };
+
+        // ── Sign Out ──
+        window.doSignOut = function() {
+            signOut(auth).then(() => {
+                const m = document.getElementById('userDropMenu');
+                if (m) m.remove();
+                showAuthToast('Logout সফল হয়েছে!', 'success');
+            });
+        };
+
+        // ── Email/Password Login ──
+        window.doEmailLogin = function() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const pass  = document.getElementById('loginPassword').value;
+            const btn   = document.getElementById('loginSubmitBtn');
+            if (!email || !pass) { showAuthToast('Email ও Password দিন!', 'error'); return; }
+            btn.disabled = true; btn.textContent = 'Loading...';
+            signInWithEmailAndPassword(auth, email, pass)
+                .then(() => { showAuthToast('Login সফল!', 'success'); })
+                .catch(err => {
+                    btn.disabled = false; btn.textContent = 'Login';
+                    let msg = 'Login ব্যর্থ হয়েছে।';
+                    if (err.code === 'auth/user-not-found') msg = 'এই Email দিয়ে কোনো account নেই।';
+                    else if (err.code === 'auth/wrong-password') msg = 'Password ভুল হয়েছে।';
+                    else if (err.code === 'auth/invalid-email') msg = 'Email সঠিক নয়।';
+                    else if (err.code === 'auth/invalid-credential') msg = 'Email বা Password ভুল।';
+                    showAuthToast(msg, 'error');
+                });
+        };
+
+        // ── Email/Password Register ──
+        window.doEmailRegister = function() {
+            const name  = document.getElementById('registerName').value.trim();
+            const email = document.getElementById('registerEmail').value.trim();
+            const pass  = document.getElementById('registerPassword').value;
+            const conf  = document.getElementById('registerConfirm').value;
+            const btn   = document.getElementById('registerSubmitBtn');
+            if (!name)  { showAuthToast('নাম দিন!', 'error'); return; }
+            if (!email) { showAuthToast('Email দিন!', 'error'); return; }
+            if (pass.length < 6) { showAuthToast('Password কমপক্ষে ৬ অক্ষর হতে হবে!', 'error'); return; }
+            if (pass !== conf)   { showAuthToast('Password মিলছে না!', 'error'); return; }
+            btn.disabled = true; btn.textContent = 'Loading...';
+            createUserWithEmailAndPassword(auth, email, pass)
+                .then(cred => updateProfile(cred.user, { displayName: name }))
+                .then(() => { showAuthToast('Registration সফল! স্বাগতম 🎉', 'success'); })
+                .catch(err => {
+                    btn.disabled = false; btn.textContent = 'Register';
+                    let msg = 'Registration ব্যর্থ।';
+                    if (err.code === 'auth/email-already-in-use') msg = 'এই Email ইতিমধ্যে ব্যবহৃত।';
+                    else if (err.code === 'auth/invalid-email') msg = 'Email সঠিক নয়।';
+                    showAuthToast(msg, 'error');
+                });
+        };
+
+        // ── Google Login ──
+        window.doGoogleLogin = function() {
+            signInWithPopup(auth, googleProvider)
+                .then(() => { showAuthToast('Google Login সফল!', 'success'); })
+                .catch(err => {
+                    if (err.code !== 'auth/popup-closed-by-user')
+                        showAuthToast('Google Login ব্যর্থ হয়েছে।', 'error');
+                });
+        };
+
+        // ── Auth Toast ──
+        window.showAuthToast = function(msg, type) {
+            let t = document.getElementById('authToast');
+            if (!t) {
+                t = document.createElement('div');
+                t.id = 'authToast';
+                document.body.appendChild(t);
+            }
+            t.style.cssText = `position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:13px 22px;border-radius:30px;font-size:14px;font-weight:700;z-index:99999;transition:opacity 0.4s;box-shadow:0 4px 18px rgba(0,0,0,0.2);`;
+            t.style.background = type === 'success' ? '#00c853' : '#e51a1a';
+            t.style.color = 'white';
+            t.textContent = msg;
+            t.style.opacity = '1';
+            clearTimeout(t._timer);
+            t._timer = setTimeout(() => { t.style.opacity = '0'; }, 3000);
+        };
 
         // ── Product Logos ──
         const logosRef = ref(database, 'productLogos');
@@ -2918,117 +3058,72 @@ font-weight:700;
             const data = snapshot.val();
             if (data) {
                 for (let i = 1; i <= 7; i++) {
-                    if (data['item' + i]) {
-                        const imgEl = document.getElementById('img-item' + i);
-                        if (imgEl) imgEl.src = data['item' + i];
-                    }
+                    const imgEl = document.getElementById('img-item' + i);
+                    if (imgEl && data['item' + i]) imgEl.src = data['item' + i];
                 }
             }
         });
 
         // ── Notice Board ──
-        const noticeRef = ref(database, 'adminSettings/notice');
-        onValue(noticeRef, (snapshot) => {
-            const notice = snapshot.val();
+        onValue(ref(database, 'adminSettings/notice'), (snap) => {
+            const notice = snap.val();
             if (notice) {
-                const noticeEl = document.querySelector('.notice-board p');
-                if (noticeEl) noticeEl.textContent = notice;
+                const el = document.querySelector('.notice-board p');
+                if (el) el.textContent = notice;
             }
         });
 
         // ── Admin Settings: Payment Numbers & Links ──
-        const settingsRef = ref(database, 'adminSettings');
-        onValue(settingsRef, (snapshot) => {
-            const s = snapshot.val();
+        onValue(ref(database, 'adminSettings'), (snap) => {
+            const s = snap.val();
             if (!s) return;
-
-            // Payment numbers → update merchantNumbers object used in gateway
-            if (s.paymentNums) {
-                if (s.paymentNums.Bikash)  window._fbNums = window._fbNums || {};
-                window._fbNums = {
-                    Bikash:  s.paymentNums.Bikash  || merchantNumbers.Bikash,
-                    Nagad:   s.paymentNums.Nagad   || merchantNumbers.Nagad,
-                    Rocket:  s.paymentNums.Rocket  || merchantNumbers.Rocket,
-                    Upay:    s.paymentNums.Upay    || merchantNumbers.Upay
-                };
-                // Merge into merchantNumbers so gateway picks it up
-                Object.assign(merchantNumbers, window._fbNums);
-            }
-
-            // WhatsApp & Telegram links
+            if (s.paymentNums) Object.assign(window.merchantNumbers || {}, s.paymentNums);
             if (s.links) {
-                if (s.links.whatsapp) {
-                    const waNum = s.links.whatsapp;
-                    document.querySelectorAll('a[href*="wa.me"]').forEach(el => {
-                        el.href = 'https://wa.me/' + waNum;
-                    });
-                }
-                if (s.links.telegram) {
-                    document.querySelectorAll('a[href*="t.me"], .banner-btn[href*="t.me"], a[href*="telegram"]').forEach(el => {
-                        el.href = s.links.telegram;
-                    });
-                }
+                if (s.links.whatsapp)
+                    document.querySelectorAll('a[href*="wa.me"]').forEach(el => el.href = 'https://wa.me/' + s.links.whatsapp);
+                if (s.links.telegram)
+                    document.querySelectorAll('a[href*="t.me"], .banner-btn').forEach(el => el.href = s.links.telegram);
             }
         });
 
-        // Global function to save redeem request to Firebase
+        // ── Save Redeem to Firebase ──
         window.saveRedeemToFirebase = function(diamonds, uid, reqId) {
-            const redeemRef = ref(database, 'redeemRequests');
-            const newRedeemRef = push(redeemRef);
-            return set(newRedeemRef, {
-                diamonds: diamonds,
-                uid: uid,
-                requestId: reqId,
-                status: "Pending",
-                time: new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka' })
-            });
+            const newRef = push(ref(database, 'redeemRequests'));
+            return set(newRef, { diamonds, uid, requestId: reqId, status: "Pending",
+                time: new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka' }) });
         };
 
-        // Global function to update logos via admin tap form
-        window.updateLogosInFirebase = function(logosData) {
-            return set(ref(database, 'productLogos'), logosData);
-        };
-
-        // Global functions for firebase submittion window context
+        // ── Save Add Money to Firebase ──
         window.saveAddMoneyToFirebase = function(amount, method, trx) {
-            const addMoneyRef = ref(database, 'addMoneyRequests');
-            const newRequestRef = push(addMoneyRef);
-
-            return set(newRequestRef, {
-                amount: amount,
-                method: method,
-                transactionId: trx,
-                status: "Pending",
-                time: new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka' })
-            });
+            const newRef = push(ref(database, 'addMoneyRequests'));
+            return set(newRef, { amount, method, transactionId: trx, status: "Pending",
+                time: new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka' }) });
         };
 
-        // Submit Order to Firebase
+        // ── Submit Order to Firebase ──
         document.getElementById('purchaseForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
-            const pName = document.getElementById('productName').value;
+            if (!window._currentUser) {
+                showAuthToast('অর্ডার দিতে আগে Login করুন!', 'error');
+                closeModal();
+                openLoginPage();
+                return;
+            }
+            const pName    = document.getElementById('productName').value;
             const pPackage = document.getElementById('packageSelect').value;
-            const pID = document.getElementById('playerID').value;
-            const pWhatsapp = document.getElementById('whatsappNumber').value;
-
-            const ordersRef = ref(database, 'orders');
-            const newOrderRef = push(ordersRef);
-
-            set(newOrderRef, {
-                product: pName,
-                package: pPackage,
-                playerId: pID,
-                whatsapp: pWhatsapp,
-                status: "Pending",
+            const pID      = document.getElementById('playerID').value;
+            const pWhatsapp= document.getElementById('whatsappNumber').value;
+            const newRef   = push(ref(database, 'orders'));
+            set(newRef, {
+                product: pName, package: pPackage, playerId: pID,
+                whatsapp: pWhatsapp, status: "Pending",
+                userEmail: window._currentUser.email,
                 time: new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka' })
             }).then(() => {
-                alert("আপনার অর্ডারটি সফলভাবে সাবমিট হয়েছে! আমাদের অ্যাডমিন খুব দ্রুত এটি সম্পন্ন করে দেবে।");
+                showAuthToast('অর্ডার সফলভাবে সাবমিট হয়েছে! 🎉', 'success');
                 closeModal();
                 document.getElementById('purchaseForm').reset();
-            }).catch((error) => {
-                alert("অর্ডার সাবমিট করতে সমস্যা হয়েছে: " + error.message);
-            });
+            }).catch(err => showAuthToast('অর্ডার সাবমিট করতে সমস্যা: ' + err.message, 'error'));
         });
     </script>
 
@@ -3037,7 +3132,7 @@ font-weight:700;
         let selectedMethodValue = '';
 
         // অফিশিয়াল ওয়ালেট পার্সোনাল নম্বরসমূহ
-        const merchantNumbers = {
+        window.merchantNumbers = {
             Bikash: "01700000000 (Personal)",
             Nagad: "01800000000 (Personal)",
             Rocket: "01900000000 (Personal)",
@@ -4868,7 +4963,7 @@ document.addEventListener('DOMContentLoaded', function(){
 <div class="login-logo">UNIQUE <span>SHOP</span></div>
 <div class="login-actions">
 <button class="login-btn-top">Login</button>
-<button class="register-btn-top" onclick="openRegisterPage()">Register</button>
+<button class="register-btn-top" onclick="switchToRegister()">Register</button>
 </div>
 </div>
 
@@ -4877,7 +4972,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
 <h1>Login</h1>
 
-<div class="google-login">
+<div class="google-login" onclick="doGoogleLogin()" style="cursor:pointer;">
 <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg">
 <span>Login with Google</span>
 </div>
@@ -4886,15 +4981,15 @@ document.addEventListener('DOMContentLoaded', function(){
 
 <div class="login-field">
 <label>Email</label>
-<input type="email" placeholder="Email">
+<input type="email" id="loginEmail" placeholder="আপনার Email">
 </div>
 
 <div class="login-field">
 <label>Password</label>
-<input type="password" placeholder="Password">
+<input type="password" id="loginPassword" placeholder="Password" onkeydown="if(event.key==='Enter') doEmailLogin()">
 </div>
 
-<button class="login-submit">Login</button>
+<button class="login-submit" id="loginSubmitBtn" onclick="doEmailLogin()">Login</button>
 
 <div class="login-footer">
 New user to unique shop? <span onclick="switchToRegister()" style="cursor:pointer;">Register</span> Now
@@ -4904,13 +4999,14 @@ New user to unique shop? <span onclick="switchToRegister()" style="cursor:pointe
 </div>
 </div>
 
-
 <script>
 function openLoginPage(){
 document.getElementById('loginPage').classList.add('show');
+document.body.style.overflow='hidden';
 }
 function closeLoginPage(){
 document.getElementById('loginPage').classList.remove('show');
+document.body.style.overflow='';
 }
 </script>
 
@@ -4931,9 +5027,9 @@ document.getElementById('loginPage').classList.remove('show');
 
 <h1>Register</h1>
 
-<div class="register-google">
+<div class="register-google" onclick="doGoogleLogin()" style="cursor:pointer;">
 <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg">
-<span>Login with Google</span>
+<span>Sign up with Google</span>
 </div>
 
 <div class="register-divider">
@@ -4942,25 +5038,25 @@ Or sign up with credentials
 
 <div class="register-field">
 <label>Name</label>
-<input type="text" placeholder="Name">
+<input type="text" id="registerName" placeholder="আপনার নাম">
 </div>
 
 <div class="register-field">
 <label>Email</label>
-<input type="email" placeholder="Email">
+<input type="email" id="registerEmail" placeholder="আপনার Email">
 </div>
 
 <div class="register-field">
 <label>Password</label>
-<input type="password" placeholder="Password">
+<input type="password" id="registerPassword" placeholder="কমপক্ষে ৬ অক্ষর">
 </div>
 
 <div class="register-field">
 <label>Confirm Password</label>
-<input type="password" placeholder="Password">
+<input type="password" id="registerConfirm" placeholder="Password আবার দিন" onkeydown="if(event.key==='Enter') doEmailRegister()">
 </div>
 
-<button class="register-submit">Register</button>
+<button class="register-submit" id="registerSubmitBtn" onclick="doEmailRegister()">Register</button>
 
 <div class="register-footer">
 Already member? <span onclick="switchToLogin()" style="cursor:pointer;">Login</span> Now
@@ -4975,10 +5071,12 @@ Already member? <span onclick="switchToLogin()" style="cursor:pointer;">Login</s
 <script>
 function openRegisterPage(){
 document.getElementById('registerPage').classList.add('show');
+document.body.style.overflow='hidden';
 }
 
 function closeRegisterPage(){
 document.getElementById('registerPage').classList.remove('show');
+document.body.style.overflow='';
 }
 </script>
 
