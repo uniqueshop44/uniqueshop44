@@ -2239,9 +2239,71 @@ font-size:18px;
 font-weight:700;
 }
 
+/* ===== SHARED TOPBAR (sub-pages) ===== */
+#sharedTopbar {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #ffffff;
+    justify-content: space-between;
+    align-items: center;
+    padding: 13px 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.12);
+    z-index: 9999999;
+}
+#sharedTopbar.active {
+    display: flex;
+}
+#sharedTopbar .stb-logo {
+    font-size: 20px;
+    font-weight: bold;
+    color: #1a46e5;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+#sharedTopbar .stb-logo span {
+    color: #e51a1a;
+}
+#sharedTopbar .stb-auth {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+#sharedTopbar .stb-btn {
+    padding: 6px 13px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 13px;
+    cursor: pointer;
+    display: inline-block;
+}
+#sharedTopbar .stb-login-btn {
+    color: #e51a1a;
+    border: 1px solid #e51a1a;
+    background: white;
+}
+#sharedTopbar .stb-register-btn {
+    background-color: #e51a1a;
+    color: white;
+    border: 1px solid #e51a1a;
+}
 </style>
 </head>
 <body>
+
+<!-- SHARED TOPBAR for sub-pages -->
+<div id="sharedTopbar">
+    <div class="stb-logo"><i class="fa-solid fa-bolt"></i> UNIQUE <span>SHOP</span></div>
+    <div class="stb-auth" id="stbAuthArea">
+        <a class="stb-btn stb-login-btn" onclick="openLoginPage()">Login</a>
+        <a class="stb-btn stb-register-btn" onclick="openRegisterPage()">Register</a>
+    </div>
+</div>
+
 
     <div id="errorToast" class="custom-toast">
         <i class="fa-solid fa-circle-exclamation"></i> <span id="toastMessage">ত্রুটি বার্তা</span>
@@ -3160,11 +3222,13 @@ font-weight:700;
         let selectedRedeemAmount = 0;
 
         function openRedeemPage() {
+    showSharedTopbar();
             document.getElementById('redeemPage').classList.add('show');
             document.body.style.overflow = 'hidden';
         }
 
         function closeRedeemPage() {
+    hideSharedTopbar();
             document.getElementById('redeemPage').classList.remove('show');
             document.body.style.overflow = '';
             selectedRedeemAmount = 0;
@@ -3251,6 +3315,7 @@ font-weight:700;
         let selectedFFPaymentMethod = 'wallet';
 
         function openFFTopupPage() {
+    showSharedTopbar();
             // Build package grid
             const grid = document.getElementById('ffPackageGrid');
             grid.innerHTML = '';
@@ -3273,6 +3338,7 @@ font-weight:700;
         }
 
         function closeFFTopupPage() {
+    hideSharedTopbar();
             document.getElementById('ffTopupPage').classList.remove('show');
             document.body.style.overflow = '';
         }
@@ -3293,10 +3359,12 @@ font-weight:700;
 
         // RAFER PAGE FUNCTIONS
         function openRaferPage() {
+    showSharedTopbar();
             document.getElementById('raferPage').classList.add('show');
         }
 
         function closeRaferPage() {
+    hideSharedTopbar();
             document.getElementById('raferPage').classList.remove('show');
         }
 
@@ -3707,10 +3775,12 @@ function selectPay(el){
 
 <script>
 function openUnipinPage() {
+    showSharedTopbar();
     document.getElementById('unipinPage').style.display = 'block';
     document.body.style.overflow = 'hidden';
 }
 function closeUnipinPage() {
+    hideSharedTopbar();
     document.getElementById('unipinPage').style.display = 'none';
     document.body.style.overflow = '';
 }
@@ -4457,10 +4527,12 @@ font-weight:700;
 
 <script>
 function openWeeklyLitePage() {
+    showSharedTopbar();
     document.getElementById('weeklyLitePage').style.display = 'block';
 }
 
 function closeWeeklyLitePage() {
+    hideSharedTopbar();
     document.getElementById('weeklyLitePage').style.display = 'none';
 }
 </script>
@@ -5164,7 +5236,7 @@ document.addEventListener('DOMContentLoaded', function(){
 const levelCard = [...document.querySelectorAll('.card h3')].find(el => el.innerText.toLowerCase().includes('level up pass'));
 if(levelCard){
 levelCard.closest('.card').onclick = function(){
-document.getElementById('levelUpPassPage').classList.add('show');
+document.getElementById('levelUpPassPage').classList.add('show'); showSharedTopbar();
 };
 }
 
@@ -5306,5 +5378,48 @@ function updateAllAuthButtons(user) {
 })();
 </script>
 
+
+<script>
+// ===== SHARED TOPBAR LOGIC =====
+// Pages that should show the shared topbar (not login/register/paymentRequest)
+var _stbPageCount = 0;
+
+function showSharedTopbar() {
+    _stbPageCount++;
+    document.getElementById('sharedTopbar').classList.add('active');
+    updateSharedTopbar();
+}
+
+function hideSharedTopbar() {
+    _stbPageCount = Math.max(0, _stbPageCount - 1);
+    if (_stbPageCount === 0) {
+        document.getElementById('sharedTopbar').classList.remove('active');
+    }
+}
+
+function updateSharedTopbar() {
+    var area = document.getElementById('stbAuthArea');
+    if (!area) return;
+    var user = window._currentUser;
+    if (user) {
+        var name = user.displayName || user.email.split('@')[0];
+        var photo = user.photoURL || '';
+        area.innerHTML = '<div onclick="openUserMenu()" style="display:flex;align-items:center;gap:8px;cursor:pointer;">' +
+            (photo ? '<img src="' + photo + '" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid #1a46e5;">' 
+                   : '<div style="width:32px;height:32px;border-radius:50%;background:#1a46e5;color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">' + name[0].toUpperCase() + '</div>') +
+            '<span style="font-size:13px;font-weight:600;color:#222;">' + name + '</span></div>';
+    } else {
+        area.innerHTML = '<a class="stb-btn stb-login-btn" onclick="openLoginPage()">Login</a>' +
+                         '<a class="stb-btn stb-register-btn" onclick="openRegisterPage()">Register</a>';
+    }
+}
+
+// Poll for auth changes and update topbar
+setInterval(function() {
+    if (document.getElementById('sharedTopbar').classList.contains('active')) {
+        updateSharedTopbar();
+    }
+}, 500);
+</script>
 </body>
 </html>
