@@ -3102,8 +3102,15 @@ font-weight:700;
         // ── Save Add Money to Firebase ──
         window.saveAddMoneyToFirebase = function(amount, method, trx) {
             const newRef = push(ref(database, 'addMoneyRequests'));
-            return set(newRef, { amount, method, transactionId: trx, status: "Pending",
-                time: new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka' }) });
+            return set(newRef, {
+                amount,
+                method,
+                transactionId: trx,
+                status: "Pending",
+                userId: window._currentUser ? window._currentUser.uid : "",
+                userEmail: window._currentUser ? window._currentUser.email : "",
+                time: new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka' })
+            });
         };
 
         // ── Submit Order to Firebase ──
@@ -3361,6 +3368,12 @@ font-weight:700;
 
         // Add Money Modal UI Control
         function openAddMoneyModal() {
+            // Login check — না থাকলে login page এ নিয়ে যাবে
+            if (!window._currentUser) {
+                showCustomToast("Add Money করতে আগে Login করুন!");
+                setTimeout(() => { openLoginPage(); }, 1000);
+                return;
+            }
             document.getElementById('addMoneyModal').style.display = 'flex';
         }
 
@@ -3442,6 +3455,16 @@ font-weight:700;
 
         // Final Submission Verification
         function verifyPaymentSubmission() {
+            // Login check
+            if (!window._currentUser) {
+                showCustomToast("অনুগ্রহ করে আগে Login করুন!");
+                setTimeout(() => {
+                    document.getElementById('gatewayModal').style.display = 'none';
+                    openLoginPage();
+                }, 1000);
+                return;
+            }
+
             const trxID = document.getElementById('trxIDInput').value.trim();
 
             if(trxID === "") {
@@ -3485,11 +3508,15 @@ font-weight:700;
             };
 
             if(typeof window.saveAddMoneyToFirebase === 'function') {
+                const verifyBtn = document.getElementById('gatewayVerifyBtn');
+                if(verifyBtn) { verifyBtn.disabled = true; verifyBtn.innerText = "⏳ Please wait..."; }
                 window.saveAddMoneyToFirebase(selectedAmountValue, selectedMethodValue, trxID)
                 .then(() => {
                     doOpenRequestPage();
                 }).catch((error) => {
                     showCustomToast("রিকোয়েস্ট পাঠাতে সমস্যা: " + error.message);
+                }).finally(() => {
+                    if(verifyBtn) { verifyBtn.disabled = false; verifyBtn.innerHTML = '<i class="fa-solid fa-shield-halved"></i> Verify & Submit'; }
                 });
             } else {
                 // Fallback if Firebase not yet loaded
