@@ -2267,10 +2267,10 @@ font-weight:700;
     </div>
 
     <div class="wallet-container">
-        <div class="wallet-box" onclick="openAddMoneyModal()">
+        <div class="wallet-box" id="balanceWalletBox" onclick="walletBoxClick()">
             <span class="wallet-label">Balance</span>
             <div class="wallet-value">৳ 0.00</div>
-            <button class="wallet-btn btn-add" onclick="event.stopPropagation(); openAddMoneyModal()">Add</button>
+            <button class="wallet-btn btn-add" onclick="event.stopPropagation(); walletBoxClick()">Add</button>
         </div>
         
         <div class="wallet-box">
@@ -2947,6 +2947,15 @@ font-weight:700;
                 // Close login/register pages if open
                 document.getElementById('loginPage').classList.remove('show');
                 document.getElementById('registerPage').classList.remove('show');
+
+                // Balance box থেকে login করলে → auto Add Money open করো
+                if (window._pendingAction === 'openAddMoney') {
+                    window._pendingAction = null;
+                    setTimeout(() => {
+                        document.getElementById('balanceWalletBox').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        setTimeout(() => { openAddMoneyModal(); }, 400);
+                    }, 300);
+                }
             } else {
                 authBtns.innerHTML = `
                     <a href="#" class="btn btn-login" onclick="openLoginPage()">Login</a>
@@ -3366,12 +3375,23 @@ font-weight:700;
             document.getElementById('orderModal').style.display = 'none';
         }
 
+        // Balance box click handler
+        function walletBoxClick() {
+            if (!window._currentUser) {
+                // Pending action সেট করো — login হলে auto open হবে
+                window._pendingAction = 'openAddMoney';
+                openLoginPage();
+            } else {
+                openAddMoneyModal();
+            }
+        }
+
         // Add Money Modal UI Control
         function openAddMoneyModal() {
             // Login check — না থাকলে login page এ নিয়ে যাবে
             if (!window._currentUser) {
-                showCustomToast("Add Money করতে আগে Login করুন!");
-                setTimeout(() => { openLoginPage(); }, 1000);
+                window._pendingAction = 'openAddMoney';
+                openLoginPage();
                 return;
             }
             document.getElementById('addMoneyModal').style.display = 'flex';
