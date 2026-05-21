@@ -2298,12 +2298,12 @@ font-weight:700;
             <h3>Unipin Voucher ( Bd Server )</h3>
         </div>
 
-        <div class="card" id="card-item4" onclick="openWeeklyLitePage()">
+        <div class="card" id="card-item4" onclick="openWeeklyLitePageDirect()">
     <img id="img-item4" src="https://placehold.co/300x180?text=Weekly+Lite+BD" alt="Weekly Lite">
     <h3>Weekly Lite ( Bd Server)</h3>
 </div>
 
-        <div class="card" id="card-item5" onclick="openOrderModal('Weekly & Monthly (Bd Server)', ['1 Weekly Membership', '1 Monthly Membership', 'Weekly + Monthly Combo'])">
+        <div class="card" id="card-item5" onclick="openWeeklyMonthlyDirect()">
             <img id="img-item5" src="https://placehold.co/300x180?text=Weekly+And+Monthly" alt="Weekly & Monthly">
             <h3>Weekly & Monthly ( Bd Server)</h3>
         </div>
@@ -2952,14 +2952,31 @@ font-weight:700;
                 document.body.style.top='';
                 document.body.style.width='';
 
-                // Balance box থেকে login করলে → auto Add Money open করো
-                if (window._pendingAction === 'openAddMoney') {
+                // Pending action handle করো login এর পর
+                if (window._pendingAction) {
+                    const action = window._pendingAction;
                     window._pendingAction = null;
-                    setTimeout(() => {
-                        document.getElementById('balanceWalletBox').scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        setTimeout(() => { openAddMoneyModal(); }, 400);
-                    }, 300);
+
+                    if (action === 'openAddMoney') {
+                        setTimeout(() => {
+                            document.getElementById('balanceWalletBox').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            setTimeout(() => { openAddMoneyModal(); }, 400);
+                        }, 300);
+                    } else if (action.startsWith('openCard_')) {
+                        const pageKey = action.replace('openCard_', '');
+                        setTimeout(() => { _openCardPage(pageKey); }, 300);
+                    }
                 }
+
+                // login হলে open থাকা iframe গুলোকে জানাও
+                setTimeout(() => {
+                    [
+                        document.querySelector('#weeklyLitePage iframe'),
+                        document.querySelector('#weeklyMonthlyOverlay iframe')
+                    ].forEach(fr => {
+                        if (fr) try { fr.contentWindow.postMessage({ action: 'authState', isLoggedIn: true }, '*'); } catch(e) {}
+                    });
+                }, 400);
             } else {
                 authBtns.innerHTML = `
                     <a href="#" class="btn btn-login" onclick="openLoginPage()">Login</a>
@@ -4476,11 +4493,40 @@ font-weight:700;
             <div class=&quot;notice&quot;>
                 <i class=&quot;fa-solid fa-circle-info&quot;></i> প্রোডাক্ট কিনতে আপনার প্রয়োজন <span class=&quot;price-highlight&quot; id=&quot;totalPrice&quot;>45</span> টাকা।
             </div>
-            <div class=&quot;notice warning&quot;>
+            <div class=&quot;notice warning&quot; id=&quot;wlLoginNotice&quot;>
                 <i class=&quot;fa-solid fa-circle-exclamation&quot;></i> Please Login To Purchase
             </div>
 
-            <button class=&quot;login-btn&quot;>Login</button>
+            <button class=&quot;login-btn&quot; id=&quot;wlAuthBtn&quot; onclick=&quot;wlAuthClick()&quot;>Login to Purchase</button>
+
+            <script>
+            function wlAuthClick() {
+                var btn = document.getElementById('wlAuthBtn');
+                if (btn.dataset.loggedIn === '1') {
+                    // Buy action here
+                    alert('Processing order...');
+                } else {
+                    window.parent.postMessage({action:'openLogin',from:'weeklyLite'},'*');
+                }
+            }
+            window.addEventListener('message', function(e) {
+                if (e.data && e.data.action === 'authState') {
+                    var btn = document.getElementById('wlAuthBtn');
+                    var notice = document.getElementById('wlLoginNotice');
+                    if (e.data.isLoggedIn) {
+                        btn.textContent = 'Buy Now';
+                        btn.style.background = '#00c853';
+                        btn.dataset.loggedIn = '1';
+                        if (notice) notice.style.display = 'none';
+                    } else {
+                        btn.textContent = 'Login to Purchase';
+                        btn.style.background = '';
+                        btn.dataset.loggedIn = '0';
+                        if (notice) notice.style.display = '';
+                    }
+                }
+            });
+            &lt;/script&gt;
         </div>
     </div>
 
@@ -4911,12 +4957,40 @@ function closeWeeklyLitePage() {
         প্রোডাক্ট কিনতে আপনার প্রয়োজন &lt;span id=&quot;priceText&quot;&gt;158&lt;/span&gt; টাকা ।
       &lt;/div&gt;
 
-      &lt;div class=&quot;notice warning&quot;&gt;
+      &lt;div class=&quot;notice warning&quot; id=&quot;wmLoginNotice&quot;&gt;
         &lt;i class=&quot;fa-solid fa-circle-exclamation&quot;&gt;&lt;/i&gt;
         Please Login To Purchase
       &lt;/div&gt;
 
-      &lt;button class=&quot;btn&quot;&gt;Login&lt;/button&gt;
+      &lt;button class=&quot;btn&quot; id=&quot;wmAuthBtn&quot; onclick=&quot;wmAuthClick()&quot;&gt;Login to Purchase&lt;/button&gt;
+
+      &lt;script&gt;
+      function wmAuthClick() {
+          var btn = document.getElementById('wmAuthBtn');
+          if (btn.dataset.loggedIn === '1') {
+              alert('Processing order...');
+          } else {
+              window.parent.postMessage({action:'openLogin',from:'weeklyMonthly'},'*');
+          }
+      }
+      window.addEventListener('message', function(e) {
+          if (e.data && e.data.action === 'authState') {
+              var btn = document.getElementById('wmAuthBtn');
+              var notice = document.getElementById('wmLoginNotice');
+              if (e.data.isLoggedIn) {
+                  btn.textContent = 'Buy Now';
+                  btn.style.background = '#00c853';
+                  btn.dataset.loggedIn = '1';
+                  if (notice) notice.style.display = 'none';
+              } else {
+                  btn.textContent = 'Login to Purchase';
+                  btn.style.background = '';
+                  btn.dataset.loggedIn = '0';
+                  if (notice) notice.style.display = '';
+              }
+          }
+      });
+      &lt;/script&gt;
 
     &lt;/div&gt;
   &lt;/div&gt;
@@ -4992,25 +5066,69 @@ console.log(&quot;Firebase Connected Successfully&quot;);
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function(){
-    const cards = document.querySelectorAll('.card h3');
-    cards.forEach(function(title){
-        const text = title.innerText.toLowerCase();
-        if(text.includes('weekly') || text.includes('monthly')){
-            title.closest('.card').addEventListener('click', function(e){
-                e.preventDefault();
-                document.getElementById('weeklyMonthlyOverlay').style.display='block';
-                document.body.style.overflow='hidden';
-            });
-        }
-    });
+// Weekly Lite open
+function openWeeklyLitePageDirect() {
+    document.getElementById('weeklyLitePage').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    // login state iframe কে জানাও
+    setTimeout(() => {
+        const fr = document.querySelector('#weeklyLitePage iframe');
+        if (fr) try { fr.contentWindow.postMessage({ action: 'authState', isLoggedIn: !!window._currentUser }, '*'); } catch(e) {}
+    }, 300);
+}
 
+// Weekly Monthly open
+function openWeeklyMonthlyDirect() {
+    document.getElementById('weeklyMonthlyOverlay').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    // login state iframe কে জানাও
+    setTimeout(() => {
+        const fr = document.querySelector('#weeklyMonthlyOverlay iframe');
+        if (fr) try { fr.contentWindow.postMessage({ action: 'authState', isLoggedIn: !!window._currentUser }, '*'); } catch(e) {}
+    }, 300);
+}
+
+// Card auth gate — login না থাকলে login page, থাকলে সরাসরি open
+function cardAuthOpen(pageKey) {
+    if (!window._currentUser) {
+        window._pendingAction = 'openCard_' + pageKey;
+        openLoginPage();
+    } else {
+        _openCardPage(pageKey);
+    }
+}
+
+function _openCardPage(pageKey) {
+    if (pageKey === 'weeklyLite') {
+        openWeeklyLitePageDirect();
+    } else if (pageKey === 'weeklyMonthly') {
+        openWeeklyMonthlyDirect();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function(){
     document.getElementById('weeklyMonthlyOverlay').addEventListener('click', function(e){
         if(e.target.id === 'weeklyMonthlyOverlay'){
             document.getElementById('weeklyMonthlyOverlay').style.display='none';
             document.body.style.overflow='auto';
         }
     });
+});
+
+// iframe এর ভেতর থেকে login request আসলে handle করো
+window.addEventListener('message', function(e) {
+    if (e.data && e.data.action === 'openLogin') {
+        const from = e.data.from;
+        if (from === 'weeklyLite') {
+            document.getElementById('weeklyLitePage').style.display = 'none';
+            window._pendingAction = 'openCard_weeklyLite';
+        } else if (from === 'weeklyMonthly') {
+            document.getElementById('weeklyMonthlyOverlay').style.display = 'none';
+            window._pendingAction = 'openCard_weeklyMonthly';
+        }
+        document.body.style.overflow = '';
+        openLoginPage();
+    }
 });
 </script>
 
@@ -5340,6 +5458,18 @@ function updateAllAuthButtons(user) {
             lupBtn.textContent = 'Login to Purchase';
             lupBtn.style.background = '';
         }
+    }
+
+    // Weekly Lite iframe — login state জানাও
+    const wlFrame = document.querySelector('#weeklyLitePage iframe');
+    if (wlFrame) {
+        try { wlFrame.contentWindow.postMessage({ action: 'authState', isLoggedIn }, '*'); } catch(e) {}
+    }
+
+    // Weekly Monthly iframe — login state জানাও
+    const wmFrame = document.querySelector('#weeklyMonthlyOverlay iframe');
+    if (wmFrame) {
+        try { wmFrame.contentWindow.postMessage({ action: 'authState', isLoggedIn }, '*'); } catch(e) {}
     }
 
     // Order Modal buttons
