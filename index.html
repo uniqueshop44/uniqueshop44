@@ -2335,7 +2335,13 @@ font-weight:700;
                     <input type="tel" id="whatsappNumber" placeholder="যেমন: 017XXXXXXXX" required>
                 </div>
 
-                <button type="submit" class="btn-submit">অর্ডার সাবমিট করুন</button>
+                <div id="modalLoginNotice" style="display:none;background:#fff8e1;border:1px solid #ffd54f;border-radius:8px;padding:10px 14px;font-size:13px;color:#e65100;margin-bottom:10px;">
+                    <i class="fa-solid fa-circle-exclamation"></i> অর্ডার দিতে আগে Login করুন!
+                </div>
+                <button type="submit" class="btn-submit" id="modalSubmitBtn">অর্ডার সাবমিট করুন</button>
+                <button type="button" class="btn-submit" id="modalLoginBtn" style="display:none;background:#1a46e5;" onclick="closeModal();openLoginPage()">
+                    <i class="fa-solid fa-right-to-bracket"></i> Login to Purchase
+                </button>
             </form>
         </div>
     </div>
@@ -2815,7 +2821,7 @@ font-weight:700;
             </div>
         </div>
 
-        <button class="ff-login-btn" onclick="alert('Please login to continue!')">Login</button>
+        <button class="ff-login-btn" id="ffAuthBtn" onclick="handleAuthBtn(this, submitFFOrder)">Login to Purchase</button>
 
         <!-- Rules & Conditions -->
         <div class="ff-rules-section">
@@ -3667,8 +3673,8 @@ font-weight:700;
     <div class="info-row">
       ⓘ পণ্যটি কিনতে আপনার প্রয়োজন <strong style="margin:0 4px">0</strong> টাকা।
     </div>
-    <div class="login-note">⓵ Please Login To Purchase</div>
-    <button class="login-btn">LOGIN</button>
+    <div class="login-note" id="unipinLoginNote" style="display:none">⓵ Please Login To Purchase</div>
+    <button class="login-btn" id="unipinAuthBtn" onclick="handleAuthBtn(this, submitUnipinOrder)">Login to Purchase</button>
   </div>
 
   <div class="card">
@@ -5142,8 +5148,8 @@ document.getElementById('loginPage').classList.add('show');
 </div>
 </div>
 
-<div class="lup-note">Please Login To Purchase</div>
-<button class="lup-login">Login</button>
+<div class="lup-note" id="lupNote" style="display:none">Please Login To Purchase</div>
+<button class="lup-login" id="lupAuthBtn" onclick="handleAuthBtn(this, submitLupOrder)">Login to Purchase</button>
 </div>
 
 <div class="lup-box">
@@ -5177,6 +5183,127 @@ this.classList.add('selected');
 });
 
 });
+</script>
+
+
+<script>
+// ── FF Topup Submit ──
+function submitFFOrder() {
+    // FF topup page এর existing submit logic call করে
+    const btn = document.querySelector('#ffTopupPage .ff-login-btn, #ffTopupPage [class*="submit"], #ffTopupPage .ff-submit-btn');
+    // existing ff submit function থাকলে call করো
+    if (typeof window.ffSubmitOrder === 'function') {
+        window.ffSubmitOrder();
+    } else {
+        // fallback: existing form submit trigger
+        const form = document.querySelector('#ffTopupPage form');
+        if (form) form.dispatchEvent(new Event('submit', {bubbles:true}));
+        else showAuthToast('অর্ডার submit করতে সমস্যা হয়েছে।', 'error');
+    }
+}
+
+// ── Unipin Submit ──
+function submitUnipinOrder() {
+    if (typeof window.unipinSubmitOrder === 'function') {
+        window.unipinSubmitOrder();
+    } else {
+        const form = document.querySelector('#unipinPage form');
+        if (form) form.dispatchEvent(new Event('submit', {bubbles:true}));
+        else showAuthToast('অর্ডার submit করতে সমস্যা হয়েছে।', 'error');
+    }
+}
+
+// ── Level Up Pass Submit ──
+function submitLupOrder() {
+    if (typeof window.lupSubmitOrder === 'function') {
+        window.lupSubmitOrder();
+    } else {
+        const form = document.querySelector('#levelUpPassPage form');
+        if (form) form.dispatchEvent(new Event('submit', {bubbles:true}));
+        else showAuthToast('অর্ডার submit করতে সমস্যা হয়েছে।', 'error');
+    }
+}
+</script>
+
+<script>
+// যদি login থাকে → action চালায়, না থাকলে → login page এ নিয়ে যায়
+function handleAuthBtn(btn, action) {
+    if (window._currentUser) {
+        if (typeof action === 'function') action();
+    } else {
+        openLoginPage();
+    }
+}
+
+// ── সব auth button update করে login state অনুযায়ী ──
+function updateAllAuthButtons(user) {
+    const isLoggedIn = !!user;
+
+    // FF Topup button
+    const ffBtn = document.getElementById('ffAuthBtn');
+    if (ffBtn) {
+        if (isLoggedIn) {
+            ffBtn.textContent = 'Buy Now';
+            ffBtn.style.background = '#00c853';
+        } else {
+            ffBtn.textContent = 'Login to Purchase';
+            ffBtn.style.background = '';
+        }
+    }
+
+    // Unipin button
+    const unipinBtn = document.getElementById('unipinAuthBtn');
+    if (unipinBtn) {
+        if (isLoggedIn) {
+            unipinBtn.textContent = 'Buy Now';
+            unipinBtn.style.background = '#00c853';
+        } else {
+            unipinBtn.textContent = 'Login to Purchase';
+            unipinBtn.style.background = '';
+        }
+    }
+
+    // Level Up Pass button
+    const lupBtn = document.getElementById('lupAuthBtn');
+    if (lupBtn) {
+        if (isLoggedIn) {
+            lupBtn.textContent = 'Buy Now';
+            lupBtn.style.background = '#00c853';
+        } else {
+            lupBtn.textContent = 'Login to Purchase';
+            lupBtn.style.background = '';
+        }
+    }
+
+    // Order Modal buttons
+    const modalSubmit = document.getElementById('modalSubmitBtn');
+    const modalLoginBtn = document.getElementById('modalLoginBtn');
+    const modalNotice = document.getElementById('modalLoginNotice');
+    if (modalSubmit && modalLoginBtn) {
+        if (isLoggedIn) {
+            modalSubmit.style.display = 'block';
+            modalLoginBtn.style.display = 'none';
+            if (modalNotice) modalNotice.style.display = 'none';
+        } else {
+            modalSubmit.style.display = 'none';
+            modalLoginBtn.style.display = 'block';
+            if (modalNotice) modalNotice.style.display = 'block';
+        }
+    }
+}
+
+// onAuthStateChanged fire হলে button গুলো update করো
+// Firebase module এ _currentUser set হওয়ার পর poll করে
+(function watchAuthForButtons() {
+    let lastState = null;
+    setInterval(() => {
+        const cur = !!window._currentUser;
+        if (cur !== lastState) {
+            lastState = cur;
+            updateAllAuthButtons(window._currentUser);
+        }
+    }, 300);
+})();
 </script>
 
 </body>
