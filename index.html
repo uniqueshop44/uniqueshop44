@@ -2239,119 +2239,9 @@ font-size:18px;
 font-weight:700;
 }
 
-/* ===== SHARED TOPBAR (sub-pages) ===== */
-#sharedTopbar {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: #ffffff;
-    justify-content: space-between;
-    align-items: center;
-    padding: 13px 20px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.12);
-    z-index: 9999999;
-}
-#sharedTopbar.active {
-    display: none !important;
-}
-#sharedTopbar .stb-logo {
-    font-size: 20px;
-    font-weight: bold;
-    color: #1a46e5;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-}
-#sharedTopbar .stb-logo span {
-    color: #e51a1a;
-}
-#sharedTopbar .stb-auth {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-#sharedTopbar .stb-btn {
-    padding: 6px 13px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 13px;
-    cursor: pointer;
-    display: inline-block;
-}
-#sharedTopbar .stb-login-btn {
-    color: #e51a1a;
-    border: 1px solid #e51a1a;
-    background: white;
-}
-#sharedTopbar .stb-register-btn {
-    background-color: #e51a1a;
-    color: white;
-    border: 1px solid #e51a1a;
-}
-
-/* ===== INLINE SUB-PAGE TOPBAR ===== */
-.sub-page-topbar {
-    background: #fff;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 18px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.10);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    border-bottom: 1px solid #eee;
-}
-.sub-page-topbar .stb-logo {
-    font-size: 19px;
-    font-weight: 800;
-    color: #1a46e5;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-}
-.sub-page-topbar .stb-logo span { color: #e51a1a; }
-.sub-page-topbar .stb-auth {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-}
-.sub-page-topbar .stb-btn {
-    padding: 5px 12px;
-    border-radius: 5px;
-    font-weight: 600;
-    font-size: 12px;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-}
-.sub-page-topbar .stb-login-btn {
-    color: #e51a1a;
-    border: 1px solid #e51a1a;
-    background: #fff;
-}
-.sub-page-topbar .stb-register-btn {
-    background: #e51a1a;
-    color: #fff;
-    border: 1px solid #e51a1a;
-}
-
 </style>
 </head>
 <body>
-
-<!-- SHARED TOPBAR for sub-pages -->
-<div id="sharedTopbar">
-    <div class="stb-logo"><i class="fa-solid fa-bolt"></i> UNIQUE <span>SHOP</span></div>
-    <div class="stb-auth" id="stbAuthArea">
-        <a class="stb-btn stb-login-btn" onclick="openLoginPage()">Login</a>
-        <a class="stb-btn stb-register-btn" onclick="openRegisterPage()">Register</a>
-    </div>
-</div>
-
 
     <div id="errorToast" class="custom-toast">
         <i class="fa-solid fa-circle-exclamation"></i> <span id="toastMessage">ত্রুটি বার্তা</span>
@@ -2641,10 +2531,6 @@ font-weight:700;
 
     <!-- RAFER PAGE -->
     <div class="rafer-page" id="raferPage">
-<div class="sub-page-topbar" id="rafer_stb">
-    <div class="stb-logo"><i class="fa-solid fa-bolt"></i> UNIQUE <span>SHOP</span></div>
-    <div class="stb-auth" id="rafer_stb_auth"></div>
-</div>
         <div class="rafer-header">
             <div class="rafer-stat">
                 <div class="rafer-stat-label"><i class="fa-solid fa-users"></i> Rafer Count</div>
@@ -2735,10 +2621,6 @@ font-weight:700;
 
     <!-- REDEEM PAGE -->
     <div class="redeem-page" id="redeemPage">
-<div class="sub-page-topbar" id="redeem_stb">
-    <div class="stb-logo"><i class="fa-solid fa-bolt"></i> UNIQUE <span>SHOP</span></div>
-    <div class="stb-auth" id="redeem_stb_auth"></div>
-</div>
 
         <!-- Header -->
         <div class="redeem-header">
@@ -2870,10 +2752,6 @@ font-weight:700;
 
     <!-- FREE FIRE UID TOPUP PAGE -->
     <div class="ff-topup-page" id="ffTopupPage">
-<div class="sub-page-topbar" id="ff_stb">
-    <div class="stb-logo"><i class="fa-solid fa-bolt"></i> UNIQUE <span>SHOP</span></div>
-    <div class="stb-auth" id="ff_stb_auth"></div>
-</div>
 
         <!-- Header -->
         <div class="ff-page-header">
@@ -2958,10 +2836,6 @@ font-weight:700;
     </div>
 
     <div class="admin-route-page" id="adminRoutePage">
-<div class="sub-page-topbar" id="admin_stb">
-    <div class="stb-logo"><i class="fa-solid fa-bolt"></i> UNIQUE <span>SHOP</span></div>
-    <div class="stb-auth" id="admin_stb_auth"></div>
-</div>
         <h2 style="color: #1e293b; margin-bottom: 15px; text-align: center;"><i class="fa-solid fa-user-shield"></i> Unique Shop Admin</h2>
         
         <div class="admin-nav-tabs">
@@ -3286,13 +3160,11 @@ font-weight:700;
         let selectedRedeemAmount = 0;
 
         function openRedeemPage() {
-    showSharedTopbar('redeemPage');
             document.getElementById('redeemPage').classList.add('show');
             document.body.style.overflow = 'hidden';
         }
 
         function closeRedeemPage() {
-    hideSharedTopbar('redeemPage');
             document.getElementById('redeemPage').classList.remove('show');
             document.body.style.overflow = '';
             selectedRedeemAmount = 0;
@@ -3379,7 +3251,6 @@ font-weight:700;
         let selectedFFPaymentMethod = 'wallet';
 
         function openFFTopupPage() {
-    showSharedTopbar('ffTopupPage');
             // Build package grid
             const grid = document.getElementById('ffPackageGrid');
             grid.innerHTML = '';
@@ -3402,7 +3273,6 @@ font-weight:700;
         }
 
         function closeFFTopupPage() {
-    hideSharedTopbar('ffTopupPage');
             document.getElementById('ffTopupPage').classList.remove('show');
             document.body.style.overflow = '';
         }
@@ -3423,12 +3293,10 @@ font-weight:700;
 
         // RAFER PAGE FUNCTIONS
         function openRaferPage() {
-    showSharedTopbar('raferPage');
             document.getElementById('raferPage').classList.add('show');
         }
 
         function closeRaferPage() {
-    hideSharedTopbar('raferPage');
             document.getElementById('raferPage').classList.remove('show');
         }
 
@@ -3644,7 +3512,7 @@ font-weight:700;
             if (urlParams.get('admin') === 'true') {
                 const password = prompt("অ্যাডমিন ড্যাশবোর্ডে প্রবেশ করতে পাসওয়ার্ড দিন:");
                 if (password === "admin44") {
-                    document.getElementById('adminRoutePage').style.display = 'block'; showSharedTopbar('adminRoutePage');
+                    document.getElementById('adminRoutePage').style.display = 'block';
                 } else {
                     alert("ভুল পাসওয়ার্ড! হোমপেজে রিডাইরেক্ট করা হচ্ছে।");
                     window.location.href = window.location.pathname;
@@ -3671,7 +3539,6 @@ font-weight:700;
         }
 
         function exitAdminView() {
-    hideSharedTopbar('adminRoutePage');
             // অ্যাডমিন মোড থেকে বের হয়ে মেইন হোমে ফিরে যাবে
             window.location.href = window.location.pathname;
         }
@@ -3702,11 +3569,7 @@ font-weight:700;
 
 <!-- ===== UNIPIN PAGE ===== -->
 <div id="unipinPage">
-  <div class="sub-page-topbar" id="unipin_stb">
-    <div class="stb-logo"><i class="fa-solid fa-bolt"></i> UNIQUE <span>SHOP</span></div>
-    <div class="stb-auth" id="unipin_stb_auth"></div>
-</div>
-<div id="unipinBackBtn" onclick="closeUnipinPage()">
+  <div id="unipinBackBtn" onclick="closeUnipinPage()">
     &#8592; Back
   </div>
   
@@ -3844,12 +3707,10 @@ function selectPay(el){
 
 <script>
 function openUnipinPage() {
-    showSharedTopbar('unipinPage');
     document.getElementById('unipinPage').style.display = 'block';
     document.body.style.overflow = 'hidden';
 }
 function closeUnipinPage() {
-    hideSharedTopbar('unipinPage');
     document.getElementById('unipinPage').style.display = 'none';
     document.body.style.overflow = '';
 }
@@ -3859,11 +3720,7 @@ function closeUnipinPage() {
 
 
 <!-- WEEKLY LITE PAGE -->
-<div id="weeklyLitePage" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:999999;background:#ffffff;overflow-y:auto;">
-<div class="sub-page-topbar" id="wl_stb">
-    <div class="stb-logo"><i class="fa-solid fa-bolt"></i> UNIQUE <span>SHOP</span></div>
-    <div class="stb-auth" id="wl_stb_auth"></div>
-</div>
+<div id="weeklyLitePage" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:999999;background:#ffffff;">
     <button onclick="closeWeeklyLitePage()" 
         style="position:absolute;top:12px;right:12px;width:40px;height:40px;border:none;
         border-radius:50%;background:#e51a1a;color:white;font-size:22px;z-index:1000000;cursor:pointer;">
@@ -4600,23 +4457,16 @@ font-weight:700;
 
 <script>
 function openWeeklyLitePage() {
-    showSharedTopbar('weeklyLitePage');
     document.getElementById('weeklyLitePage').style.display = 'block';
 }
 
 function closeWeeklyLitePage() {
-    hideSharedTopbar('weeklyLitePage');
     document.getElementById('weeklyLitePage').style.display = 'none';
 }
 </script>
 
 
-<div id="weeklyMonthlyOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:999999;overflow-y:auto;">
-<div class="sub-page-topbar" id="wm_stb">
-    <div class="stb-logo"><i class="fa-solid fa-bolt"></i> UNIQUE <span>SHOP</span></div>
-    <div class="stb-auth" id="wm_stb_auth"></div>
-</div>
-
+<div id="weeklyMonthlyOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:999999;">
 <iframe id="weeklyMonthlyFrame" srcdoc="&lt;!DOCTYPE html&gt;
 &lt;html lang=&quot;en&quot;&gt;
 &lt;head&gt;
@@ -5098,7 +4948,7 @@ document.addEventListener('DOMContentLoaded', function(){
         if(text.includes('weekly') || text.includes('monthly')){
             title.closest('.card').addEventListener('click', function(e){
                 e.preventDefault();
-                document.getElementById('weeklyMonthlyOverlay').style.display='block'; showSharedTopbar('weeklyMonthlyOverlay');
+                document.getElementById('weeklyMonthlyOverlay').style.display='block';
                 document.body.style.overflow='hidden';
             });
         }
@@ -5106,7 +4956,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
     document.getElementById('weeklyMonthlyOverlay').addEventListener('click', function(e){
         if(e.target.id === 'weeklyMonthlyOverlay'){
-            document.getElementById('weeklyMonthlyOverlay').style.display='none'; hideSharedTopbar('weeklyMonthlyOverlay');
+            document.getElementById('weeklyMonthlyOverlay').style.display='none';
             document.body.style.overflow='auto';
         }
     });
@@ -5251,10 +5101,6 @@ document.getElementById('loginPage').classList.add('show');
 
 
 <div id="levelUpPassPage">
-<div class="sub-page-topbar" id="lup_stb">
-    <div class="stb-logo"><i class="fa-solid fa-bolt"></i> UNIQUE <span>SHOP</span></div>
-    <div class="stb-auth" id="lup_stb_auth"></div>
-</div>
 <div class="lup-header">
 <img src="https://i.imgur.com/B5QZ8wB.jpeg">
 <div>
@@ -5318,7 +5164,7 @@ document.addEventListener('DOMContentLoaded', function(){
 const levelCard = [...document.querySelectorAll('.card h3')].find(el => el.innerText.toLowerCase().includes('level up pass'));
 if(levelCard){
 levelCard.closest('.card').onclick = function(){
-document.getElementById('levelUpPassPage').classList.add('show'); showSharedTopbar('levelUpPassPage');
+document.getElementById('levelUpPassPage').classList.add('show');
 };
 }
 
@@ -5459,86 +5305,6 @@ function updateAllAuthButtons(user) {
     }, 300);
 })();
 </script>
-
-
-<script>
-// ===== SHARED TOPBAR LOGIC =====
-// Pages that should show the shared topbar (not login/register/paymentRequest)
-var _stbPageCount = 0;
-
-function showSharedTopbar(pageId) {
-    _stbPageCount++;
-    var tb = document.getElementById('sharedTopbar');
-    tb.classList.add('active');
-    // Store which page is using the topbar
-    if (pageId) tb.dataset.currentPage = pageId;
-    updateSharedTopbar();
-    // Add padding-top to the sub-page so content isn't hidden under topbar
-    if (pageId) {
-        var pg = document.getElementById(pageId);
-        if (pg) pg.style.paddingTop = '54px';
-    }
-}
-
-function hideSharedTopbar(pageId) {
-    _stbPageCount = Math.max(0, _stbPageCount - 1);
-    if (_stbPageCount === 0) {
-        document.getElementById('sharedTopbar').classList.remove('active');
-    }
-    if (pageId) {
-        var pg = document.getElementById(pageId);
-        if (pg) pg.style.paddingTop = '';
-    }
-}
-
-function updateSharedTopbar() {
-    var area = document.getElementById('stbAuthArea');
-    if (!area) return;
-    var user = window._currentUser;
-    if (user) {
-        var name = user.displayName || user.email.split('@')[0];
-        var photo = user.photoURL || '';
-        area.innerHTML = '<div onclick="openUserMenu()" style="display:flex;align-items:center;gap:8px;cursor:pointer;">' +
-            (photo ? '<img src="' + photo + '" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid #1a46e5;">' 
-                   : '<div style="width:32px;height:32px;border-radius:50%;background:#1a46e5;color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">' + name[0].toUpperCase() + '</div>') +
-            '<span style="font-size:13px;font-weight:600;color:#222;">' + name + '</span></div>';
-    } else {
-        area.innerHTML = '<a class="stb-btn stb-login-btn" onclick="openLoginPage()">Login</a>' +
-                         '<a class="stb-btn stb-register-btn" onclick="openRegisterPage()">Register</a>';
-    }
-}
-
-// Poll for auth changes and update topbar
-setInterval(function() {
-    if (document.getElementById('sharedTopbar').classList.contains('active')) {
-        updateSharedTopbar();
-    }
-}, 500);
-</script>
-
-// ===== UPDATE ALL INLINE SUB-PAGE TOPBARS =====
-function updateAllInlineTopbars() {
-    var authIds = ['rafer_stb_auth','redeem_stb_auth','ff_stb_auth','unipin_stb_auth',
-                   'lup_stb_auth','admin_stb_auth','wm_stb_auth','wl_stb_auth'];
-    var user = window._currentUser;
-    var html;
-    if (user) {
-        var name = user.displayName || user.email.split('@')[0];
-        var photo = user.photoURL || '';
-        html = '<div onclick="openUserMenu()" style="display:flex;align-items:center;gap:7px;cursor:pointer;">' +
-            (photo ? '<img src="'+photo+'" style="width:30px;height:30px;border-radius:50%;object-fit:cover;border:2px solid #1a46e5;">'
-                   : '<div style="width:30px;height:30px;border-radius:50%;background:#1a46e5;color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;">'+name[0].toUpperCase()+'</div>') +
-            '<span style="font-size:12px;font-weight:600;color:#333;">'+name+'</span></div>';
-    } else {
-        html = '<a class="stb-btn stb-login-btn" onclick="openLoginPage()">Login</a>' +
-               '<a class="stb-btn stb-register-btn" onclick="openRegisterPage()">Register</a>';
-    }
-    authIds.forEach(function(id) {
-        var el = document.getElementById(id);
-        if (el) el.innerHTML = html;
-    });
-}
-setInterval(updateAllInlineTopbars, 400);
 
 </body>
 </html>
