@@ -13,10 +13,15 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
+        html {
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
         body {
             background-color: #f4f6f9;
             color: #333;
             padding-bottom: 70px;
+            overscroll-behavior-y: contain;
         }
 
         /* Header Style */
@@ -197,6 +202,32 @@
             margin: 0 10px;
         }
 
+        /* FF UID card single-line fix */
+        #card-item2 h3 {
+            font-size: 11px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+            -webkit-line-clamp: unset;
+            min-height: unset;
+            padding: 9px 8px 10px;
+        }
+
+        /* Rafer card keeps its special purple theme */
+        #card-item1 {
+            border-color: #c4b5fd;
+            box-shadow: 0 2px 8px rgba(102,126,234,0.13), 0 1px 4px rgba(0,0,0,0.07);
+        }
+        #card-item1 h3 {
+            background: linear-gradient(180deg, #fff 0%, #f5f3ff 100%);
+            border-top-color: #c4b5fd;
+            color: #4c1d95;
+        }
+        #card-item1:active {
+            box-shadow: 0 4px 16px rgba(102,126,234,0.22);
+        }
+
         /* Grid System - 7 Custom Boxes */
         .grid-container {
             display: grid;
@@ -207,37 +238,46 @@
 
         .card {
             background-color: white;
-            border-radius: 10px;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 8px rgba(249,115,22,0.10), 0 1px 4px rgba(0,0,0,0.07);
             text-align: center;
-            padding-bottom: 15px;
-            transition: transform 0.2s;
-            border: 1px solid #eaeaea;
+            padding-bottom: 0;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1.5px solid #ffe0c2;
             cursor: pointer;
+            position: relative;
         }
 
         .card:active {
-            transform: scale(0.98);
+            opacity: 0.92;
+            box-shadow: 0 4px 16px rgba(249,115,22,0.18);
         }
 
         .card img {
             width: 100%;
-            height: 120px;
+            height: 115px;
             object-fit: cover;
-            background-color: #eaeaea;
+            background-color: #fff3e8;
+            display: block;
         }
 
         .card h3 {
-            font-size: 13px;
-            margin: 12px 5px 5px 5px;
-            color: #222;
-            height: 38px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
+            font-size: 12px;
+            margin: 0;
+            padding: 8px 8px 10px;
+            color: #1e293b;
+            font-weight: 700;
+            white-space: normal;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
             line-height: 1.4;
+            background: linear-gradient(180deg, #fff 0%, #fff7ed 100%);
+            border-top: 1.5px solid #ffe0c2;
+            letter-spacing: 0.1px;
+            min-height: 38px;
         }
 
         /* Regular Modal Style */
@@ -766,7 +806,7 @@
             display: flex; justify-content: space-between;
             align-items: center;
             padding: 12px 16px;
-            border-bottom: 1px solid #f0f0f0;
+            border-bottom: 1px solid #ffe0c2;
         }
         .pr-info-row:last-child { border-bottom: none; }
         .pr-info-label {
@@ -1081,7 +1121,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             padding: 15px;
-            border-bottom: 1px solid #f0f0f0;
+            border-bottom: 1px solid #ffe0c2;
             font-size: 13px;
             align-items: center;
         }
@@ -1835,77 +1875,80 @@
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background: #f0f0f0;
+    background: #f4f6f9;
     z-index: 500;
     overflow-y: auto;
+    color-scheme: light;
 }
-#unipinPage .page{max-width:480px;margin:0 auto;padding:12px;display:flex;flex-direction:column;gap:12px}
-#unipinPage .card{background:#fff;border-radius:12px;border:1px solid #e0e0e0;padding:16px}
+#unipinPage .page{max-width:480px;margin:0 auto;padding:10px;display:flex;flex-direction:column;gap:10px}
+#unipinPage .card{background:#fff;border-radius:10px;border:1px solid #ffe0c2;padding:15px;box-shadow:0 2px 6px rgba(249,115,22,0.08);-webkit-tap-highlight-color:rgba(0,0,0,0);}
 #unipinPage .header{display:flex;align-items:center;gap:14px}
 #unipinPage .logo-box{width:72px;height:72px;border-radius:10px;background:linear-gradient(135deg,#1a1a2e,#16213e);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
 #unipinPage .logo-inner{text-align:center}
 #unipinPage .logo-inner .brand{font-size:9px;font-weight:700;color:#00d4ff;letter-spacing:1px;text-transform:uppercase}
 #unipinPage .logo-inner .diamond{font-size:22px;margin:2px 0}
 #unipinPage .logo-inner .sub{font-size:7px;color:#aaa;text-transform:uppercase;letter-spacing:0.5px}
-#unipinPage .header-text h2{font-size:18px;font-weight:700;color:#111}
-#unipinPage .header-text p{font-size:13px;color:#777;margin-top:3px}
-#unipinPage .section-label{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-#unipinPage .step-num{width:24px;height:24px;border-radius:50%;background:#e63946;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-#unipinPage .step-label{font-size:16px;font-weight:600}
-#unipinPage .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-#unipinPage .pkg{border:1px solid #ddd;border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:border-color 0.15s,background 0.15s}
-#unipinPage .pkg:hover{background:#fafafa;border-color:#bbb}
-#unipinPage .pkg.selected{border:2px solid #e63946;background:rgba(230,57,70,0.05)}
-#unipinPage .pkg .dot{width:10px;height:10px;border-radius:50%;border:1.5px solid #bbb;flex-shrink:0}
-#unipinPage .pkg.selected .dot{background:#e63946;border-color:#e63946}
-#unipinPage .pkg-name{font-size:13px;color:#222;margin-left:8px;flex:1}
-#unipinPage .pkg-price{font-size:13px;font-weight:600;color:#e63946}
+#unipinPage .header-text h2{font-size:15px;font-weight:700;color:#111;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+#unipinPage .header-text p{font-size:12px;color:#888;margin-top:3px;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+#unipinPage .section-label{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+#unipinPage .step-num{width:24px;height:24px;border-radius:50%;background:#e51a1a;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+#unipinPage .step-label{font-size:15px;font-weight:700;color:#111;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+#unipinPage .grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+#unipinPage .pkg{border:1.5px solid #e0e0e0;border-radius:8px;padding:10px 8px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:border-color 0.15s,background 0.15s;background:#fff;-webkit-tap-highlight-color:rgba(0,0,0,0);}
+#unipinPage .pkg:hover{background:#fff7ed;border-color:#f97316}
+#unipinPage .pkg.selected{border:2px solid #f97316;background:#fff7ed;-webkit-tap-highlight-color:rgba(0,0,0,0);}
+#unipinPage .pkg .dot{width:16px;height:16px;border-radius:50%;border:2px solid #ccc;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+#unipinPage .pkg.selected .dot{background:#f97316;border-color:#f97316;box-shadow:inset 0 0 0 3px white}
+#unipinPage .pkg-name{font-size:12px;color:#333;margin-left:6px;flex:1;font-weight:500;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+#unipinPage .pkg-price{font-size:13px;font-weight:700;color:#f97316;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
 #unipinPage .qty-row{display:flex;align-items:center;justify-content:space-between}
-#unipinPage .qty-label{font-size:15px;font-weight:600}
-#unipinPage .qty-ctrl{display:flex;align-items:center;border:1px solid #ddd;border-radius:20px;overflow:hidden}
-#unipinPage .qty-btn{width:38px;height:38px;border:none;background:transparent;color:#222;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-#unipinPage .qty-btn:hover{background:#f5f5f5}
-#unipinPage .qty-val{width:32px;text-align:center;font-size:15px;font-weight:600}
+#unipinPage .qty-label{font-size:15px;font-weight:700;color:#111;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+#unipinPage .qty-ctrl{display:flex;align-items:center;border:1.5px solid #ddd;border-radius:20px;overflow:hidden}
+#unipinPage .qty-btn{width:38px;height:38px;border:none;background:transparent;color:#f97316;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700}
+#unipinPage .qty-btn:hover{background:#fff7ed}
+#unipinPage .qty-val{width:32px;text-align:center;font-size:15px;font-weight:700;color:#111}
 #unipinPage .pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-#unipinPage .pay-opt{border:1.5px solid #ddd;border-radius:10px;padding:12px;cursor:pointer;transition:border-color 0.15s;position:relative;min-height:90px;display:flex;flex-direction:column;justify-content:space-between}
-#unipinPage .pay-opt.selected{border-color:#e63946}
-#unipinPage .pay-opt .check{position:absolute;top:8px;left:8px;width:18px;height:18px;border-radius:3px;background:#e63946;display:none;align-items:center;justify-content:center}
+#unipinPage .pay-opt{border:1.5px solid #ddd;border-radius:10px;padding:12px;cursor:pointer;transition:border-color 0.15s,background 0.15s;position:relative;min-height:90px;display:flex;flex-direction:column;justify-content:space-between;background:#fff}
+#unipinPage .pay-opt.selected{border-color:#f97316;background:#fff7ed}
+#unipinPage .pay-opt .check{position:absolute;top:8px;right:8px;width:18px;height:18px;border-radius:50%;background:#f97316;color:#fff;display:none;align-items:center;justify-content:center;font-size:11px}
 #unipinPage .pay-opt.selected .check{display:flex}
-#unipinPage .pay-opt-name{font-size:12px;color:#777;margin-top:6px}
+#unipinPage .pay-opt-name{font-size:12px;color:#777;margin-top:6px;font-weight:600;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
 #unipinPage .unique-shop-logo{display:flex;flex-direction:column;align-items:center;justify-content:center;height:52px;gap:4px}
 #unipinPage .us-icon{width:38px;height:38px;border-radius:8px;background:linear-gradient(135deg,#0f3460,#e94560);display:flex;align-items:center;justify-content:center}
 #unipinPage .us-icon svg{width:22px;height:22px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-#unipinPage .us-text{font-size:11px;font-weight:600;color:#111;letter-spacing:0.3px}
+#unipinPage .us-text{font-size:11px;font-weight:700;color:#111;letter-spacing:0.3px;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
 #unipinPage .instant-logos{display:flex;gap:4px;flex-wrap:wrap}
 #unipinPage .bkash-badge,.nagad-badge,.rocket-badge{padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;color:#fff}
 #unipinPage .bkash-badge{background:#e2136e}
 #unipinPage .nagad-badge{background:#ed1c24}
 #unipinPage .rocket-badge{background:#8b2fc9}
-#unipinPage .auto-text{font-size:11px;font-weight:600;color:#1a9fe3;margin-top:4px}
-#unipinPage .info-row{display:flex;align-items:center;gap:6px;font-size:12px;color:#555}
-#unipinPage .login-note{font-size:12px;color:#e63946}
-#unipinPage .login-btn{width:100%;padding:14px;background:#e63946;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:0.5px}
+#unipinPage .auto-text{font-size:11px;font-weight:600;color:#f97316;margin-top:4px;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+#unipinPage .info-row{display:flex;align-items:center;gap:6px;font-size:12px;color:#555;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+#unipinPage .login-note{font-size:12px;color:#f97316;font-weight:600}
+#unipinPage .login-btn{width:100%;padding:15px;background:#e51a1a;color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:700;cursor:pointer;letter-spacing:0.5px;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
 #unipinPage .login-btn:hover{background:#c62828}
-#unipinPage .rules-title{font-size:16px;font-weight:700;margin-bottom:10px}
-#unipinPage .rules-sub{font-size:14px;font-weight:700;margin-bottom:8px;color:#111}
-#unipinPage .rule-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:#555;margin-bottom:6px;line-height:1.5}
-#unipinPage .rule-item .bullet{color:#e63946;flex-shrink:0;margin-top:1px}
+#unipinPage .rules-title{font-size:15px;font-weight:700;margin-bottom:10px;color:#111;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+#unipinPage .rules-sub{font-size:14px;font-weight:700;margin-bottom:8px;color:#111;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+#unipinPage .rule-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:#444;margin-bottom:6px;line-height:1.6;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+#unipinPage .rule-item .bullet{color:#f97316;flex-shrink:0;margin-top:1px}
 #unipinBackBtn {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 12px 16px;
+    padding: 12px 15px;
     background: #fff;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid #ffe0c2;
     cursor: pointer;
     font-size: 15px;
-    font-weight: 600;
-    color: #222;
+    font-weight: 700;
+    color: #111;
     position: sticky;
     top: 0;
     z-index: 10;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
 }
-#unipinBackBtn:hover { background: #f5f5f5; }
+#unipinBackBtn:hover { background: #fff7ed; }
 
 
 /* LOGIN PAGE */
@@ -2062,7 +2105,7 @@ top:0;
 left:0;
 width:100%;
 height:100%;
-background:#eef1f5;
+background:#f4f6f9;
 z-index:9999;
 overflow-y:auto;
 padding-bottom:40px;
@@ -2070,173 +2113,209 @@ padding-bottom:40px;
 #levelUpPassPage.show{display:block;}
 .lup-header{
 background:#fff;
-margin:8px;
-border-radius:12px;
-padding:15px;
+margin:10px;
+border-radius:10px;
+padding:12px 15px;
 display:flex;
 align-items:center;
 gap:14px;
-border:1px solid #ddd;
+border:1px solid #ffe0c2;
+box-shadow:0 2px 6px rgba(249,115,22,0.08);
 }
 .lup-header img{
-width:110px;
-height:110px;
-border-radius:18px;
+width:90px;
+height:90px;
+border-radius:10px;
 object-fit:cover;
 }
 .lup-title{
-font-size:20px;
+font-size:15px;
 font-weight:700;
 color:#111;
+font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
 }
 .lup-sub{
-font-size:14px;
+font-size:12px;
 color:#888;
 margin-top:4px;
+font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
 }
 .lup-box{
 background:#fff;
 margin:10px;
-border-radius:12px;
-border:1px solid #ddd;
+border-radius:10px;
+border:1px solid #ffe0c2;
 overflow:hidden;
+box-shadow:0 2px 6px rgba(249,115,22,0.08);
 }
 .lup-box-title{
-padding:16px;
-font-size:20px;
+padding:12px 15px;
+font-size:15px;
 font-weight:700;
-border-bottom:1px solid #eee;
+border-bottom:1px solid #ffe0c2;
 display:flex;
 align-items:center;
 gap:10px;
+color:#111;
+font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
 }
 .lup-step{
-width:34px;
-height:34px;
-background:#e11d2e;
+width:24px;
+height:24px;
+background:#e51a1a;
 border-radius:50%;
 color:#fff;
 display:flex;
 align-items:center;
 justify-content:center;
 font-weight:700;
+font-size:13px;
+flex-shrink:0;
 }
 .lup-grid{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:12px;
+gap:9px;
 padding:14px;
 }
 .lup-item{
-border:1px solid #d7d7d7;
-border-radius:10px;
-padding:16px 12px;
+border:1.5px solid #e0e0e0;
+border-radius:8px;
+padding:10px 8px;
 display:flex;
 justify-content:space-between;
 align-items:center;
 cursor:pointer;
 background:#fff;
+transition:border-color 0.15s,background 0.15s;
 }
 .lup-item.selected{
-border:2px solid #ff6a00;
-background:#fff7ef;
+border:2px solid #f97316;
+background:#fff7ed;
 }
 .lup-left{
 display:flex;
 align-items:center;
-gap:10px;
-font-size:14px;
-font-weight:700;
-color:#555;
+gap:8px;
+font-size:12px;
+font-weight:500;
+color:#444;
+font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
 }
 .lup-radio{
-width:14px;
-height:14px;
+width:16px;
+height:16px;
 border-radius:50%;
-background:#d1d5db;
+border:2px solid #ccc;
+flex-shrink:0;
+display:flex;
+align-items:center;
+justify-content:center;
+transition:all 0.2s;
 }
 .lup-item.selected .lup-radio{
-background:#ff6a00;
+background:#f97316;
+border-color:#f97316;
+box-shadow:inset 0 0 0 3px white;
 }
 .lup-price{
-font-size:16px;
-font-weight:800;
-color:#ff6a00;
+font-size:13px;
+font-weight:700;
+color:#f97316;
+font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
 }
 .lup-input{
 width:100%;
-padding:15px;
-border:2px solid #dbe4ff;
-border-radius:10px;
-font-size:16px;
+padding:12px 14px;
+border:1.5px solid #ddd;
+border-radius:8px;
+font-size:14px;
 outline:none;
+transition:border-color 0.2s;
+font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+color:#333;
+box-sizing:border-box;
 }
+.lup-input:focus{border-color:#f97316;}
 .lup-payment-grid{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:12px;
+gap:10px;
 padding:14px;
 }
 .lup-pay{
-border:1px solid #ddd;
+border:1.5px solid #ddd;
 border-radius:10px;
 overflow:hidden;
 cursor:pointer;
 background:#fff;
 position:relative;
+transition:border-color 0.15s,background 0.15s;
 }
 .lup-pay.selected{
-border:2px solid #ff6a00;
+border:2px solid #f97316;
+background:#fff7ed;
 }
 .lup-check{
 position:absolute;
-top:0;
-left:0;
-background:#e11d2e;
+top:8px;
+right:8px;
+background:#f97316;
 color:#fff;
-padding:6px 10px;
-font-size:12px;
+width:18px;height:18px;
+border-radius:50%;
+font-size:11px;
 font-weight:700;
 display:none;
+align-items:center;
+justify-content:center;
 }
-.lup-pay.selected .lup-check{display:block;}
+.lup-pay.selected .lup-check{display:flex;}
 .lup-pay-body{
-height:140px;
+height:110px;
 display:flex;
 align-items:center;
 justify-content:center;
-font-size:32px;
+font-size:22px;
 font-weight:800;
-color:#1e40af;
+color:#0056b3;
+font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
 }
 .lup-pay-footer{
-background:#d1d5db;
-padding:10px;
-font-size:14px;
+background:#f0f0f0;
+padding:8px;
+font-size:12px;
 font-weight:700;
 color:#555;
+text-align:center;
+font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
 }
 .lup-note{
 padding:0 14px 14px;
 font-size:13px;
 color:#666;
+font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
 }
 .lup-login{
 margin:14px;
 width:calc(100% - 28px);
-padding:16px;
+padding:15px;
 border:none;
-border-radius:10px;
-background:#ff4057;
+border-radius:8px;
+background:#e51a1a;
 color:#fff;
-font-size:22px;
-font-weight:800;
+font-size:16px;
+font-weight:700;
 cursor:pointer;
+font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+letter-spacing:0.5px;
 }
 .lup-rules{
-padding:16px;
-font-size:18px;
+padding:12px 15px;
+font-size:15px;
 font-weight:700;
+color:#111;
+font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
 }
 
 </style>
@@ -2284,32 +2363,32 @@ font-weight:700;
 
     <div class="grid-container">
         <div class="card" id="card-item1" onclick="openRaferPage()">
-            <img id="img-item1" src="https://placehold.co/300x180?text=Rafer+And+Earn" alt="Rafer & Earn">
+            <img id="img-item1" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMTgwIj4KICA8cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2U4ZjVlOSIvPgogIDx0ZXh0IHg9IjE1MCIgeT0iOTAiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iYm9sZCIKICAgICAgICBmaWxsPSIjMmU3ZDMyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj5SYWZlciBBbmQgRWFybjwvdGV4dD4KPC9zdmc+" loading="lazy" alt="Rafer & Earn" width="300" height="180">
             <h3>Rafer & Earn Diamond</h3>
         </div>
 
         <div class="card" id="card-item2" onclick="openFFTopupPage()">
-            <img id="img-item2" src="https://placehold.co/300x180?text=Free+Fire+UID+Topup+BD" alt="Free Fire UID Topup">
-            <h3>Free Fire Uid Topup ( Bd Server)</h3>
+            <img id="img-item2" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMTgwIj4KICA8cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2ZmZjNlMCIvPgogIDx0ZXh0IHg9IjE1MCIgeT0iOTAiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iYm9sZCIKICAgICAgICBmaWxsPSIjZTY1MTAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj5GcmVlIEZpcmUgVG9wdXAgQkQ8L3RleHQ+Cjwvc3ZnPg==" loading="lazy" alt="Free Fire UID Topup">
+            <h3>Free Fire UID Topup (BD Server)</h3>
         </div>
 
         <div class="card" id="card-item3" onclick="openUnipinPage()">
-            <img id="img-item3" src="https://placehold.co/300x180?text=UniPin+Voucher+BD" alt="UniPin Voucher">
+            <img id="img-item3" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMTgwIj4KICA8cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2UzZjJmZCIvPgogIDx0ZXh0IHg9IjE1MCIgeT0iOTAiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iYm9sZCIKICAgICAgICBmaWxsPSIjMTU2NWMwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj5VbmlQaW4gVm91Y2hlciBCRDwvdGV4dD4KPC9zdmc+" loading="lazy" alt="UniPin Voucher">
             <h3>Unipin Voucher ( Bd Server )</h3>
         </div>
 
         <div class="card" id="card-item4" onclick="openWeeklyLitePageDirect()">
-    <img id="img-item4" src="https://placehold.co/300x180?text=Weekly+Lite+BD" alt="Weekly Lite">
+    <img id="img-item4" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMTgwIj4KICA8cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2YzZTVmNSIvPgogIDx0ZXh0IHg9IjE1MCIgeT0iOTAiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iYm9sZCIKICAgICAgICBmaWxsPSIjNmExYjlhIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj5XZWVrbHkgTGl0ZSBCRDwvdGV4dD4KPC9zdmc+" loading="lazy" alt="Weekly Lite">
     <h3>Weekly Lite ( Bd Server)</h3>
 </div>
 
         <div class="card" id="card-item5" onclick="openWeeklyMonthlyDirect()">
-            <img id="img-item5" src="https://placehold.co/300x180?text=Weekly+And+Monthly" alt="Weekly & Monthly">
+            <img id="img-item5" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMTgwIj4KICA8cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2U4ZWFmNiIvPgogIDx0ZXh0IHg9IjE1MCIgeT0iOTAiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iYm9sZCIKICAgICAgICBmaWxsPSIjMjgzNTkzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj5XZWVrbHkgQW5kIE1vbnRobHk8L3RleHQ+Cjwvc3ZnPg==" loading="lazy" alt="Weekly & Monthly">
             <h3>Weekly & Monthly ( Bd Server)</h3>
         </div>
 
         <div class="card" id="card-item6" onclick="openOrderModal('Level Up Pass (Bd Server)', ['Level Up Pass Pack'])">
-            <img id="img-item6" src="https://placehold.co/300x180?text=Level+Up+Pass+BD" alt="Level Up Pass">
+            <img id="img-item6" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMTgwIj4KICA8cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2ZjZTRlYyIvPgogIDx0ZXh0IHg9IjE1MCIgeT0iOTAiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iYm9sZCIKICAgICAgICBmaWxsPSIjODgwZTRmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj5MZXZlbCBVcCBQYXNzIEJEPC90ZXh0Pgo8L3N2Zz4=" loading="lazy" alt="Level Up Pass">
             <h3>Level Up Pass ( Bd Server)</h3>
         </div>
 
@@ -3808,7 +3887,7 @@ function closeUnipinPage() {
 
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #f0f2f5;
+            background-color: #f4f6f9;
             margin: 0;
             padding: 10px;
             display: flex;
@@ -3824,8 +3903,8 @@ function closeUnipinPage() {
         .card {
             background: #fff;
             border-radius: 8px;
-            border: 1px solid #e0e0e0;
-            margin-bottom: 15px;
+            border: 1px solid #ffe0c2;
+            margin-bottom: 10px;
             overflow: hidden;
         }
 
@@ -3854,8 +3933,9 @@ function closeUnipinPage() {
         .header-icon span { font-size: 20px; }
         .header-info h2 {
             margin: 0;
-            font-size: 18px;
-            color: #333;
+            font-size: 15px;
+            font-weight: 700;
+            color: #111;
         }
         .header-info p {
             margin: 5px 0 0;
@@ -3866,15 +3946,15 @@ function closeUnipinPage() {
         /* Section Titles */
         .section-title {
             padding: 15px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
-            color: #333;
+            color: #111;
             border-bottom: 1px solid #f0f0f0;
             display: flex;
             align-items: center;
         }
         .badge {
-            background-color: #dc3545;
+            background-color: #e51a1a;
             color: white;
             border-radius: 50%;
             width: 24px;
@@ -3904,8 +3984,8 @@ function closeUnipinPage() {
             transition: 0.2s;
         }
         .option-box.active {
-            border-color: #dc3545;
-            background-color: #fff9f9;
+            border-color: #f97316;
+            background-color: #fff7ed;
         }
         .option-left {
             display: flex;
@@ -3914,16 +3994,16 @@ function closeUnipinPage() {
             color: #555;
             font-weight: 500;
         }
-        .option-left input { margin-right: 8px; accent-color: #dc3545; }
+        .option-left input { margin-right: 8px; accent-color: #f97316; }
         .option-price {
             font-size: 13px;
             font-weight: 700;
-            color: #ff6b00;
+            color: #f97316;
         }
         .help-link {
             display: block;
             margin-top: 15px;
-            color: #d88390;
+            color: #f97316;
             text-decoration: none;
             font-size: 14px;
             font-weight: 500;
@@ -3936,20 +4016,20 @@ function closeUnipinPage() {
             display: block;
             font-size: 14px;
             font-weight: 700;
-            color: #1a237e;
+            color: #111;
             margin-bottom: 8px;
         }
         .account-body input {
             width: 100%;
             padding: 12px 15px;
-            border: 1px solid #b3d4ff;
+            border: 1.5px solid #ddd;
             border-radius: 6px;
             box-sizing: border-box;
             font-size: 14px;
             outline: none;
             color: #333;
         }
-        .account-body input:focus { border-color: #0056b3; }
+        .account-body input:focus { border-color: #f97316; }
 
         /* Payment Methods */
         .payment-body { padding: 15px; }
@@ -3966,14 +4046,14 @@ function closeUnipinPage() {
             position: relative;
             overflow: hidden;
         }
-        .pay-card.active { border-color: #dc3545; }
+        .pay-card.active { border-color: #f97316; }
         .pay-card.active::after {
             content: '\f00c';
             font-family: 'Font Awesome 5 Free';
             font-weight: 900;
             position: absolute;
             top: 0; left: 0;
-            background: #dc3545;
+            background: #f97316;
             color: white;
             font-size: 10px;
             padding: 4px 6px;
@@ -3987,7 +4067,7 @@ function closeUnipinPage() {
             padding: 10px;
         }
         .pay-footer {
-            background: #cbd0d6;
+            background: #f0f0f0;
             text-align: center;
             padding: 6px;
             font-size: 12px;
@@ -4003,7 +4083,7 @@ function closeUnipinPage() {
             display: flex;
             align-items: center;
         }
-        .unique-shop-logo span { color: #0056b3; font-size: 26px; margin-right: 5px;}
+        .unique-shop-logo span { color: #f97316; font-size: 26px; margin-right: 5px;}
 
         /* Mobile Banking Logos */
         .mfs-logos {
@@ -4023,17 +4103,17 @@ function closeUnipinPage() {
         .bkash { background: #e2136e; }
         .nagad { background: #ed1c24; }
         .rocket { background: #8c1596; }
-        .auto-pay-text { font-size: 12px; font-weight: bold; color: #0056b3; margin-top: 5px;}
+        .auto-pay-text { font-size: 12px; font-weight: bold; color: #f97316; margin-top: 5px;}
 
         /* Notices &amp; Button */
         .notice { font-size: 12px; color: #666; margin-bottom: 5px; display: flex; align-items: center;}
         .notice i { margin-right: 5px; font-size: 14px;}
         .notice.warning { color: #e67e22; font-weight: 500; margin-bottom: 15px;}
-        .price-highlight { color: #dc3545; font-weight: bold; margin: 0 4px; }
+        .price-highlight { color: #f97316; font-weight: bold; margin: 0 4px; }
         
         .login-btn {
             width: 100%;
-            background-color: #fb3e5a;
+            background-color: #e51a1a;
             color: white;
             border: none;
             padding: 14px;
@@ -4043,14 +4123,14 @@ function closeUnipinPage() {
             cursor: pointer;
             transition: 0.3s;
         }
-        .login-btn:hover { background-color: #e02a45; }
+        .login-btn:hover { background-color: #c41111; }
 
         /* Rules */
         .rules-title {
             padding: 12px 15px;
             font-weight: 700;
             font-size: 15px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #ffe0c2;
         }
         .rules-text {
             padding: 15px;
@@ -4582,7 +4662,7 @@ function closeWeeklyLitePage() {
     }
 
     body{
-      background:#eef1f6;
+      background:#f4f6f9;
       padding:14px;
     }
 
@@ -4593,10 +4673,11 @@ function closeWeeklyLitePage() {
 
     .card{
       background:#fff;
-      border-radius:14px;
-      margin-bottom:14px;
+      border-radius:10px;
+      margin-bottom:10px;
       overflow:hidden;
-      border:1px solid #ddd;
+      border:1px solid #ffe0c2;
+      box-shadow:0 2px 6px rgba(249,115,22,0.08);
     }
 
     .top-box{
@@ -4621,32 +4702,32 @@ function closeWeeklyLitePage() {
     }
 
     .top-title{
-      font-size:20px;
-      font-weight:bold;
+      font-size:15px;
+      font-weight:700;
       color:#111;
-      margin-bottom:6px;
+      margin-bottom:4px;
     }
 
     .top-sub{
-      color:#8d95a5;
-      font-size:14px;
+      color:#888;
+      font-size:12px;
     }
 
     .section-title{
       padding:18px;
-      font-size:18px;
-      font-weight:bold;
-      border-bottom:1px solid #eee;
+      font-size:15px;
+      font-weight:700;
+      border-bottom:1px solid #ffe0c2;
       display:flex;
       align-items:center;
       gap:10px;
     }
 
     .badge{
-      width:38px;
-      height:38px;
+      width:24px;
+      height:24px;
       border-radius:50%;
-      background:#ea2b2b;
+      background:#e51a1a;
       color:#fff;
       display:flex;
       align-items:center;
@@ -4665,9 +4746,9 @@ function closeWeeklyLitePage() {
     }
 
     .package{
-      border:2px solid #e4e4e4;
-      border-radius:10px;
-      padding:18px 12px;
+      border:1.5px solid #e0e0e0;
+      border-radius:8px;
+      padding:10px 8px;
       cursor:pointer;
       transition:0.2s;
       display:flex;
@@ -4677,17 +4758,17 @@ function closeWeeklyLitePage() {
     }
 
     .package.active{
-      border-color:#ff5b00;
-      background:#fff8f3;
+      border-color:#f97316;
+      background:#fff7ed;
     }
 
     .package-left{
       display:flex;
       align-items:center;
       gap:10px;
-      color:#555;
-      font-weight:600;
-      font-size:14px;
+      color:#444;
+      font-weight:500;
+      font-size:12px;
     }
 
     .dot{
@@ -4698,28 +4779,28 @@ function closeWeeklyLitePage() {
     }
 
     .package.active .dot{
-      background:#ff5b00;
+      background:#f97316;
     }
 
     .price{
-      color:#ff5b00;
-      font-weight:bold;
-      font-size:14px;
+      color:#f97316;
+      font-weight:700;
+      font-size:13px;
     }
 
     .help-link{
       display:inline-block;
       margin-top:18px;
-      color:#ff7a9d;
+      color:#f97316;
       text-decoration:none;
-      font-size:14px;
+      font-size:13px;
     }
 
     .input-box{
       width:100%;
       padding:14px;
       border-radius:10px;
-      border:2px solid #b6cfff;
+      border:1.5px solid #ddd;
       outline:none;
       font-size:15px;
     }
@@ -4741,7 +4822,7 @@ function closeWeeklyLitePage() {
     }
 
     .payment-card.active{
-      border-color:#ff3d57;
+      border-color:#f97316;
     }
 
     .payment-card.active::before{
@@ -4749,7 +4830,7 @@ function closeWeeklyLitePage() {
       position:absolute;
       top:0;
       left:0;
-      background:#ff3d57;
+      background:#f97316;
       color:#fff;
       padding:5px 10px;
       font-size:12px;
@@ -4771,7 +4852,7 @@ function closeWeeklyLitePage() {
     }
 
     .unique-shop span{
-      color:#0066ff;
+      color:#f97316;
     }
 
     .mfs{
@@ -4793,13 +4874,13 @@ function closeWeeklyLitePage() {
     .rocket{background:#7d2ae8;}
 
     .auto-text{
-      font-size:20px;
-      color:#0056b3;
+      font-size:18px;
+      color:#f97316;
       font-weight:bold;
     }
 
     .payment-footer{
-      background:#d9dde4;
+      background:#f0f0f0;
       padding:10px;
       font-weight:bold;
       color:#555;
@@ -4821,10 +4902,10 @@ function closeWeeklyLitePage() {
       padding:16px;
       border:none;
       border-radius:10px;
-      background:#ff415c;
+      background:#e51a1a;
       color:#fff;
-      font-size:20px;
-      font-weight:bold;
+      font-size:16px;
+      font-weight:700;
       cursor:pointer;
     }
 
@@ -5499,7 +5580,7 @@ function updateAllAuthButtons(user) {
             lastState = cur;
             updateAllAuthButtons(window._currentUser);
         }
-    }, 300);
+    }, 1000);
 })();
 </script>
 
