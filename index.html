@@ -5345,7 +5345,11 @@ function closeWeeklyLitePage() {
               var priceVal  = priceEl ? priceEl.innerText.replace(/[^0-9]/g,'') : '0';
               var labelTxt  = labelEl ? labelEl.innerText.trim() : 'Weekly & Monthly';
               var uid       = uidInput ? uidInput.value.trim() : '';
-              if (!uid) { alert('Player UID দিন!'); return; }
+              if (!uid) {
+                  window.parent.postMessage({action:'showToast', msg:'Player UID দিন!', type:'error'}, '*');
+                  if (uidInput) { uidInput.style.border='2px solid #e51a1a'; setTimeout(function(){ uidInput.style.border=''; }, 2500); }
+                  return;
+              }
               window.parent.postMessage({
                   action: 'openPayMethod',
                   productName: 'Weekly & Monthly (BD Server)',
