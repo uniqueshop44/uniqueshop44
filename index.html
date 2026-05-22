@@ -2318,6 +2318,171 @@ color:#111;
 font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
 }
 
+
+/* ===== FF PAYMENT METHOD PAGE ===== */
+#ffPayMethodPage {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #f4f6f9;
+    z-index: 10000000;
+    overflow-y: auto;
+}
+#ffPayMethodPage.show { display: block; }
+
+.fpm-header {
+    background: #fff;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+.fpm-back-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: #f3f4f6;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: #333;
+}
+.fpm-header-title { font-size: 16px; font-weight: 800; color: #111; }
+.fpm-header-sub   { font-size: 12px; color: #888; }
+
+.fpm-order-summary {
+    margin: 14px 14px 0;
+    background: #fff;
+    border-radius: 12px;
+    padding: 14px 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+}
+.fpm-order-summary .fpm-os-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #888;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+.fpm-os-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #444;
+    padding: 4px 0;
+}
+.fpm-os-row.total {
+    border-top: 1px dashed #eee;
+    margin-top: 6px;
+    padding-top: 10px;
+    font-weight: 800;
+    font-size: 15px;
+    color: #111;
+}
+
+.fpm-method-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #888;
+    font-weight: 700;
+    margin: 18px 14px 10px;
+}
+
+.fpm-methods-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 0 14px;
+}
+.fpm-method-card {
+    background: #fff;
+    border: 2px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 18px 10px 14px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.18s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.fpm-method-card.selected {
+    border-color: #1a46e5;
+    background: #f0f4ff;
+    box-shadow: 0 0 0 3px rgba(26,70,229,0.12);
+}
+.fpm-method-card .fpm-icon {
+    width: 50px; height: 50px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    color: white;
+}
+.fpm-icon-bkash  { background: linear-gradient(135deg,#e2136e,#c2005e); }
+.fpm-icon-nagad  { background: linear-gradient(135deg,#f7941d,#e07b00); }
+.fpm-icon-rocket { background: linear-gradient(135deg,#8b2fc9,#6a1fa0); }
+.fpm-icon-upay   { background: linear-gradient(135deg,#0056b3,#003d80); }
+.fpm-method-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #222;
+}
+.fpm-method-tag {
+    font-size: 10px;
+    color: #888;
+    font-weight: 500;
+}
+.fpm-selected-check {
+    display: none;
+    width: 20px; height: 20px;
+    background: #1a46e5;
+    border-radius: 50%;
+    align-items: center; justify-content: center;
+    color: white;
+    font-size: 11px;
+    position: absolute;
+    top: 10px; right: 10px;
+}
+.fpm-method-card { position: relative; }
+.fpm-method-card.selected .fpm-selected-check { display: flex; }
+
+.fpm-confirm-wrap {
+    padding: 18px 14px 30px;
+}
+.fpm-confirm-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #1a46e5, #0d2db3);
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    box-shadow: 0 4px 12px rgba(26,70,229,0.3);
+}
+.fpm-confirm-btn:disabled {
+    background: #9ca3af;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+.fpm-no-select-note {
+    text-align: center;
+    font-size: 12px;
+    color: #f97316;
+    margin-top: 10px;
+    display: none;
+}
+
 </style>
 </head>
 <body>
@@ -5582,6 +5747,204 @@ function updateAllAuthButtons(user) {
         }
     }, 1000);
 })();
+</script>
+
+
+<!-- FF PAYMENT METHOD PAGE -->
+<div id="ffPayMethodPage">
+    <!-- Header -->
+    <div class="fpm-header">
+        <button class="fpm-back-btn" onclick="closeFfPayMethodPage()">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <div>
+            <div class="fpm-header-title">পেমেন্ট মেথড</div>
+            <div class="fpm-header-sub">পেমেন্ট পদ্ধতি বেছে নিন</div>
+        </div>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="fpm-order-summary">
+        <div class="fpm-os-title">অর্ডার সামারি</div>
+        <div class="fpm-os-row">
+            <span>প্রোডাক্ট</span>
+            <span id="fpmProductName">Free Fire Topup</span>
+        </div>
+        <div class="fpm-os-row">
+            <span>পরিমাণ</span>
+            <span id="fpmDiamondAmt">— ডায়মন্ড</span>
+        </div>
+        <div class="fpm-os-row total">
+            <span>মোট মূল্য</span>
+            <span id="fpmTotalPrice">৳ —</span>
+        </div>
+    </div>
+
+    <!-- Method Label -->
+    <div class="fpm-method-label">পেমেন্ট মেথড বেছে নিন</div>
+
+    <!-- 4 Methods -->
+    <div class="fpm-methods-grid">
+        <div class="fpm-method-card" id="fpm-bkash" onclick="selectFpmMethod('bkash')">
+            <div class="fpm-selected-check"><i class="fa-solid fa-check"></i></div>
+            <div class="fpm-icon fpm-icon-bkash"><i class="fa-solid fa-mobile-retro"></i></div>
+            <div class="fpm-method-name">bKash</div>
+            <div class="fpm-method-tag">মোবাইল ব্যাংকিং</div>
+        </div>
+        <div class="fpm-method-card" id="fpm-nagad" onclick="selectFpmMethod('nagad')">
+            <div class="fpm-selected-check"><i class="fa-solid fa-check"></i></div>
+            <div class="fpm-icon fpm-icon-nagad"><i class="fa-solid fa-bolt"></i></div>
+            <div class="fpm-method-name">Nagad</div>
+            <div class="fpm-method-tag">মোবাইল ব্যাংকিং</div>
+        </div>
+        <div class="fpm-method-card" id="fpm-rocket" onclick="selectFpmMethod('rocket')">
+            <div class="fpm-selected-check"><i class="fa-solid fa-check"></i></div>
+            <div class="fpm-icon fpm-icon-rocket"><i class="fa-solid fa-building-columns"></i></div>
+            <div class="fpm-method-name">Rocket</div>
+            <div class="fpm-method-tag">ডাচ-বাংলা ব্যাংক</div>
+        </div>
+        <div class="fpm-method-card" id="fpm-upay" onclick="selectFpmMethod('upay')">
+            <div class="fpm-selected-check"><i class="fa-solid fa-check"></i></div>
+            <div class="fpm-icon fpm-icon-upay"><i class="fa-solid fa-mobile-screen-button"></i></div>
+            <div class="fpm-method-name">Upay</div>
+            <div class="fpm-method-tag">উত্তরা ব্যাংক</div>
+        </div>
+    </div>
+
+    <!-- Confirm Button -->
+    <div class="fpm-confirm-wrap">
+        <button class="fpm-confirm-btn" id="fpmConfirmBtn" onclick="confirmFpmMethod()">
+            পরবর্তী ধাপ →
+        </button>
+        <div class="fpm-no-select-note" id="fpmNoSelectNote">
+            ⚠️ একটি পেমেন্ট মেথড সিলেক্ট করুন
+        </div>
+    </div>
+</div>
+
+
+<script>
+// ===== FF PAYMENT METHOD PAGE =====
+var _fpmSelectedMethod = null;
+var _fpmOrderData = {};
+
+function openFfPayMethodPage(orderData) {
+    _fpmOrderData = orderData || {};
+    _fpmSelectedMethod = null;
+
+    // Reset selection
+    document.querySelectorAll('.fpm-method-card').forEach(function(el) {
+        el.classList.remove('selected');
+    });
+    document.getElementById('fpmNoSelectNote').style.display = 'none';
+
+    // Fill order summary
+    document.getElementById('fpmProductName').textContent = orderData.productName || 'Free Fire Topup';
+    document.getElementById('fpmDiamondAmt').textContent  = (orderData.diamonds || '—') + ' ডায়মন্ড';
+    document.getElementById('fpmTotalPrice').textContent  = orderData.price ? '৳ ' + orderData.price : '৳ —';
+
+    document.getElementById('ffPayMethodPage').classList.add('show');
+}
+
+function closeFfPayMethodPage() {
+    document.getElementById('ffPayMethodPage').classList.remove('show');
+    _fpmSelectedMethod = null;
+}
+
+function selectFpmMethod(method) {
+    _fpmSelectedMethod = method;
+    document.querySelectorAll('.fpm-method-card').forEach(function(el) {
+        el.classList.remove('selected');
+    });
+    document.getElementById('fpm-' + method).classList.add('selected');
+    document.getElementById('fpmNoSelectNote').style.display = 'none';
+}
+
+function confirmFpmMethod() {
+    if (!_fpmSelectedMethod) {
+        document.getElementById('fpmNoSelectNote').style.display = 'block';
+        return;
+    }
+    closeFfPayMethodPage();
+
+    // Map to gateway method name
+    var methodMap = {
+        'bkash':  'Bikash',
+        'nagad':  'Nagad',
+        'rocket': 'Rocket',
+        'upay':   'Upay'
+    };
+    var gatewayMethod = methodMap[_fpmSelectedMethod];
+
+    // Set gateway values and open gateway modal
+    selectedAmountValue = _fpmOrderData.price || 0;
+    selectedMethodValue = gatewayMethod;
+
+    if (document.getElementById('displayAmount'))
+        document.getElementById('displayAmount').innerText = selectedAmountValue;
+    if (document.getElementById('displayMethod'))
+        document.getElementById('displayMethod').innerText = gatewayMethod;
+    if (document.getElementById('gatewayTitle'))
+        document.getElementById('gatewayTitle').innerText = gatewayMethod;
+
+    var numEl = document.getElementById('gatewayNumber');
+    if (numEl && window.merchantNumbers && window.merchantNumbers[gatewayMethod]) {
+        numEl.innerText = window.merchantNumbers[gatewayMethod];
+    }
+
+    var iconMap = {
+        'Bikash':  'fa-solid fa-mobile-retro',
+        'Nagad':   'fa-solid fa-bolt',
+        'Rocket':  'fa-solid fa-building-columns',
+        'Upay':    'fa-solid fa-mobile-screen-button'
+    };
+    var iconEl = document.getElementById('gatewayMethodIcon');
+    if (iconEl) iconEl.className = iconMap[gatewayMethod] || 'fa-solid fa-wallet';
+
+    var gatewayModal = document.getElementById('gatewayModal');
+    if (gatewayModal) gatewayModal.style.display = 'flex';
+}
+
+// ===== Patch submitFFOrder to open Payment Method Page when instant selected =====
+var _origSubmitFFOrder_v2 = window.submitFFOrder;
+window.submitFFOrder = function() {
+    var isInstant = document.getElementById('ff-pay-auto') &&
+                    document.getElementById('ff-pay-auto').classList.contains('selected');
+    if (isInstant) {
+        // Validate inputs first
+        var uid = document.getElementById('ffPlayerID');
+        if (!uid || !uid.value.trim()) {
+            if (uid) uid.style.border = '2px solid #e51a1a';
+            showAuthToast('Player ID দিন!', 'error');
+            return;
+        }
+        if (uid) uid.style.border = '';
+
+        var pkgEls = document.querySelectorAll('.ff-package-item');
+        var selectedPkg = null;
+        pkgEls.forEach(function(el, i) {
+            if (el.classList.contains('selected')) selectedPkg = el;
+        });
+        if (!selectedPkg) {
+            showAuthToast('একটি প্যাকেজ সিলেক্ট করুন!', 'error');
+            return;
+        }
+
+        var nameEl  = selectedPkg.querySelector('.ff-pkg-name, .ff-pkg-diamonds, h4, .name');
+        var priceEl = selectedPkg.querySelector('.ff-pkg-price, .price, [class*="price"]');
+        var diamonds = nameEl  ? nameEl.textContent.trim()  : '?';
+        var price    = priceEl ? priceEl.textContent.replace(/[^0-9]/g,'') : '0';
+
+        openFfPayMethodPage({
+            productName: 'Free Fire UID Topup',
+            diamonds: diamonds,
+            price: price,
+            uid: uid.value.trim()
+        });
+    } else {
+        if (typeof _origSubmitFFOrder_v2 === 'function') _origSubmitFFOrder_v2();
+    }
+};
 </script>
 
 </body>
