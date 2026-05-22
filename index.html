@@ -3887,31 +3887,12 @@ font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
         }
 
         function closePaymentRequestPage() {
-            // Close payment request page
             document.getElementById('paymentRequestPage').classList.remove('show');
             document.body.style.overflow = '';
             selectedAmountValue = 0;
             selectedMethodValue = '';
             document.querySelectorAll('.amount-box').forEach(b => b.classList.remove('selected'));
             document.querySelectorAll('.method-box').forEach(b => b.classList.remove('selected'));
-
-            // Close all other open pages and go home
-            ['ffTopupPage','ffPayMethodPage','redeemPage','redeemRequestPage','raferPage','unipinPage','weeklyLitePage'].forEach(function(id){
-                var el = document.getElementById(id);
-                if (el) { el.classList.remove('show','active','open'); el.style.display = ''; }
-            });
-            ['gatewayModal','addMoneyModal'].forEach(function(id){
-                var el = document.getElementById(id);
-                if (el) { el.style.display = 'none'; }
-            });
-
-            // Navigate to home tab
-            // Scroll to top / go home
-            window.scrollTo(0, 0);
-            // Activate home nav item
-            var navItems = document.querySelectorAll('.bottom-nav .nav-item');
-            navItems.forEach(function(n){ n.classList.remove('active'); });
-            if (navItems.length > 0) navItems[0].classList.add('active');
         }
 
         // NEW NEW NEW SEPARATE LINK SYSTEM AND TAB CONTROLLER FOR ADMIN
@@ -4844,13 +4825,12 @@ font-weight:700;
             function wlAuthClick() {
                 var btn = document.getElementById('wlAuthBtn');
                 if (btn.dataset.loggedIn === '1') {
-                    // Collect selected package & UID
                     var activeOpt = document.querySelector('.option-box.active');
-                    var uidInput  = document.querySelector('input[placeholder*="UID"], input[placeholder*="Player"]');
-                    var price     = activeOpt ? activeOpt.querySelector('.option-price') : null;
-                    var label     = activeOpt ? activeOpt.querySelector('.option-left')  : null;
-                    var priceVal  = price ? price.innerText.replace(/[^0-9]/g,'') : '0';
-                    var labelTxt  = label ? label.innerText.trim() : 'Weekly Lite';
+                    var uidInput  = document.querySelector('input[placeholder]');
+                    var priceEl   = activeOpt ? activeOpt.querySelector('.option-price') : null;
+                    var labelEl   = activeOpt ? activeOpt.querySelector('.option-left')  : null;
+                    var priceVal  = priceEl ? priceEl.innerText.replace(/[^0-9]/g,'') : '0';
+                    var labelTxt  = labelEl ? labelEl.innerText.trim() : 'Weekly Lite';
                     var uid       = uidInput ? uidInput.value.trim() : '';
                     if (!uid) { alert('Player UID দিন!'); return; }
                     window.parent.postMessage({
@@ -5325,7 +5305,7 @@ function closeWeeklyLitePage() {
           var btn = document.getElementById('wmAuthBtn');
           if (btn.dataset.loggedIn === '1') {
               var activePkg = document.querySelector('.package.active');
-              var uidInput  = document.querySelector('.input-box[placeholder*="UID"], input[placeholder*="UID"]');
+              var uidInput  = document.querySelector('input[placeholder]');
               var priceEl   = activePkg ? activePkg.querySelector('.price') : null;
               var labelEl   = activePkg ? activePkg.querySelector('.package-left') : null;
               var priceVal  = priceEl ? priceEl.innerText.replace(/[^0-9]/g,'') : '0';
@@ -5770,47 +5750,17 @@ function submitUnipinOrder() {
 
 // ── Level Up Pass Submit ──
 function submitLupOrder() {
-    // Check Instant Pay selected
-    var lupPays = document.querySelectorAll('#levelUpPassPage .lup-pay');
-    var isInstant = false;
-    lupPays.forEach(function(p, i) { if (i === 1 && p.classList.contains('selected')) isInstant = true; });
-
-    var activeItem = document.querySelector('#levelUpPassPage .lup-item.selected');
-    var uidInput   = document.querySelector('#levelUpPassPage .lup-input');
-    var priceEl    = activeItem ? activeItem.querySelector('.lup-price') : null;
-    var labelEl    = activeItem ? activeItem.querySelector('.lup-left')  : null;
-    var priceVal   = priceEl ? priceEl.innerText.replace(/[^0-9]/g,'') : '0';
-    var labelTxt   = labelEl ? labelEl.innerText.trim() : 'Level Up Pass';
-    var uid        = uidInput ? uidInput.value.trim() : '';
-
-    if (!uid) { showAuthToast('Player UID দিন!', 'error'); return; }
-
-    if (isInstant) {
-        openFfPayMethodPage({
-            productName: 'Level Up Pass (BD Server)',
-            diamonds: labelTxt,
-            price: priceVal,
-            uid: uid
-        });
+    if (typeof window.lupSubmitOrder === 'function') {
+        window.lupSubmitOrder();
     } else {
-        showAuthToast('Wallet Pay coming soon!', 'error');
+        const form = document.querySelector('#levelUpPassPage form');
+        if (form) form.dispatchEvent(new Event('submit', {bubbles:true}));
+        else showAuthToast('অর্ডার submit করতে সমস্যা হয়েছে।', 'error');
     }
 }
 </script>
 
 <script>
-// Receive openPayMethod from Weekly Lite / Weekly Monthly iframes
-window.addEventListener('message', function(e) {
-    if (e.data && e.data.action === 'openPayMethod') {
-        openFfPayMethodPage({
-            productName: e.data.productName || 'Product',
-            diamonds: e.data.diamonds || '—',
-            price: e.data.price || '0',
-            uid: e.data.uid || '—'
-        });
-    }
-});
-
 // যদি login থাকে → action চালায়, না থাকলে → login page এ নিয়ে যায়
 function handleAuthBtn(btn, action) {
     if (window._currentUser) {
@@ -5998,10 +5948,7 @@ function openFfPayMethodPage(orderData) {
 
     // Fill order summary
     document.getElementById('fpmProductName').textContent = orderData.productName || 'Free Fire Topup';
-    // Show diamond count for FF topup, package label for others
-    var diamondLabel = orderData.diamonds || '—';
-    var isFF = (orderData.productName || '').toLowerCase().includes('uid') || (orderData.productName || '').toLowerCase().includes('topup');
-    document.getElementById('fpmDiamondAmt').textContent = isFF ? diamondLabel + ' ডায়মন্ড' : diamondLabel;
+    document.getElementById('fpmDiamondAmt').textContent  = (orderData.diamonds || '—') + ' ডায়মন্ড';
     document.getElementById('fpmUid').textContent         = orderData.uid || '—';
     document.getElementById('fpmTotalPrice').textContent  = orderData.price ? '৳ ' + orderData.price : '৳ —';
 
@@ -6114,6 +6061,41 @@ window.submitFFOrder = function() {
     }
 };
 </script>
+<!-- ===== BUY NOW FIX: Weekly Lite, Weekly Monthly, Level Up Pass ===== -->
+<script>
+
+// 1. Level Up Pass: Buy Now calls openFfPayMethodPage directly
+window.submitLupOrder = function() {
+    var activeItem = document.querySelector('#levelUpPassPage .lup-item.selected');
+    var uidInput   = document.querySelector('#levelUpPassPage .lup-input');
+    if (!activeItem) { showAuthToast('একটি প্যাকেজ সিলেক্ট করুন!', 'error'); return; }
+    var labelEl  = activeItem.querySelector('.lup-left');
+    var priceEl  = activeItem.querySelector('.lup-price');
+    var labelTxt = labelEl ? labelEl.innerText.trim() : 'Level Up Pass';
+    var priceVal = priceEl ? priceEl.innerText.replace(/[^0-9]/g,'') : '0';
+    var uid      = uidInput ? uidInput.value.trim() : '';
+    if (!uid) { showAuthToast('Player UID দিন!', 'error'); return; }
+    openFfPayMethodPage({
+        productName: 'Level Up Pass (BD Server)',
+        diamonds: labelTxt,
+        price: priceVal,
+        uid: uid
+    });
+};
+
+// 2. Receive postMessage from Weekly Lite / Weekly Monthly iframes
+window.addEventListener('message', function(e) {
+    if (!e.data || e.data.action !== 'openPayMethod') return;
+    openFfPayMethodPage({
+        productName: e.data.productName || 'Product',
+        diamonds: e.data.diamonds || '—',
+        price: e.data.price || '0',
+        uid: e.data.uid || '—'
+    });
+});
+
+</script>
+
 
 </body>
 </html>
