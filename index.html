@@ -434,6 +434,7 @@
             background: linear-gradient(160deg, #0f0f1a 0%, #1a1a2e 100%) !important;
             padding: 0 !important;
             overflow-y: auto;
+            z-index: 20000000 !important;
         }
 
         .gateway-hero {
@@ -484,41 +485,45 @@
         }
 
         /* Per-method color themes */
-        .gateway-hero[data-method="Bikash"] { background: linear-gradient(150deg, #c2185b 0%, #880e4f 60%, #4a0027 100%); }
-        .gateway-hero[data-method="Bikash"] .gateway-method-badge { background: rgba(255,255,255,0.2); color: white; }
-        .gateway-hero[data-method="Bikash"] .gateway-amount-icon { color: #f48fb1; }
-        .gateway-hero[data-method="Bikash"] ~ .gateway-body .gateway-instruction { border-left-color: #e91e8c; background: #fff0f6; }
-        .gateway-hero[data-method="Bikash"] ~ .gateway-body .copy-container { border-color: #e91e8c; background: #fff0f6; }
-        .gateway-hero[data-method="Bikash"] ~ .gateway-body .btn-copy { background: #e91e8c; }
-        .gateway-hero[data-method="Bikash"] ~ .gateway-body .btn-verify { background: linear-gradient(135deg, #e91e8c, #c2185b); }
-        .gateway-hero[data-method="Bikash"] ~ .gateway-body .gateway-step-dot { background: #e91e8c; }
+        /* ── bKash theme ── */
+        #gatewayModal[data-method="Bikash"] .gateway-hero { background: linear-gradient(150deg, #c2185b 0%, #880e4f 60%, #4a0027 100%); }
+        #gatewayModal[data-method="Bikash"] .gateway-method-badge { background: rgba(255,255,255,0.2); color: white; }
+        #gatewayModal[data-method="Bikash"] .gateway-amount-icon { color: #f48fb1; }
+        #gatewayModal[data-method="Bikash"] .gateway-instruction { border-left-color: #e91e8c; background: #fff0f6; }
+        #gatewayModal[data-method="Bikash"] .copy-container { border-color: #e91e8c; background: #fff0f6; }
+        #gatewayModal[data-method="Bikash"] .btn-copy { background: #e91e8c; }
+        #gatewayModal[data-method="Bikash"] .btn-verify { background: linear-gradient(135deg, #e91e8c, #c2185b) !important; }
+        #gatewayModal[data-method="Bikash"] .gateway-step-dot { background: #e91e8c; }
 
-        .gateway-hero[data-method="Nagad"] { background: linear-gradient(150deg, #e65100 0%, #bf360c 60%, #7c1a02 100%); }
-        .gateway-hero[data-method="Nagad"] .gateway-method-badge { background: rgba(255,255,255,0.2); color: white; }
-        .gateway-hero[data-method="Nagad"] .gateway-amount-icon { color: #ffcc80; }
-        .gateway-hero[data-method="Nagad"] ~ .gateway-body .gateway-instruction { border-left-color: #f57c00; background: #fff8f0; }
-        .gateway-hero[data-method="Nagad"] ~ .gateway-body .copy-container { border-color: #f57c00; background: #fff8f0; }
-        .gateway-hero[data-method="Nagad"] ~ .gateway-body .btn-copy { background: #f57c00; }
-        .gateway-hero[data-method="Nagad"] ~ .gateway-body .btn-verify { background: linear-gradient(135deg, #f57c00, #e65100); }
-        .gateway-hero[data-method="Nagad"] ~ .gateway-body .gateway-step-dot { background: #f57c00; }
+        /* ── Nagad theme ── */
+        #gatewayModal[data-method="Nagad"] .gateway-hero { background: linear-gradient(150deg, #e65100 0%, #bf360c 60%, #7c1a02 100%); }
+        #gatewayModal[data-method="Nagad"] .gateway-method-badge { background: rgba(255,255,255,0.2); color: white; }
+        #gatewayModal[data-method="Nagad"] .gateway-amount-icon { color: #ffcc80; }
+        #gatewayModal[data-method="Nagad"] .gateway-instruction { border-left-color: #f57c00; background: #fff8f0; }
+        #gatewayModal[data-method="Nagad"] .copy-container { border-color: #f57c00; background: #fff8f0; }
+        #gatewayModal[data-method="Nagad"] .btn-copy { background: #f57c00; }
+        #gatewayModal[data-method="Nagad"] .btn-verify { background: linear-gradient(135deg, #f57c00, #e65100) !important; }
+        #gatewayModal[data-method="Nagad"] .gateway-step-dot { background: #f57c00; }
 
-        .gateway-hero[data-method="Rocket"] { background: linear-gradient(150deg, #6a1b9a 0%, #4a148c 60%, #2a0060 100%); }
-        .gateway-hero[data-method="Rocket"] .gateway-method-badge { background: rgba(255,255,255,0.2); color: white; }
-        .gateway-hero[data-method="Rocket"] .gateway-amount-icon { color: #ce93d8; }
-        .gateway-hero[data-method="Rocket"] ~ .gateway-body .gateway-instruction { border-left-color: #8e24aa; background: #f9f0ff; }
-        .gateway-hero[data-method="Rocket"] ~ .gateway-body .copy-container { border-color: #8e24aa; background: #f9f0ff; }
-        .gateway-hero[data-method="Rocket"] ~ .gateway-body .btn-copy { background: #8e24aa; }
-        .gateway-hero[data-method="Rocket"] ~ .gateway-body .btn-verify { background: linear-gradient(135deg, #8e24aa, #6a1b9a); }
-        .gateway-hero[data-method="Rocket"] ~ .gateway-body .gateway-step-dot { background: #8e24aa; }
+        /* ── Rocket theme ── */
+        #gatewayModal[data-method="Rocket"] .gateway-hero { background: linear-gradient(150deg, #6a1b9a 0%, #4a148c 60%, #2a0060 100%); }
+        #gatewayModal[data-method="Rocket"] .gateway-method-badge { background: rgba(255,255,255,0.2); color: white; }
+        #gatewayModal[data-method="Rocket"] .gateway-amount-icon { color: #ce93d8; }
+        #gatewayModal[data-method="Rocket"] .gateway-instruction { border-left-color: #8e24aa; background: #f9f0ff; }
+        #gatewayModal[data-method="Rocket"] .copy-container { border-color: #8e24aa; background: #f9f0ff; }
+        #gatewayModal[data-method="Rocket"] .btn-copy { background: #8e24aa; }
+        #gatewayModal[data-method="Rocket"] .btn-verify { background: linear-gradient(135deg, #8e24aa, #6a1b9a) !important; }
+        #gatewayModal[data-method="Rocket"] .gateway-step-dot { background: #8e24aa; }
 
-        .gateway-hero[data-method="Upay"] { background: linear-gradient(150deg, #1565c0 0%, #0d47a1 60%, #002171 100%); }
-        .gateway-hero[data-method="Upay"] .gateway-method-badge { background: rgba(255,255,255,0.2); color: white; }
-        .gateway-hero[data-method="Upay"] .gateway-amount-icon { color: #90caf9; }
-        .gateway-hero[data-method="Upay"] ~ .gateway-body .gateway-instruction { border-left-color: #1976d2; background: #f0f5ff; }
-        .gateway-hero[data-method="Upay"] ~ .gateway-body .copy-container { border-color: #1976d2; background: #f0f5ff; }
-        .gateway-hero[data-method="Upay"] ~ .gateway-body .btn-copy { background: #1976d2; }
-        .gateway-hero[data-method="Upay"] ~ .gateway-body .btn-verify { background: linear-gradient(135deg, #1976d2, #1565c0); }
-        .gateway-hero[data-method="Upay"] ~ .gateway-body .gateway-step-dot { background: #1976d2; }
+        /* ── Upay theme ── */
+        #gatewayModal[data-method="Upay"] .gateway-hero { background: linear-gradient(150deg, #1565c0 0%, #0d47a1 60%, #002171 100%); }
+        #gatewayModal[data-method="Upay"] .gateway-method-badge { background: rgba(255,255,255,0.2); color: white; }
+        #gatewayModal[data-method="Upay"] .gateway-amount-icon { color: #90caf9; }
+        #gatewayModal[data-method="Upay"] .gateway-instruction { border-left-color: #1976d2; background: #f0f5ff; }
+        #gatewayModal[data-method="Upay"] .copy-container { border-color: #1976d2; background: #f0f5ff; }
+        #gatewayModal[data-method="Upay"] .btn-copy { background: #1976d2; }
+        #gatewayModal[data-method="Upay"] .btn-verify { background: linear-gradient(135deg, #1976d2, #1565c0) !important; }
+        #gatewayModal[data-method="Upay"] .gateway-step-dot { background: #1976d2; }
 
         .gateway-amount-display {
             text-align: center;
@@ -3733,6 +3738,7 @@ font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
             // Apply per-method color theme
             const hero = document.getElementById('gatewayHero');
             hero.setAttribute('data-method', selectedMethodValue);
+            document.getElementById('gatewayModal').setAttribute('data-method', selectedMethodValue);
 
             // Update method icon
             const iconMap = {
@@ -5933,62 +5939,50 @@ function confirmFpmMethod() {
         document.getElementById('fpmNoSelectNote').style.display = 'block';
         return;
     }
-    closeFfPayMethodPage();
 
-    var methodMap = {
-        'bkash':  'Bikash',
-        'nagad':  'Nagad',
-        'rocket': 'Rocket',
-        'upay':   'Upay'
-    };
+    var methodMap = { 'bkash':'Bikash', 'nagad':'Nagad', 'rocket':'Rocket', 'upay':'Upay' };
     var iconMap = {
-        'Bikash':  'fa-solid fa-mobile-retro',
-        'Nagad':   'fa-solid fa-bolt',
-        'Rocket':  'fa-solid fa-building-columns',
-        'Upay':    'fa-solid fa-mobile-screen-button'
+        'Bikash': 'fa-solid fa-mobile-retro',
+        'Nagad':  'fa-solid fa-bolt',
+        'Rocket': 'fa-solid fa-building-columns',
+        'Upay':   'fa-solid fa-mobile-screen-button'
     };
 
     var gatewayMethod = methodMap[_fpmSelectedMethod];
 
-    // ── Set global values (used by verifyPaymentSubmission) ──
+    // ── Set global values ──
     selectedAmountValue = _fpmOrderData.price || 0;
     selectedMethodValue = gatewayMethod;
 
-    // ── Apply theme: set data-method on hero div ──
-    var hero = document.getElementById('gatewayHero');
-    if (hero) hero.setAttribute('data-method', gatewayMethod);
+    // ── Apply theme: data-method on gatewayModal itself ──
+    var gatewayModal = document.getElementById('gatewayModal');
+    gatewayModal.setAttribute('data-method', gatewayMethod);
 
-    // ── Fill gateway content ──
+    // ── Fill content ──
     var set = function(id, val) { var el = document.getElementById(id); if (el) el.innerText = val; };
     set('displayAmount', selectedAmountValue);
     set('displayMethod', gatewayMethod);
     set('gatewayTitle',  gatewayMethod);
 
-    // merchant number
     var numEl = document.getElementById('gatewayNumber');
     if (numEl) {
         var nums = window.merchantNumbers || {};
         numEl.innerText = nums[gatewayMethod] || '017XXXXXXXX';
     }
 
-    // icon
     var iconEl = document.getElementById('gatewayMethodIcon');
     if (iconEl) iconEl.className = iconMap[gatewayMethod] || 'fa-solid fa-wallet';
 
-    // clear trx input
     var trx = document.getElementById('trxIDInput');
     if (trx) trx.value = '';
 
-    // ── Store order data for submission ──
-    window._pendingFFOrder = _fpmOrderData;
-    window._pendingFFOrder.method = gatewayMethod;
+    // ── Store pending order ──
+    window._pendingFFOrder = Object.assign({}, _fpmOrderData, { method: gatewayMethod });
 
-    // ── Open gateway modal ──
-    var gatewayModal = document.getElementById('gatewayModal');
-    if (gatewayModal) {
-        gatewayModal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-    }
+    // ── Hide payment method page, open gateway directly (no flash) ──
+    document.getElementById('ffPayMethodPage').classList.remove('show');
+    gatewayModal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
 }
 
 // ===== Patch submitFFOrder to open Payment Method Page when instant selected =====
