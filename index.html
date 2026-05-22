@@ -3895,6 +3895,15 @@ font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
             selectedMethodValue = '';
             document.querySelectorAll('.amount-box').forEach(b => b.classList.remove('selected'));
             document.querySelectorAll('.method-box').forEach(b => b.classList.remove('selected'));
+            // Close gatewayModal if open
+            var gm = document.getElementById('gatewayModal');
+            if (gm) gm.style.display = 'none';
+            // Close ffPayMethodPage if open
+            var fpm = document.getElementById('ffPayMethodPage');
+            if (fpm) fpm.classList.remove('show');
+            // Close ffTopupPage if open
+            var ftp = document.getElementById('ffTopupPage');
+            if (ftp) ftp.classList.remove('show');
         }
 
         // NEW NEW NEW SEPARATE LINK SYSTEM AND TAB CONTROLLER FOR ADMIN
