@@ -2736,34 +2736,15 @@ font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
             <div class="pr-success-text">রিকোয়েস্ট পাঠানো হয়েছে!</div>
             <div class="pr-success-sub">আপনার পেমেন্ট রিকোয়েস্ট সফলভাবে<br>ভেরিফিকেশনের জন্য সাবমিট হয়েছে।</div>
         </div>
-        <!-- REQUEST ID + STATUS BADGE TOP -->
+        <!-- REQUEST ID TOP -->
         <div class="pr-reqid-box" style="margin: 0 16px 0;">
             <span class="pr-reqid-label"><i class="fa-solid fa-hashtag"></i> Request ID</span>
             <span class="pr-reqid-value" id="prReqId">#REQ000000</span>
         </div>
 
-        <!-- STATUS CARD -->
+        <!-- BOX 1: PAYMENT STATUS -->
         <div class="pr-card" style="margin-top:10px;">
-            <div class="pr-card-title"><i class="fa-solid fa-circle-check"></i> অর্ডার স্ট্যাটাস</div>
-            <div class="pr-info-box">
-                <div class="pr-info-row">
-                    <div class="pr-info-label"><i class="fa-solid fa-clock"></i> সময়</div>
-                    <div class="pr-info-value" id="prDisplayTime">—</div>
-                </div>
-                <div class="pr-info-row">
-                    <div class="pr-info-label"><i class="fa-solid fa-circle-dot"></i> স্ট্যাটাস</div>
-                    <div class="pr-info-value">
-                        <span class="pr-status-badge">
-                            <span class="pr-status-dot"></span> Pending Review
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- PAYMENT DETAILS CARD -->
-        <div class="pr-card">
-            <div class="pr-card-title"><i class="fa-solid fa-receipt"></i> পেমেন্ট ডিটেইলস</div>
+            <div class="pr-card-title"><i class="fa-solid fa-credit-card"></i> পেমেন্ট স্ট্যাটাস</div>
             <div class="pr-info-box">
                 <div class="pr-info-row">
                     <div class="pr-info-label"><i class="fa-solid fa-mobile-screen-button"></i> পেমেন্ট মেথড</div>
@@ -2777,12 +2758,24 @@ font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
                     <div class="pr-info-label"><i class="fa-solid fa-key"></i> Transaction ID</div>
                     <div class="pr-info-value" style="font-family:monospace; font-weight:700; word-break:break-all;" id="prDisplayTrx">—</div>
                 </div>
+                <div class="pr-info-row">
+                    <div class="pr-info-label"><i class="fa-solid fa-clock"></i> সময়</div>
+                    <div class="pr-info-value" id="prDisplayTime">—</div>
+                </div>
+                <div class="pr-info-row">
+                    <div class="pr-info-label"><i class="fa-solid fa-circle-dot"></i> পেমেন্ট স্ট্যাটাস</div>
+                    <div class="pr-info-value">
+                        <span class="pr-status-badge">
+                            <span class="pr-status-dot"></span> Pending
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- PRODUCT DETAILS CARD -->
+        <!-- BOX 2: ORDER STATUS -->
         <div class="pr-card" id="prProductCard" style="display:none;">
-            <div class="pr-card-title"><i class="fa-solid fa-gamepad"></i> প্রোডাক্ট ডিটেইলস</div>
+            <div class="pr-card-title"><i class="fa-solid fa-gamepad"></i> অর্ডার স্ট্যাটাস</div>
             <div class="pr-info-box">
                 <div class="pr-info-row">
                     <div class="pr-info-label"><i class="fa-solid fa-box"></i> প্রোডাক্ট</div>
@@ -2795,6 +2788,18 @@ font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
                 <div class="pr-info-row" id="prUidRow">
                     <div class="pr-info-label"><i class="fa-solid fa-id-card"></i> Player UID</div>
                     <div class="pr-info-value" style="font-family:monospace; font-weight:700;" id="prUid">—</div>
+                </div>
+                <div class="pr-info-row">
+                    <div class="pr-info-label"><i class="fa-solid fa-clock"></i> সময়</div>
+                    <div class="pr-info-value" id="prDisplayTimeOrder">—</div>
+                </div>
+                <div class="pr-info-row">
+                    <div class="pr-info-label"><i class="fa-solid fa-circle-check"></i> অর্ডার স্ট্যাটাস</div>
+                    <div class="pr-info-value">
+                        <span class="pr-status-badge">
+                            <span class="pr-status-dot"></span> Pending
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -3822,6 +3827,9 @@ font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
                 document.getElementById('prDisplayTrx').innerText = trxID;
                 document.getElementById('prDisplayTime').innerText = now;
                 document.getElementById('prReqId').innerText = reqId;
+                // Also set order box time
+                var prTimeOrder = document.getElementById('prDisplayTimeOrder');
+                if (prTimeOrder) prTimeOrder.innerText = now;
 
                 // ── Product Details (from FF/Unipin/LUP order) ──
                 const orderData = window._pendingFFOrder || window._pendingOrderData || null;
