@@ -4882,7 +4882,20 @@ font-weight:700;
         element.classList.add('active');
         // Update the radio button check status
         element.querySelector('input[type=&quot;radio&quot;]').checked = true;
-        // Update Total Price" 
+        // Update Total Price
+        document.getElementById('totalPrice').innerText = price;
+    }
+
+    function selectPayment(element) {
+        document.querySelectorAll('.pay-card').forEach(el => {
+            el.classList.remove('active');
+        });
+        element.classList.add('active');
+    }
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;" 
         style="width:100%;height:100%;border:none;">
     </iframe>
 </div>
