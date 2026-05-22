@@ -738,6 +738,7 @@
         .payment-request-page[data-method="Nagad"]  { background: linear-gradient(160deg, #e65100 0%, #bf360c 55%, #3e0a00 100%); }
         .payment-request-page[data-method="Rocket"] { background: linear-gradient(160deg, #6a1b9a 0%, #4a148c 55%, #1a0040 100%); }
         .payment-request-page[data-method="Upay"]   { background: linear-gradient(160deg, #1565c0 0%, #0d47a1 55%, #001050 100%); }
+        .payment-request-page[data-method="Wallet"] { background: linear-gradient(160deg, #1a46e5 0%, #0d2b99 55%, #050f40 100%); }
 
         .pr-top-bar {
             display: flex;
@@ -6064,42 +6065,105 @@ function confirmFpmMethod() {
     document.body.style.overflow = 'hidden';
 }
 
-// ===== Patch submitFFOrder to open Payment Method Page when instant selected =====
+// ===== Patch submitFFOrder to handle both wallet pay and instant pay =====
 var _origSubmitFFOrder_v2 = window.submitFFOrder;
 window.submitFFOrder = function() {
     var isInstant = document.getElementById('ff-pay-auto') &&
                     document.getElementById('ff-pay-auto').classList.contains('selected');
+    var isWallet  = document.getElementById('ff-pay-wallet') &&
+                    document.getElementById('ff-pay-wallet').classList.contains('selected');
+
+    // Common validation
+    var uid = document.getElementById('ffPlayerID');
+    if (!uid || !uid.value.trim()) {
+        if (uid) uid.style.border = '2px solid #e51a1a';
+        showAuthToast('Player ID দিন!', 'error');
+        return;
+    }
+    if (uid) uid.style.border = '';
+
+    var pkgEls = document.querySelectorAll('.ff-package-item');
+    var selectedPkg = null;
+    pkgEls.forEach(function(el) {
+        if (el.classList.contains('selected')) selectedPkg = el;
+    });
+    if (!selectedPkg) {
+        showAuthToast('একটি প্যাকেজ সিলেক্ট করুন!', 'error');
+        return;
+    }
+
+    var nameEl  = selectedPkg.querySelector('.ff-pkg-name, .ff-pkg-diamonds, h4, .name');
+    var priceEl = selectedPkg.querySelector('.ff-pkg-price, .price, [class*="price"]');
+    var diamonds = nameEl  ? nameEl.textContent.trim()  : '?';
+    var price    = priceEl ? priceEl.textContent.replace(/[^0-9]/g,'') : '0';
+
     if (isInstant) {
-        // Validate inputs first
-        var uid = document.getElementById('ffPlayerID');
-        if (!uid || !uid.value.trim()) {
-            if (uid) uid.style.border = '2px solid #e51a1a';
-            showAuthToast('Player ID দিন!', 'error');
-            return;
-        }
-        if (uid) uid.style.border = '';
-
-        var pkgEls = document.querySelectorAll('.ff-package-item');
-        var selectedPkg = null;
-        pkgEls.forEach(function(el, i) {
-            if (el.classList.contains('selected')) selectedPkg = el;
-        });
-        if (!selectedPkg) {
-            showAuthToast('একটি প্যাকেজ সিলেক্ট করুন!', 'error');
-            return;
-        }
-
-        var nameEl  = selectedPkg.querySelector('.ff-pkg-name, .ff-pkg-diamonds, h4, .name');
-        var priceEl = selectedPkg.querySelector('.ff-pkg-price, .price, [class*="price"]');
-        var diamonds = nameEl  ? nameEl.textContent.trim()  : '?';
-        var price    = priceEl ? priceEl.textContent.replace(/[^0-9]/g,'') : '0';
-
+        // Instant Pay → Payment Method selection page
         openFfPayMethodPage({
             productName: 'Free Fire UID Topup',
             diamonds: diamonds,
             price: price,
             uid: uid.value.trim()
         });
+    } else if (isWallet) {
+        // Wallet Pay → Order Request page directly
+        var reqId = '#PAY' + Math.floor(100000 + Math.random() * 900000);
+        var now = new Date().toLocaleString('en-US', {
+            timeZone: 'Asia/Dhaka',
+            day: '2-digit', month: 'short', year: 'numeric',
+            hour: '2-digit', minute: '2-digit', hour12: true
+        });
+
+        // Store pending order
+        window._pendingFFOrder = {
+            productName: 'Free Fire UID Topup',
+            diamonds: diamonds,
+            price: price,
+            uid: uid.value.trim(),
+            method: 'Wallet'
+        };
+
+        // Populate payment request page
+        var prPage = document.getElementById('paymentRequestPage');
+        prPage.setAttribute('data-method', 'Wallet');
+        var methodIconEl = document.getElementById('prMethodIcon');
+        if (methodIconEl) methodIconEl.className = 'fa-solid fa-wallet';
+        var prMethodNameEl = document.getElementById('prMethodName');
+        if (prMethodNameEl) prMethodNameEl.innerText = 'Wallet Pay';
+        var prDisplayAmountEl = document.getElementById('prDisplayAmount');
+        if (prDisplayAmountEl) prDisplayAmountEl.innerText = '৳' + price;
+        var prDisplayMethodEl = document.getElementById('prDisplayMethod');
+        if (prDisplayMethodEl) prDisplayMethodEl.innerText = 'Wallet Pay';
+        var prDisplayTrxEl = document.getElementById('prDisplayTrx');
+        if (prDisplayTrxEl) prDisplayTrxEl.innerText = 'Wallet';
+        var prDisplayTimeEl = document.getElementById('prDisplayTime');
+        if (prDisplayTimeEl) prDisplayTimeEl.innerText = now;
+        var prDisplayTimeOrderEl = document.getElementById('prDisplayTimeOrder');
+        if (prDisplayTimeOrderEl) prDisplayTimeOrderEl.innerText = now;
+        var prReqIdEl = document.getElementById('prReqId');
+        if (prReqIdEl) prReqIdEl.innerText = reqId;
+
+        // Product details
+        var productCard = document.getElementById('prProductCard');
+        if (productCard) {
+            var prProductNameEl = document.getElementById('prProductName');
+            if (prProductNameEl) prProductNameEl.innerText = 'Free Fire UID Topup';
+            var dRow = document.getElementById('prDiamondRow');
+            var dAmt = document.getElementById('prDiamondAmt');
+            if (dAmt) dAmt.innerText = diamonds + ' ডায়মন্ড';
+            if (dRow) dRow.style.display = '';
+            var uRow = document.getElementById('prUidRow');
+            var uVal = document.getElementById('prUid');
+            if (uVal) uVal.innerText = uid.value.trim();
+            if (uRow) uRow.style.display = '';
+            productCard.style.display = '';
+        }
+
+        window._pendingFFOrder = null;
+
+        // Open request page
+        document.body.style.overflow = 'hidden';
+        prPage.classList.add('show');
     } else {
         if (typeof _origSubmitFFOrder_v2 === 'function') _origSubmitFFOrder_v2();
     }
