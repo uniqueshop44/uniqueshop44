@@ -2731,27 +2731,22 @@ font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
             <div class="pr-success-text">রিকোয়েস্ট পাঠানো হয়েছে!</div>
             <div class="pr-success-sub">আপনার পেমেন্ট রিকোয়েস্ট সফলভাবে<br>ভেরিফিকেশনের জন্য সাবমিট হয়েছে।</div>
         </div>
-        <div class="pr-card">
-            <div class="pr-card-title"><i class="fa-solid fa-receipt"></i> পেমেন্ট সারসংক্ষেপ</div>
+        <!-- REQUEST ID + STATUS BADGE TOP -->
+        <div class="pr-reqid-box" style="margin: 0 16px 0;">
+            <span class="pr-reqid-label"><i class="fa-solid fa-hashtag"></i> Request ID</span>
+            <span class="pr-reqid-value" id="prReqId">#REQ000000</span>
+        </div>
+
+        <!-- STATUS CARD -->
+        <div class="pr-card" style="margin-top:10px;">
+            <div class="pr-card-title"><i class="fa-solid fa-circle-check"></i> অর্ডার স্ট্যাটাস</div>
             <div class="pr-info-box">
-                <div class="pr-info-row">
-                    <div class="pr-info-label"><i class="fa-solid fa-bangladeshi-taka-sign"></i> পরিমাণ</div>
-                    <div class="pr-info-value pr-amount-value pr-method-accent" id="prDisplayAmount">৳0</div>
-                </div>
-                <div class="pr-info-row">
-                    <div class="pr-info-label"><i class="fa-solid fa-mobile-screen-button"></i> পেমেন্ট মেথড</div>
-                    <div class="pr-info-value pr-method-accent" id="prDisplayMethod">—</div>
-                </div>
-                <div class="pr-info-row">
-                    <div class="pr-info-label"><i class="fa-solid fa-key"></i> Transaction ID</div>
-                    <div class="pr-info-value" id="prDisplayTrx">—</div>
-                </div>
                 <div class="pr-info-row">
                     <div class="pr-info-label"><i class="fa-solid fa-clock"></i> সময়</div>
                     <div class="pr-info-value" id="prDisplayTime">—</div>
                 </div>
                 <div class="pr-info-row">
-                    <div class="pr-info-label"><i class="fa-solid fa-circle-check"></i> স্ট্যাটাস</div>
+                    <div class="pr-info-label"><i class="fa-solid fa-circle-dot"></i> স্ট্যাটাস</div>
                     <div class="pr-info-value">
                         <span class="pr-status-badge">
                             <span class="pr-status-dot"></span> Pending Review
@@ -2759,13 +2754,50 @@ font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
                     </div>
                 </div>
             </div>
-            <div class="pr-reqid-box">
-                <span class="pr-reqid-label"><i class="fa-solid fa-hashtag"></i> Request ID</span>
-                <span class="pr-reqid-value" id="prReqId">#REQ000000</span>
+        </div>
+
+        <!-- PAYMENT DETAILS CARD -->
+        <div class="pr-card">
+            <div class="pr-card-title"><i class="fa-solid fa-receipt"></i> পেমেন্ট ডিটেইলস</div>
+            <div class="pr-info-box">
+                <div class="pr-info-row">
+                    <div class="pr-info-label"><i class="fa-solid fa-mobile-screen-button"></i> পেমেন্ট মেথড</div>
+                    <div class="pr-info-value pr-method-accent" id="prDisplayMethod">—</div>
+                </div>
+                <div class="pr-info-row">
+                    <div class="pr-info-label"><i class="fa-solid fa-bangladeshi-taka-sign"></i> পরিমাণ</div>
+                    <div class="pr-info-value pr-amount-value pr-method-accent" id="prDisplayAmount">৳0</div>
+                </div>
+                <div class="pr-info-row">
+                    <div class="pr-info-label"><i class="fa-solid fa-key"></i> Transaction ID</div>
+                    <div class="pr-info-value" style="font-family:monospace; font-weight:700; word-break:break-all;" id="prDisplayTrx">—</div>
+                </div>
             </div>
-            <div class="pr-notice">
-                <strong>📋 বিঃদ্রঃ</strong> অ্যাডমিন আপনার Transaction ID যাচাই করে ব্যালেন্স যুক্ত করে দেবে। সাধারণত ১–২৪ ঘণ্টার মধ্যে সম্পন্ন হয়। যেকোনো সমস্যায় WhatsApp এ যোগাযোগ করুন।
+        </div>
+
+        <!-- PRODUCT DETAILS CARD -->
+        <div class="pr-card" id="prProductCard" style="display:none;">
+            <div class="pr-card-title"><i class="fa-solid fa-gamepad"></i> প্রোডাক্ট ডিটেইলস</div>
+            <div class="pr-info-box">
+                <div class="pr-info-row">
+                    <div class="pr-info-label"><i class="fa-solid fa-box"></i> প্রোডাক্ট</div>
+                    <div class="pr-info-value" id="prProductName">—</div>
+                </div>
+                <div class="pr-info-row" id="prDiamondRow">
+                    <div class="pr-info-label"><i class="fa-solid fa-gem"></i> পরিমাণ</div>
+                    <div class="pr-info-value pr-method-accent" id="prDiamondAmt">—</div>
+                </div>
+                <div class="pr-info-row" id="prUidRow">
+                    <div class="pr-info-label"><i class="fa-solid fa-id-card"></i> Player UID</div>
+                    <div class="pr-info-value" style="font-family:monospace; font-weight:700;" id="prUid">—</div>
+                </div>
             </div>
+        </div>
+
+        <div class="pr-notice" style="margin: 0 16px 16px;">
+            <strong>📋 বিঃদ্রঃ</strong> অ্যাডমিন আপনার Transaction ID যাচাই করার পর ডায়মন্ড দেওয়া হবে। সাধারণত ১–২৪ ঘণ্টার মধ্যে সম্পন্ন হয়।
+        </div>
+        <div style="padding: 0 16px 30px;">
             <button class="pr-home-btn" onclick="closePaymentRequestPage()">
                 <i class="fa-solid fa-house"></i> হোমে ফিরে যান
             </button>
@@ -3784,6 +3816,37 @@ font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
                 document.getElementById('prDisplayTrx').innerText = trxID;
                 document.getElementById('prDisplayTime').innerText = now;
                 document.getElementById('prReqId').innerText = reqId;
+
+                // ── Product Details (from FF/Unipin/LUP order) ──
+                const orderData = window._pendingFFOrder || window._pendingOrderData || null;
+                const productCard = document.getElementById('prProductCard');
+                if (orderData && orderData.productName) {
+                    document.getElementById('prProductName').innerText = orderData.productName || '—';
+                    // diamonds
+                    const dRow = document.getElementById('prDiamondRow');
+                    const dAmt = document.getElementById('prDiamondAmt');
+                    if (orderData.diamonds) {
+                        dAmt.innerText = orderData.diamonds + ' ডায়মন্ড';
+                        dRow.style.display = '';
+                    } else {
+                        dRow.style.display = 'none';
+                    }
+                    // uid
+                    const uRow = document.getElementById('prUidRow');
+                    const uVal = document.getElementById('prUid');
+                    if (orderData.uid) {
+                        uVal.innerText = orderData.uid;
+                        uRow.style.display = '';
+                    } else {
+                        uRow.style.display = 'none';
+                    }
+                    productCard.style.display = '';
+                } else {
+                    productCard.style.display = 'none';
+                }
+                // Clear pending order after showing
+                window._pendingFFOrder = null;
+                window._pendingOrderData = null;
 
                 // Close gateway modal, open request page
                 document.getElementById('gatewayModal').style.display = 'none';
@@ -5774,6 +5837,10 @@ function updateAllAuthButtons(user) {
             <span>পরিমাণ</span>
             <span id="fpmDiamondAmt">— ডায়মন্ড</span>
         </div>
+        <div class="fpm-os-row">
+            <span>Player UID</span>
+            <span id="fpmUid" style="font-weight:700; color:#1a46e5;">—</span>
+        </div>
         <div class="fpm-os-row total">
             <span>মোট মূল্য</span>
             <span id="fpmTotalPrice">৳ —</span>
@@ -5841,6 +5908,7 @@ function openFfPayMethodPage(orderData) {
     // Fill order summary
     document.getElementById('fpmProductName').textContent = orderData.productName || 'Free Fire Topup';
     document.getElementById('fpmDiamondAmt').textContent  = (orderData.diamonds || '—') + ' ডায়মন্ড';
+    document.getElementById('fpmUid').textContent         = orderData.uid || '—';
     document.getElementById('fpmTotalPrice').textContent  = orderData.price ? '৳ ' + orderData.price : '৳ —';
 
     document.getElementById('ffPayMethodPage').classList.add('show');
@@ -5867,42 +5935,60 @@ function confirmFpmMethod() {
     }
     closeFfPayMethodPage();
 
-    // Map to gateway method name
     var methodMap = {
         'bkash':  'Bikash',
         'nagad':  'Nagad',
         'rocket': 'Rocket',
         'upay':   'Upay'
     };
-    var gatewayMethod = methodMap[_fpmSelectedMethod];
-
-    // Set gateway values and open gateway modal
-    selectedAmountValue = _fpmOrderData.price || 0;
-    selectedMethodValue = gatewayMethod;
-
-    if (document.getElementById('displayAmount'))
-        document.getElementById('displayAmount').innerText = selectedAmountValue;
-    if (document.getElementById('displayMethod'))
-        document.getElementById('displayMethod').innerText = gatewayMethod;
-    if (document.getElementById('gatewayTitle'))
-        document.getElementById('gatewayTitle').innerText = gatewayMethod;
-
-    var numEl = document.getElementById('gatewayNumber');
-    if (numEl && window.merchantNumbers && window.merchantNumbers[gatewayMethod]) {
-        numEl.innerText = window.merchantNumbers[gatewayMethod];
-    }
-
     var iconMap = {
         'Bikash':  'fa-solid fa-mobile-retro',
         'Nagad':   'fa-solid fa-bolt',
         'Rocket':  'fa-solid fa-building-columns',
         'Upay':    'fa-solid fa-mobile-screen-button'
     };
+
+    var gatewayMethod = methodMap[_fpmSelectedMethod];
+
+    // ── Set global values (used by verifyPaymentSubmission) ──
+    selectedAmountValue = _fpmOrderData.price || 0;
+    selectedMethodValue = gatewayMethod;
+
+    // ── Apply theme: set data-method on hero div ──
+    var hero = document.getElementById('gatewayHero');
+    if (hero) hero.setAttribute('data-method', gatewayMethod);
+
+    // ── Fill gateway content ──
+    var set = function(id, val) { var el = document.getElementById(id); if (el) el.innerText = val; };
+    set('displayAmount', selectedAmountValue);
+    set('displayMethod', gatewayMethod);
+    set('gatewayTitle',  gatewayMethod);
+
+    // merchant number
+    var numEl = document.getElementById('gatewayNumber');
+    if (numEl) {
+        var nums = window.merchantNumbers || {};
+        numEl.innerText = nums[gatewayMethod] || '017XXXXXXXX';
+    }
+
+    // icon
     var iconEl = document.getElementById('gatewayMethodIcon');
     if (iconEl) iconEl.className = iconMap[gatewayMethod] || 'fa-solid fa-wallet';
 
+    // clear trx input
+    var trx = document.getElementById('trxIDInput');
+    if (trx) trx.value = '';
+
+    // ── Store order data for submission ──
+    window._pendingFFOrder = _fpmOrderData;
+    window._pendingFFOrder.method = gatewayMethod;
+
+    // ── Open gateway modal ──
     var gatewayModal = document.getElementById('gatewayModal');
-    if (gatewayModal) gatewayModal.style.display = 'flex';
+    if (gatewayModal) {
+        gatewayModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
 }
 
 // ===== Patch submitFFOrder to open Payment Method Page when instant selected =====
