@@ -725,7 +725,7 @@
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            z-index: 999;
+            z-index: 30000000;
             overflow-y: auto;
             flex-direction: column;
         }
@@ -3865,8 +3865,10 @@ font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
                 // Close gateway modal, open request page
                 document.getElementById('gatewayModal').style.display = 'none';
                 document.getElementById('trxIDInput').value = "";
-                prPage.classList.add('show');
                 document.body.style.overflow = 'hidden';
+                document.body.style.position = '';
+                document.body.style.top = '';
+                prPage.classList.add('show');
             };
 
             if(typeof window.saveAddMoneyToFirebase === 'function') {
@@ -4832,7 +4834,11 @@ font-weight:700;
                     var priceVal  = priceEl ? priceEl.innerText.replace(/[^0-9]/g,'') : '0';
                     var labelTxt  = labelEl ? labelEl.innerText.trim() : 'Weekly Lite';
                     var uid       = uidInput ? uidInput.value.trim() : '';
-                    if (!uid) { alert('Player UID দিন!'); return; }
+                    if (!uid) {
+                        window.parent.postMessage({action:'showToast', msg:'Player UID দিন!', type:'error'}, '*');
+                        if (uidInput) { uidInput.style.border='2px solid #e51a1a'; setTimeout(function(){ uidInput.style.border=''; }, 2500); }
+                        return;
+                    }
                     window.parent.postMessage({
                         action: 'openPayMethod',
                         productName: 'Weekly Lite (BD Server)',
@@ -6098,7 +6104,12 @@ window.submitLupOrder = function() {
 
 // 2. Receive postMessage from Weekly Lite / Weekly Monthly iframes
 window.addEventListener('message', function(e) {
-    if (!e.data || e.data.action !== 'openPayMethod') return;
+    if (!e.data) return;
+    if (e.data.action === 'showToast') {
+        showAuthToast(e.data.msg || '', e.data.type || 'error');
+        return;
+    }
+    if (e.data.action !== 'openPayMethod') return;
     openFfPayMethodPage({
         productName: e.data.productName || 'Product',
         diamonds: e.data.diamonds || '—',
