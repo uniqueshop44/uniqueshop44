@@ -6129,6 +6129,49 @@ window.addEventListener('message', function(e) {
 
 </script>
 
+<!-- ===== UNIPIN INSTANT PAY: Buy Now → Payment Method Page ===== -->
+<script>
+window.unipinSubmitOrder = function() {
+    // Check if Instant Pay is selected (2nd .pay-opt inside #unipinPage)
+    var payOpts = document.querySelectorAll('#unipinPage .pay-opt');
+    var isInstant = false;
+    if (payOpts.length >= 2) {
+        isInstant = payOpts[1].classList.contains('selected');
+    }
+
+    if (isInstant) {
+        // Get selected package
+        var selectedPkg = document.querySelector('#unipinPage .pkg.selected');
+        if (!selectedPkg) {
+            showAuthToast('একটি প্যাকেজ সিলেক্ট করুন!', 'error');
+            return;
+        }
+
+        var nameEl  = selectedPkg.querySelector('.pkg-name');
+        var priceEl = selectedPkg.querySelector('.pkg-price');
+        var pkgName = nameEl  ? nameEl.textContent.trim()  : 'Unipin Code';
+        var pkgPrice = priceEl ? priceEl.textContent.replace(/[^0-9]/g, '') : '0';
+
+        // Quantity multiply
+        var qtyEl = document.getElementById('qty');
+        var qty = qtyEl ? (parseInt(qtyEl.textContent) || 1) : 1;
+        var totalPrice = (parseInt(pkgPrice) * qty).toString();
+
+        openFfPayMethodPage({
+            productName: 'Unipin ' + pkgName,
+            diamonds: pkgName + (qty > 1 ? ' x' + qty : ''),
+            price: totalPrice,
+            uid: 'Unipin Voucher'
+        });
+    } else {
+        // Wallet pay — original fallback
+        var form = document.querySelector('#unipinPage form');
+        if (form) form.dispatchEvent(new Event('submit', {bubbles: true}));
+        else showAuthToast('অর্ডার submit করতে সমস্যা হয়েছে।', 'error');
+    }
+};
+</script>
+
 
 </body>
 </html>
