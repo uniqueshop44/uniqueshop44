@@ -738,7 +738,6 @@
         .payment-request-page[data-method="Nagad"]  { background: linear-gradient(160deg, #e65100 0%, #bf360c 55%, #3e0a00 100%); }
         .payment-request-page[data-method="Rocket"] { background: linear-gradient(160deg, #6a1b9a 0%, #4a148c 55%, #1a0040 100%); }
         .payment-request-page[data-method="Upay"]   { background: linear-gradient(160deg, #1565c0 0%, #0d47a1 55%, #001050 100%); }
-        .payment-request-page[data-method="Wallet"] { background: linear-gradient(160deg, #1a46e5 0%, #0d2b99 55%, #050f40 100%); }
 
         .pr-top-bar {
             display: flex;
@@ -859,21 +858,14 @@
             color: white; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
             gap: 9px; margin-top: 6px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.18);
             letter-spacing: 0.3px;
-            background: linear-gradient(135deg, #f97316, #e51a1a, #a21caf);
-            box-shadow: 0 4px 22px rgba(249,115,22,0.45), 0 2px 8px rgba(165,28,175,0.25);
-            animation: prBtnGlow 2.5s ease-in-out infinite alternate;
         }
-        @keyframes prBtnGlow {
-            from { box-shadow: 0 4px 22px rgba(249,115,22,0.5), 0 2px 10px rgba(165,28,175,0.3); }
-            to   { box-shadow: 0 6px 32px rgba(249,115,22,0.8), 0 4px 18px rgba(165,28,175,0.55); }
-        }
-        .payment-request-page[data-method="Bikash"] .pr-home-btn { background: linear-gradient(135deg, #ff6eb4, #e91e8c, #880e4f); box-shadow: 0 4px 22px rgba(233,30,140,0.5); }
-        .payment-request-page[data-method="Nagad"]  .pr-home-btn { background: linear-gradient(135deg, #ffb347, #f57c00, #bf360c); box-shadow: 0 4px 22px rgba(245,124,0,0.5); }
-        .payment-request-page[data-method="Rocket"] .pr-home-btn { background: linear-gradient(135deg, #d05ce3, #8e24aa, #4a148c); box-shadow: 0 4px 22px rgba(142,36,170,0.5); }
-        .payment-request-page[data-method="Upay"]   .pr-home-btn { background: linear-gradient(135deg, #42a5f5, #1976d2, #0d47a1); box-shadow: 0 4px 22px rgba(25,118,210,0.5); }
-        .payment-request-page[data-method="Wallet"] .pr-home-btn { background: linear-gradient(135deg, #43e97b, #1a46e5, #a21caf); box-shadow: 0 4px 22px rgba(26,70,229,0.5); }
-        .pr-home-btn:active { transform: scale(0.97); }
+        .payment-request-page[data-method="Bikash"] .pr-home-btn { background: linear-gradient(135deg, #e91e8c, #c2185b); }
+        .payment-request-page[data-method="Nagad"]  .pr-home-btn { background: linear-gradient(135deg, #f57c00, #e65100); }
+        .payment-request-page[data-method="Rocket"] .pr-home-btn { background: linear-gradient(135deg, #8e24aa, #6a1b9a); }
+        .payment-request-page[data-method="Upay"]   .pr-home-btn { background: linear-gradient(135deg, #1976d2, #1565c0); }
+        .pr-home-btn:active { transform: scale(0.98); }
 
         /* Request ID box */
         .pr-reqid-box {
@@ -2750,7 +2742,36 @@ font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
             <span class="pr-reqid-value" id="prReqId">#REQ000000</span>
         </div>
 
-
+        <!-- BOX 1: PAYMENT STATUS -->
+        <div class="pr-card" style="margin-top:10px;">
+            <div class="pr-card-title"><i class="fa-solid fa-credit-card"></i> পেমেন্ট স্ট্যাটাস</div>
+            <div class="pr-info-box">
+                <div class="pr-info-row">
+                    <div class="pr-info-label"><i class="fa-solid fa-mobile-screen-button"></i> পেমেন্ট মেথড</div>
+                    <div class="pr-info-value pr-method-accent" id="prDisplayMethod">—</div>
+                </div>
+                <div class="pr-info-row">
+                    <div class="pr-info-label"><i class="fa-solid fa-bangladeshi-taka-sign"></i> পরিমাণ</div>
+                    <div class="pr-info-value pr-amount-value pr-method-accent" id="prDisplayAmount">৳0</div>
+                </div>
+                <div class="pr-info-row">
+                    <div class="pr-info-label"><i class="fa-solid fa-key"></i> Transaction ID</div>
+                    <div class="pr-info-value" style="font-family:monospace; font-weight:700; word-break:break-all;" id="prDisplayTrx">—</div>
+                </div>
+                <div class="pr-info-row">
+                    <div class="pr-info-label"><i class="fa-solid fa-clock"></i> সময়</div>
+                    <div class="pr-info-value" id="prDisplayTime">—</div>
+                </div>
+                <div class="pr-info-row">
+                    <div class="pr-info-label"><i class="fa-solid fa-circle-dot"></i> পেমেন্ট স্ট্যাটাস</div>
+                    <div class="pr-info-value">
+                        <span class="pr-status-badge">
+                            <span class="pr-status-dot"></span> Pending
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- BOX 2: ORDER STATUS -->
         <div class="pr-card" id="prProductCard" style="display:none;">
@@ -4839,25 +4860,13 @@ font-weight:700;
                         if (uidInput) { uidInput.style.border='2px solid #e51a1a'; setTimeout(function(){ uidInput.style.border=''; }, 2500); }
                         return;
                     }
-                    // Check if wallet pay selected (first .pay-card)
-                    var payCards = document.querySelectorAll('.pay-card');
-                    var walletSelected = payCards.length > 0 && payCards[0].classList.contains('active');
-                    if (walletSelected) {
-                        window.parent.postMessage({
-                            action: 'openOrderDirect',
-                            productName: 'Weekly Lite (BD Server)',
-                            label: labelTxt,
-                            uid: uid
-                        }, '*');
-                    } else {
-                        window.parent.postMessage({
-                            action: 'openPayMethod',
-                            productName: 'Weekly Lite (BD Server)',
-                            diamonds: labelTxt,
-                            price: priceVal,
-                            uid: uid
-                        }, '*');
-                    }
+                    window.parent.postMessage({
+                        action: 'openPayMethod',
+                        productName: 'Weekly Lite (BD Server)',
+                        diamonds: labelTxt,
+                        price: priceVal,
+                        uid: uid
+                    }, '*');
                 } else {
                     window.parent.postMessage({action:'openLogin',from:'weeklyLite'},'*');
                 }
@@ -5774,66 +5783,6 @@ function submitFFOrder() {
 
 // ── Unipin Submit ──
 function submitUnipinOrder() {
-    // Wallet pay (first .pay-opt) selected → directly open order page
-    const payOpts = document.querySelectorAll('#unipinPage .pay-opt');
-    const walletSelected = payOpts.length > 0 && payOpts[0].classList.contains('selected');
-
-    if (walletSelected) {
-        // Package info
-        const selPkg = document.querySelector('#unipinPage .pkg.selected');
-        let pkgName = 'Unipin Voucher';
-        let pkgAmt = '—';
-        if (selPkg) {
-            const nm = selPkg.querySelector('.pkg-name, [class*="name"]');
-            const pr = selPkg.querySelector('.pkg-price, [class*="price"]');
-            if (nm) pkgName = nm.textContent.trim();
-            if (pr) pkgAmt = pr.textContent.trim();
-        }
-
-        const now = new Date().toLocaleString('bn-BD');
-        const reqId = '#REQ' + Date.now().toString().slice(-6);
-        const set = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val; };
-
-        // Set white background (Wallet has no color theme)
-        const prPage = document.getElementById('paymentRequestPage');
-        prPage.setAttribute('data-method', 'Wallet');
-
-        // Header
-        document.getElementById('prMethodIcon').className = 'fa-solid fa-wallet';
-        document.getElementById('prMethodName').innerText = 'Wallet Pay';
-        set('prReqId', reqId);
-
-        // Show order status card
-        const productCard = document.getElementById('prProductCard');
-        if (productCard) productCard.style.display = '';
-
-        // Fill rows: Product, পরিমাণ, সময়, Status
-        set('prProductName', pkgName);
-
-        // পরিমাণ row — reuse prDiamondRow for amount
-        const dRow = document.getElementById('prDiamondRow');
-        const dAmt = document.getElementById('prDiamondAmt');
-        if (dRow && dAmt) {
-            dRow.style.display = '';
-            // Change label to পরিমাণ
-            const dLabel = dRow.querySelector('.pr-info-label');
-            if (dLabel) dLabel.innerHTML = '<i class="fa-solid fa-bangladeshi-taka-sign"></i> পরিমাণ';
-            dAmt.innerText = pkgAmt;
-        }
-
-        // Hide UID row (not needed for wallet)
-        const uRow = document.getElementById('prUidRow');
-        if (uRow) uRow.style.display = 'none';
-
-        set('prDisplayTimeOrder', now);
-
-        // Open order page
-        prPage.classList.add('show');
-        document.body.style.overflow = 'hidden';
-        return;
-    }
-
-    // Instant pay → original flow
     if (typeof window.unipinSubmitOrder === 'function') {
         window.unipinSubmitOrder();
     } else {
@@ -6115,105 +6064,42 @@ function confirmFpmMethod() {
     document.body.style.overflow = 'hidden';
 }
 
-// ===== Patch submitFFOrder to handle both wallet pay and instant pay =====
+// ===== Patch submitFFOrder to open Payment Method Page when instant selected =====
 var _origSubmitFFOrder_v2 = window.submitFFOrder;
 window.submitFFOrder = function() {
     var isInstant = document.getElementById('ff-pay-auto') &&
                     document.getElementById('ff-pay-auto').classList.contains('selected');
-    var isWallet  = document.getElementById('ff-pay-wallet') &&
-                    document.getElementById('ff-pay-wallet').classList.contains('selected');
-
-    // Common validation
-    var uid = document.getElementById('ffPlayerID');
-    if (!uid || !uid.value.trim()) {
-        if (uid) uid.style.border = '2px solid #e51a1a';
-        showAuthToast('Player ID দিন!', 'error');
-        return;
-    }
-    if (uid) uid.style.border = '';
-
-    var pkgEls = document.querySelectorAll('.ff-package-item');
-    var selectedPkg = null;
-    pkgEls.forEach(function(el) {
-        if (el.classList.contains('selected')) selectedPkg = el;
-    });
-    if (!selectedPkg) {
-        showAuthToast('একটি প্যাকেজ সিলেক্ট করুন!', 'error');
-        return;
-    }
-
-    var nameEl  = selectedPkg.querySelector('.ff-pkg-name, .ff-pkg-diamonds, h4, .name');
-    var priceEl = selectedPkg.querySelector('.ff-pkg-price, .price, [class*="price"]');
-    var diamonds = nameEl  ? nameEl.textContent.trim()  : '?';
-    var price    = priceEl ? priceEl.textContent.replace(/[^0-9]/g,'') : '0';
-
     if (isInstant) {
-        // Instant Pay → Payment Method selection page
+        // Validate inputs first
+        var uid = document.getElementById('ffPlayerID');
+        if (!uid || !uid.value.trim()) {
+            if (uid) uid.style.border = '2px solid #e51a1a';
+            showAuthToast('Player ID দিন!', 'error');
+            return;
+        }
+        if (uid) uid.style.border = '';
+
+        var pkgEls = document.querySelectorAll('.ff-package-item');
+        var selectedPkg = null;
+        pkgEls.forEach(function(el, i) {
+            if (el.classList.contains('selected')) selectedPkg = el;
+        });
+        if (!selectedPkg) {
+            showAuthToast('একটি প্যাকেজ সিলেক্ট করুন!', 'error');
+            return;
+        }
+
+        var nameEl  = selectedPkg.querySelector('.ff-pkg-name, .ff-pkg-diamonds, h4, .name');
+        var priceEl = selectedPkg.querySelector('.ff-pkg-price, .price, [class*="price"]');
+        var diamonds = nameEl  ? nameEl.textContent.trim()  : '?';
+        var price    = priceEl ? priceEl.textContent.replace(/[^0-9]/g,'') : '0';
+
         openFfPayMethodPage({
             productName: 'Free Fire UID Topup',
             diamonds: diamonds,
             price: price,
             uid: uid.value.trim()
         });
-    } else if (isWallet) {
-        // Wallet Pay → Order Request page directly
-        var reqId = '#PAY' + Math.floor(100000 + Math.random() * 900000);
-        var now = new Date().toLocaleString('en-US', {
-            timeZone: 'Asia/Dhaka',
-            day: '2-digit', month: 'short', year: 'numeric',
-            hour: '2-digit', minute: '2-digit', hour12: true
-        });
-
-        // Store pending order
-        window._pendingFFOrder = {
-            productName: 'Free Fire UID Topup',
-            diamonds: diamonds,
-            price: price,
-            uid: uid.value.trim(),
-            method: 'Wallet'
-        };
-
-        // Populate payment request page
-        var prPage = document.getElementById('paymentRequestPage');
-        prPage.setAttribute('data-method', 'Wallet');
-        var methodIconEl = document.getElementById('prMethodIcon');
-        if (methodIconEl) methodIconEl.className = 'fa-solid fa-wallet';
-        var prMethodNameEl = document.getElementById('prMethodName');
-        if (prMethodNameEl) prMethodNameEl.innerText = 'Wallet Pay';
-        var prDisplayAmountEl = document.getElementById('prDisplayAmount');
-        if (prDisplayAmountEl) prDisplayAmountEl.innerText = '৳' + price;
-        var prDisplayMethodEl = document.getElementById('prDisplayMethod');
-        if (prDisplayMethodEl) prDisplayMethodEl.innerText = 'Wallet Pay';
-        var prDisplayTrxEl = document.getElementById('prDisplayTrx');
-        if (prDisplayTrxEl) prDisplayTrxEl.innerText = 'Wallet';
-        var prDisplayTimeEl = document.getElementById('prDisplayTime');
-        if (prDisplayTimeEl) prDisplayTimeEl.innerText = now;
-        var prDisplayTimeOrderEl = document.getElementById('prDisplayTimeOrder');
-        if (prDisplayTimeOrderEl) prDisplayTimeOrderEl.innerText = now;
-        var prReqIdEl = document.getElementById('prReqId');
-        if (prReqIdEl) prReqIdEl.innerText = reqId;
-
-        // Product details
-        var productCard = document.getElementById('prProductCard');
-        if (productCard) {
-            var prProductNameEl = document.getElementById('prProductName');
-            if (prProductNameEl) prProductNameEl.innerText = 'Free Fire UID Topup';
-            var dRow = document.getElementById('prDiamondRow');
-            var dAmt = document.getElementById('prDiamondAmt');
-            if (dAmt) dAmt.innerText = diamonds + ' ডায়মন্ড';
-            if (dRow) dRow.style.display = '';
-            var uRow = document.getElementById('prUidRow');
-            var uVal = document.getElementById('prUid');
-            if (uVal) uVal.innerText = uid.value.trim();
-            if (uRow) uRow.style.display = '';
-            productCard.style.display = '';
-        }
-
-        window._pendingFFOrder = null;
-
-        // Open request page
-        document.body.style.overflow = 'hidden';
-        prPage.classList.add('show');
     } else {
         if (typeof _origSubmitFFOrder_v2 === 'function') _origSubmitFFOrder_v2();
     }
@@ -6246,39 +6132,6 @@ window.addEventListener('message', function(e) {
     if (!e.data) return;
     if (e.data.action === 'showToast') {
         showAuthToast(e.data.msg || '', e.data.type || 'error');
-        return;
-    }
-    if (e.data.action === 'openOrderDirect') {
-        // Wallet pay → open order page directly
-        var now = new Date().toLocaleString('bn-BD');
-        var reqId = '#REQ' + Date.now().toString().slice(-6);
-        var set = function(id, val) { var el = document.getElementById(id); if (el) el.innerText = val; };
-        var prPage = document.getElementById('paymentRequestPage');
-        prPage.setAttribute('data-method', 'Wallet');
-        document.getElementById('prMethodIcon').className = 'fa-solid fa-wallet';
-        document.getElementById('prMethodName').innerText = 'Wallet Pay';
-        set('prReqId', reqId);
-        var productCard = document.getElementById('prProductCard');
-        if (productCard) productCard.style.display = '';
-        set('prProductName', e.data.productName || 'Weekly Lite');
-        // label row
-        var dRow = document.getElementById('prDiamondRow');
-        var dAmt = document.getElementById('prDiamondAmt');
-        if (dRow && dAmt) {
-            dRow.style.display = '';
-            var dLabel = dRow.querySelector('.pr-info-label');
-            if (dLabel) dLabel.innerHTML = '<i class="fa-solid fa-gem"></i> প্যাকেজ';
-            dAmt.innerText = e.data.label || '—';
-        }
-        var uRow = document.getElementById('prUidRow');
-        var uVal = document.getElementById('prUid');
-        if (uRow && uVal) {
-            uRow.style.display = '';
-            uVal.innerText = e.data.uid || '—';
-        }
-        set('prDisplayTimeOrder', now);
-        prPage.classList.add('show');
-        document.body.style.overflow = 'hidden';
         return;
     }
     if (e.data.action !== 'openPayMethod') return;
