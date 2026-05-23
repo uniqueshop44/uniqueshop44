@@ -3909,12 +3909,14 @@ font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
 
         function selectAmount(amount) {
             selectedAmountValue = amount;
+            window.selectedAmountValue = amount;
             document.querySelectorAll('.amount-box').forEach(b => b.classList.remove('selected'));
             event.target.classList.add('selected');
         }
 
         function selectMethod(method) {
             selectedMethodValue = method;
+            window.selectedMethodValue = method;
             document.querySelectorAll('.method-box').forEach(b => b.classList.remove('selected'));
             event.currentTarget.classList.add('selected');
         }
@@ -3959,6 +3961,8 @@ font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
             };
             document.getElementById('gatewayTrxIcon').className = trxIconMap[selectedMethodValue] || 'fa-solid fa-key';
             
+            window.selectedAmountValue = selectedAmountValue;
+            window.selectedMethodValue = selectedMethodValue;
             document.getElementById('addMoneyModal').style.display = 'none';
             document.getElementById('gatewayModal').style.display = 'flex';
         }
