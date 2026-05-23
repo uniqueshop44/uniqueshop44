@@ -5347,13 +5347,30 @@ function closeWeeklyLitePage() {
                   if (uidInput) { uidInput.style.border='2px solid #e51a1a'; setTimeout(function(){ uidInput.style.border=''; }, 2500); }
                   return;
               }
-              window.parent.postMessage({
-                  action: 'openPayMethod',
-                  productName: 'Weekly & Monthly (BD Server)',
-                  diamonds: labelTxt,
-                  price: priceVal,
-                  uid: uid
-              }, '*');
+              // Check which payment method is active
+              var activePayment = document.querySelector('.payment-card.active');
+              var paymentFooter = activePayment ? activePayment.querySelector('.payment-footer') : null;
+              var isWallet = paymentFooter ? paymentFooter.innerText.trim() === 'Wallet Pay' : true;
+
+              if (isWallet) {
+                  // Wallet Pay → সরাসরি order request page
+                  window.parent.postMessage({
+                      action: 'openOrderDirect',
+                      productName: 'Weekly &amp; Monthly (BD Server)',
+                      label: labelTxt,
+                      price: priceVal,
+                      uid: uid
+                  }, '*');
+              } else {
+                  // Instant Pay → payment method page
+                  window.parent.postMessage({
+                      action: 'openPayMethod',
+                      productName: 'Weekly & Monthly (BD Server)',
+                      diamonds: labelTxt,
+                      price: priceVal,
+                      uid: uid
+                  }, '*');
+              }
           } else {
               window.parent.postMessage({action:'openLogin',from:'weeklyMonthly'},'*');
           }
@@ -6250,8 +6267,12 @@ window.addEventListener('message', function(e) {
     }
     if (e.data.action === 'openOrderDirect') {
         // Wallet pay → open order page directly
-        var now = new Date().toLocaleString('bn-BD');
-        var reqId = '#REQ' + Date.now().toString().slice(-6);
+        var now = new Date().toLocaleString('en-US', {
+            timeZone: 'Asia/Dhaka',
+            day: '2-digit', month: 'short', year: 'numeric',
+            hour: '2-digit', minute: '2-digit', hour12: true
+        });
+        var reqId = '#PAY' + Math.floor(100000 + Math.random() * 900000);
         var set = function(id, val) { var el = document.getElementById(id); if (el) el.innerText = val; };
         var prPage = document.getElementById('paymentRequestPage');
         prPage.setAttribute('data-method', 'Wallet');
@@ -6277,6 +6298,9 @@ window.addEventListener('message', function(e) {
             uVal.innerText = e.data.uid || '—';
         }
         set('prDisplayTimeOrder', now);
+        // Close the Weekly Monthly overlay before showing order page
+        var wmOverlay = document.getElementById('weeklyMonthlyOverlay');
+        if (wmOverlay) wmOverlay.style.display = 'none';
         prPage.classList.add('show');
         document.body.style.overflow = 'hidden';
         return;
