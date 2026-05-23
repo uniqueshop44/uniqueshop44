@@ -6239,7 +6239,7 @@ window.submitFFOrder = function() {
 <!-- ===== BUY NOW FIX: Weekly Lite, Weekly Monthly, Level Up Pass ===== -->
 <script>
 
-// 1. Level Up Pass: Buy Now calls openFfPayMethodPage directly
+// 1. Level Up Pass: Buy Now calls openFfPayMethodPage or order page directly
 window.submitLupOrder = function() {
     var activeItem = document.querySelector('#levelUpPassPage .lup-item.selected');
     var uidInput   = document.querySelector('#levelUpPassPage .lup-input');
@@ -6250,12 +6250,56 @@ window.submitLupOrder = function() {
     var priceVal = priceEl ? priceEl.innerText.replace(/[^0-9]/g,'') : '0';
     var uid      = uidInput ? uidInput.value.trim() : '';
     if (!uid) { showAuthToast('Player UID দিন!', 'error'); return; }
-    openFfPayMethodPage({
-        productName: 'Level Up Pass (BD Server)',
-        diamonds: labelTxt,
-        price: priceVal,
-        uid: uid
-    });
+
+    // Check which payment method is selected
+    var activePayLup = document.querySelector('#levelUpPassPage .lup-pay.selected');
+    var lupFooter    = activePayLup ? activePayLup.querySelector('.lup-pay-footer') : null;
+    var isWalletLup  = lupFooter ? lupFooter.innerText.trim() === 'Wallet Pay' : true;
+
+    if (isWalletLup) {
+        // Wallet Pay → সরাসরি order request page
+        var reqId = '#PAY' + Math.floor(100000 + Math.random() * 900000);
+        var now = new Date().toLocaleString('en-US', {
+            timeZone: 'Asia/Dhaka',
+            day: '2-digit', month: 'short', year: 'numeric',
+            hour: '2-digit', minute: '2-digit', hour12: true
+        });
+        var prPage = document.getElementById('paymentRequestPage');
+        prPage.setAttribute('data-method', 'Wallet');
+        var methodIconEl = document.getElementById('prMethodIcon');
+        if (methodIconEl) methodIconEl.className = 'fa-solid fa-wallet';
+        var prMethodNameEl = document.getElementById('prMethodName');
+        if (prMethodNameEl) prMethodNameEl.innerText = 'Wallet Pay';
+        var prReqIdEl = document.getElementById('prReqId');
+        if (prReqIdEl) prReqIdEl.innerText = reqId;
+        var productCard = document.getElementById('prProductCard');
+        if (productCard) productCard.style.display = '';
+        var prProductNameEl = document.getElementById('prProductName');
+        if (prProductNameEl) prProductNameEl.innerText = 'Level Up Pass (BD Server)';
+        var dRow = document.getElementById('prDiamondRow');
+        var dAmt = document.getElementById('prDiamondAmt');
+        if (dRow && dAmt) {
+            dRow.style.display = '';
+            var dLabel = dRow.querySelector('.pr-info-label');
+            if (dLabel) dLabel.innerHTML = '<i class="fa-solid fa-gem"></i> প্যাকেজ';
+            dAmt.innerText = labelTxt;
+        }
+        var uRow = document.getElementById('prUidRow');
+        var uVal = document.getElementById('prUid');
+        if (uRow && uVal) { uRow.style.display = ''; uVal.innerText = uid; }
+        var prDisplayTimeOrderEl = document.getElementById('prDisplayTimeOrder');
+        if (prDisplayTimeOrderEl) prDisplayTimeOrderEl.innerText = now;
+        document.body.style.overflow = 'hidden';
+        prPage.classList.add('show');
+    } else {
+        // Instant Pay → payment method page
+        openFfPayMethodPage({
+            productName: 'Level Up Pass (BD Server)',
+            diamonds: labelTxt,
+            price: priceVal,
+            uid: uid
+        });
+    }
 };
 
 // 2. Receive postMessage from Weekly Lite / Weekly Monthly iframes
