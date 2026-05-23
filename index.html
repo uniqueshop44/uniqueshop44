@@ -4839,13 +4839,25 @@ font-weight:700;
                         if (uidInput) { uidInput.style.border='2px solid #e51a1a'; setTimeout(function(){ uidInput.style.border=''; }, 2500); }
                         return;
                     }
-                    window.parent.postMessage({
-                        action: 'openPayMethod',
-                        productName: 'Weekly Lite (BD Server)',
-                        diamonds: labelTxt,
-                        price: priceVal,
-                        uid: uid
-                    }, '*');
+                    // Check if wallet pay selected (first .pay-card)
+                    var payCards = document.querySelectorAll('.pay-card');
+                    var walletSelected = payCards.length > 0 && payCards[0].classList.contains('active');
+                    if (walletSelected) {
+                        window.parent.postMessage({
+                            action: 'openOrderDirect',
+                            productName: 'Weekly Lite (BD Server)',
+                            label: labelTxt,
+                            uid: uid
+                        }, '*');
+                    } else {
+                        window.parent.postMessage({
+                            action: 'openPayMethod',
+                            productName: 'Weekly Lite (BD Server)',
+                            diamonds: labelTxt,
+                            price: priceVal,
+                            uid: uid
+                        }, '*');
+                    }
                 } else {
                     window.parent.postMessage({action:'openLogin',from:'weeklyLite'},'*');
                 }
@@ -6234,6 +6246,39 @@ window.addEventListener('message', function(e) {
     if (!e.data) return;
     if (e.data.action === 'showToast') {
         showAuthToast(e.data.msg || '', e.data.type || 'error');
+        return;
+    }
+    if (e.data.action === 'openOrderDirect') {
+        // Wallet pay → open order page directly
+        var now = new Date().toLocaleString('bn-BD');
+        var reqId = '#REQ' + Date.now().toString().slice(-6);
+        var set = function(id, val) { var el = document.getElementById(id); if (el) el.innerText = val; };
+        var prPage = document.getElementById('paymentRequestPage');
+        prPage.setAttribute('data-method', 'Wallet');
+        document.getElementById('prMethodIcon').className = 'fa-solid fa-wallet';
+        document.getElementById('prMethodName').innerText = 'Wallet Pay';
+        set('prReqId', reqId);
+        var productCard = document.getElementById('prProductCard');
+        if (productCard) productCard.style.display = '';
+        set('prProductName', e.data.productName || 'Weekly Lite');
+        // label row
+        var dRow = document.getElementById('prDiamondRow');
+        var dAmt = document.getElementById('prDiamondAmt');
+        if (dRow && dAmt) {
+            dRow.style.display = '';
+            var dLabel = dRow.querySelector('.pr-info-label');
+            if (dLabel) dLabel.innerHTML = '<i class="fa-solid fa-gem"></i> প্যাকেজ';
+            dAmt.innerText = e.data.label || '—';
+        }
+        var uRow = document.getElementById('prUidRow');
+        var uVal = document.getElementById('prUid');
+        if (uRow && uVal) {
+            uRow.style.display = '';
+            uVal.innerText = e.data.uid || '—';
+        }
+        set('prDisplayTimeOrder', now);
+        prPage.classList.add('show');
+        document.body.style.overflow = 'hidden';
         return;
     }
     if (e.data.action !== 'openPayMethod') return;
