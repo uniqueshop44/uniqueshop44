@@ -4078,7 +4078,7 @@ font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
                 .then(() => {
                     doOpenRequestPage();
                 }).catch((error) => {
-                    showCustomToast("রিকোয়েস্ট পাঠাতে সমস্যা: " + error.message);
+                    doOpenRequestPage();
                 }).finally(() => {
                     if(verifyBtn) { verifyBtn.disabled = false; verifyBtn.innerHTML = '<i class="fa-solid fa-shield-halved"></i> Verify & Submit'; }
                 });
