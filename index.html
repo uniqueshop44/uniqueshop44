@@ -720,155 +720,188 @@
         .gateway-card { display: none; }
 
         /* ===== PAYMENT REQUEST SUCCESS PAGE ===== */
-        /* ===== PAYMENT REQUEST PAGE ===== */
         .payment-request-page {
-            display: none; position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 30000000; overflow-y: auto;
-            flex-direction: column; background: #f0f4ff;
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 30000000;
+            overflow-y: auto;
+            flex-direction: column;
         }
-        .payment-request-page.show { display: flex; }
-
-        /* ── Top hero banner ── */
-        .pr-hero {
-            position: relative; overflow: hidden;
-            padding: 28px 20px 60px;
-            background: linear-gradient(135deg, #1a46e5 0%, #7c3aed 60%, #e51a6e 100%);
-            text-align: center;
-        }
-        .payment-request-page[data-method="Bikash"]  .pr-hero { background: linear-gradient(135deg,#e91e8c,#c2185b,#880e4f); }
-        .payment-request-page[data-method="Nagad"]   .pr-hero { background: linear-gradient(135deg,#ffb300,#f57c00,#bf360c); }
-        .payment-request-page[data-method="Rocket"]  .pr-hero { background: linear-gradient(135deg,#ab47bc,#8e24aa,#4a148c); }
-        .payment-request-page[data-method="Upay"]    .pr-hero { background: linear-gradient(135deg,#42a5f5,#1976d2,#0d47a1); }
-        .payment-request-page[data-method="Wallet"]  .pr-hero { background: linear-gradient(135deg,#43e97b,#1a46e5,#7c3aed); }
-
-        .pr-hero-bubble {
-            position: absolute; border-radius: 50%;
-            background: rgba(255,255,255,0.08);
-        }
-        .pr-hero-bubble.b1 { width:120px;height:120px; top:-30px; left:-30px; }
-        .pr-hero-bubble.b2 { width:80px; height:80px;  top:20px;  right:10px; }
-        .pr-hero-bubble.b3 { width:55px; height:55px;  bottom:10px; left:40%; }
-
-        .pr-anim-icon {
-            width: 76px; height: 76px; border-radius: 50%;
-            background: rgba(255,255,255,0.18);
-            border: 3px solid rgba(255,255,255,0.5);
-            display: inline-flex; align-items: center; justify-content: center;
-            font-size: 34px; color: #fff;
-            animation: prPop 0.55s cubic-bezier(0.175,0.885,0.32,1.275) both;
-            box-shadow: 0 8px 28px rgba(0,0,0,0.18);
-        }
-        @keyframes prPop { 0%{transform:scale(0);opacity:0;} 100%{transform:scale(1);opacity:1;} }
-
-        .pr-hero-title {
-            color: #fff; font-size: 21px; font-weight: 900;
-            margin-top: 14px; letter-spacing: 0.2px;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.18);
-        }
-        .pr-hero-sub {
-            color: rgba(255,255,255,0.75); font-size: 12.5px;
-            margin-top: 4px; line-height: 1.5;
-        }
-        .pr-reqid-pill {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: rgba(255,255,255,0.22);
-            border: 1px solid rgba(255,255,255,0.35);
-            border-radius: 30px; padding: 5px 14px;
-            color: #fff; font-size: 12px; font-weight: 800;
-            font-family: monospace; letter-spacing: 1px;
-            margin-top: 12px;
+        .payment-request-page.show {
+            display: flex;
         }
 
-        /* ── White card sheet pulled up over hero ── */
-        .pr-sheet {
-            background: #fff;
-            border-radius: 28px 28px 0 0;
-            margin-top: -30px; flex: 1;
-            padding: 24px 16px 32px;
-            box-shadow: 0 -4px 24px rgba(0,0,0,0.08);
+        /* Method-specific full-page backgrounds */
+        .payment-request-page[data-method="Bikash"] { background: linear-gradient(160deg, #c2185b 0%, #880e4f 55%, #1a0010 100%); }
+        .payment-request-page[data-method="Nagad"]  { background: linear-gradient(160deg, #e65100 0%, #bf360c 55%, #3e0a00 100%); }
+        .payment-request-page[data-method="Rocket"] { background: linear-gradient(160deg, #6a1b9a 0%, #4a148c 55%, #1a0040 100%); }
+        .payment-request-page[data-method="Upay"]   { background: linear-gradient(160deg, #1565c0 0%, #0d47a1 55%, #001050 100%); }
+        .payment-request-page[data-method="Wallet"] { background: linear-gradient(160deg, #1a46e5 0%, #0d2b99 55%, #050f40 100%); }
+
+        .pr-top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 20px 10px;
+        }
+        .pr-back-btn {
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.15);
+            border: none; border-radius: 50%;
+            color: white; font-size: 15px;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .pr-title-badge {
+            font-size: 14px; font-weight: 700; color: white;
+            background: rgba(255,255,255,0.15);
+            padding: 6px 16px; border-radius: 20px;
+            display: flex; align-items: center; gap: 7px;
         }
 
-        .pr-section-label {
-            font-size: 11px; font-weight: 800; color: #aaa;
-            text-transform: uppercase; letter-spacing: 1.2px;
-            margin-bottom: 10px; margin-top: 18px;
+        /* Animated checkmark */
+        .pr-success-icon {
+            display: flex; flex-direction: column;
+            align-items: center; padding: 20px 20px 10px;
         }
-        .pr-section-label:first-child { margin-top: 0; }
+        .pr-check-circle {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            border: 3px solid rgba(255,255,255,0.4);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 36px; color: white;
+            animation: prPop 0.5s cubic-bezier(0.175,0.885,0.32,1.275) both;
+        }
+        @keyframes prPop {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .pr-success-text {
+            color: white; font-size: 20px; font-weight: 800;
+            margin-top: 14px; letter-spacing: 0.3px;
+        }
+        .pr-success-sub {
+            color: rgba(255,255,255,0.65); font-size: 13px;
+            margin-top: 5px; text-align: center; line-height: 1.5;
+        }
 
-        .pr-info-card {
-            background: #f8faff; border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 2px 12px rgba(30,60,200,0.07);
-            border: 1px solid #e8eeff;
+        /* White card body */
+        .pr-card {
+            background: #f4f6f9;
+            border-radius: 24px 24px 0 0;
+            margin-top: 20px;
+            padding: 24px 16px 40px;
+            flex: 1;
+        }
+        .pr-card-title {
+            font-size: 13px; font-weight: 700; color: #888;
+            text-transform: uppercase; letter-spacing: 1px;
+            margin-bottom: 14px;
+        }
+
+        /* Info rows */
+        .pr-info-box {
+            background: white; border-radius: 14px;
+            padding: 6px 0; margin-bottom: 14px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
         }
         .pr-info-row {
             display: flex; justify-content: space-between;
-            align-items: center; padding: 13px 16px;
-            border-bottom: 1px solid #eef2ff;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #ffe0c2;
         }
         .pr-info-row:last-child { border-bottom: none; }
         .pr-info-label {
-            font-size: 12px; color: #94a3b8; font-weight: 600;
-            display: flex; align-items: center; gap: 7px;
+            font-size: 12px; color: #888; font-weight: 600;
+            display: flex; align-items: center; gap: 6px;
         }
         .pr-info-value {
-            font-size: 13.5px; font-weight: 800; color: #1e293b;
-            text-align: right; max-width: 58%; word-break: break-all;
+            font-size: 14px; font-weight: 800; color: #1e293b;
+            text-align: right; max-width: 60%;
+            word-break: break-all;
         }
-        .pr-info-value.accent { color: #1a46e5; }
-        .payment-request-page[data-method="Bikash"]  .pr-info-value.accent { color: #e91e8c; }
-        .payment-request-page[data-method="Nagad"]   .pr-info-value.accent { color: #f57c00; }
-        .payment-request-page[data-method="Rocket"]  .pr-info-value.accent { color: #8e24aa; }
-        .payment-request-page[data-method="Upay"]    .pr-info-value.accent { color: #1976d2; }
-        .payment-request-page[data-method="Wallet"]  .pr-info-value.accent { color: #1a46e5; }
+        .pr-amount-value {
+            font-size: 22px !important;
+        }
 
         /* Status badge */
         .pr-status-badge {
-            display: inline-flex; align-items: center; gap: 5px;
-            padding: 4px 12px; border-radius: 20px; font-size: 11.5px; font-weight: 700;
-            background: #fffbeb; color: #d97706; border: 1px solid #fde68a;
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 4px 12px; border-radius: 20px;
+            font-size: 12px; font-weight: 700;
+            background: #fff8e1; color: #f59e0b;
+            border: 1px solid #fde68a;
         }
         .pr-status-dot {
             width: 7px; height: 7px; border-radius: 50%;
-            background: #f59e0b; animation: prBlink 1.2s ease-in-out infinite;
+            background: #f59e0b;
+            animation: prBlink 1.2s ease-in-out infinite;
         }
-        @keyframes prBlink { 0%,100%{opacity:1;} 50%{opacity:0.25;} }
-
-        /* Notice strip */
-        .pr-notice-strip {
-            margin-top: 18px; padding: 13px 14px;
-            background: #f0f9ff; border-radius: 12px;
-            border-left: 4px solid #38bdf8;
-            font-size: 12.5px; color: #0369a1; line-height: 1.6;
+        @keyframes prBlink {
+            0%, 100% { opacity: 1; } 50% { opacity: 0.3; }
         }
-        .payment-request-page[data-method="Bikash"]  .pr-notice-strip { background:#fff0f7; border-color:#e91e8c; color:#880e4f; }
-        .payment-request-page[data-method="Nagad"]   .pr-notice-strip { background:#fff8f0; border-color:#f57c00; color:#7c3100; }
-        .payment-request-page[data-method="Rocket"]  .pr-notice-strip { background:#f8f0ff; border-color:#8e24aa; color:#4a148c; }
-        .payment-request-page[data-method="Upay"]    .pr-notice-strip { background:#f0f6ff; border-color:#1976d2; color:#0d47a1; }
-        .payment-request-page[data-method="Wallet"]  .pr-notice-strip { background:#f0fff6; border-color:#10b981; color:#064e3b; }
 
-        /* Home button */
+        /* Method color accents on value */
+        .payment-request-page[data-method="Bikash"] .pr-method-accent { color: #e91e8c; }
+        .payment-request-page[data-method="Nagad"]  .pr-method-accent { color: #f57c00; }
+        .payment-request-page[data-method="Rocket"] .pr-method-accent { color: #8e24aa; }
+        .payment-request-page[data-method="Upay"]   .pr-method-accent { color: #1976d2; }
+
+        /* Verify button per method */
         .pr-home-btn {
-            width: 100%; padding: 16px; border: none; border-radius: 16px;
-            font-size: 15px; font-weight: 900; color: #fff; cursor: pointer;
+            width: 100%; padding: 16px;
+            border: none; border-radius: 14px;
+            font-size: 15px; font-weight: 800;
+            color: white; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            gap: 10px; margin-top: 20px; letter-spacing: 0.4px;
+            gap: 9px; margin-top: 6px;
+            letter-spacing: 0.3px;
             background: linear-gradient(135deg, #f97316, #e51a1a, #a21caf);
-            box-shadow: 0 6px 24px rgba(229,26,26,0.35), 0 2px 8px rgba(162,28,175,0.25);
-            animation: prBtnPulse 2.5s ease-in-out infinite alternate;
-            transition: transform 0.15s;
+            box-shadow: 0 4px 22px rgba(249,115,22,0.45), 0 2px 8px rgba(165,28,175,0.25);
+            animation: prBtnGlow 2.5s ease-in-out infinite alternate;
         }
-        @keyframes prBtnPulse {
-            from { box-shadow: 0 5px 20px rgba(249,115,22,0.45), 0 2px 8px rgba(162,28,175,0.25); }
-            to   { box-shadow: 0 8px 32px rgba(249,115,22,0.75), 0 4px 16px rgba(162,28,175,0.5); }
+        @keyframes prBtnGlow {
+            from { box-shadow: 0 4px 22px rgba(249,115,22,0.5), 0 2px 10px rgba(165,28,175,0.3); }
+            to   { box-shadow: 0 6px 32px rgba(249,115,22,0.8), 0 4px 18px rgba(165,28,175,0.55); }
         }
-        .payment-request-page[data-method="Bikash"]  .pr-home-btn { background: linear-gradient(135deg,#ff6eb4,#e91e8c,#880e4f); box-shadow:0 6px 22px rgba(233,30,140,0.45); }
-        .payment-request-page[data-method="Nagad"]   .pr-home-btn { background: linear-gradient(135deg,#ffb347,#f57c00,#bf360c); box-shadow:0 6px 22px rgba(245,124,0,0.45); }
-        .payment-request-page[data-method="Rocket"]  .pr-home-btn { background: linear-gradient(135deg,#d05ce3,#8e24aa,#4a148c); box-shadow:0 6px 22px rgba(142,36,170,0.45); }
-        .payment-request-page[data-method="Upay"]    .pr-home-btn { background: linear-gradient(135deg,#42a5f5,#1976d2,#0d47a1); box-shadow:0 6px 22px rgba(25,118,210,0.45); }
-        .payment-request-page[data-method="Wallet"]  .pr-home-btn { background: linear-gradient(135deg,#43e97b,#1a46e5,#7c3aed); box-shadow:0 6px 22px rgba(26,70,229,0.45); }
+        .payment-request-page[data-method="Bikash"] .pr-home-btn { background: linear-gradient(135deg, #ff6eb4, #e91e8c, #880e4f); box-shadow: 0 4px 22px rgba(233,30,140,0.5); }
+        .payment-request-page[data-method="Nagad"]  .pr-home-btn { background: linear-gradient(135deg, #ffb347, #f57c00, #bf360c); box-shadow: 0 4px 22px rgba(245,124,0,0.5); }
+        .payment-request-page[data-method="Rocket"] .pr-home-btn { background: linear-gradient(135deg, #d05ce3, #8e24aa, #4a148c); box-shadow: 0 4px 22px rgba(142,36,170,0.5); }
+        .payment-request-page[data-method="Upay"]   .pr-home-btn { background: linear-gradient(135deg, #42a5f5, #1976d2, #0d47a1); box-shadow: 0 4px 22px rgba(25,118,210,0.5); }
+        .payment-request-page[data-method="Wallet"] .pr-home-btn { background: linear-gradient(135deg, #43e97b, #1a46e5, #a21caf); box-shadow: 0 4px 22px rgba(26,70,229,0.5); }
         .pr-home-btn:active { transform: scale(0.97); }
+
+        /* Request ID box */
+        .pr-reqid-box {
+            background: white; border-radius: 12px;
+            padding: 12px 16px; margin-bottom: 16px;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+        }
+        .pr-reqid-label { font-size: 11px; color: #aaa; font-weight: 600; }
+        .pr-reqid-value { font-size: 13px; font-weight: 800; font-family: monospace; letter-spacing: 1px; }
+        .payment-request-page[data-method="Bikash"] .pr-reqid-value { color: #e91e8c; }
+        .payment-request-page[data-method="Nagad"]  .pr-reqid-value { color: #f57c00; }
+        .payment-request-page[data-method="Rocket"] .pr-reqid-value { color: #8e24aa; }
+        .payment-request-page[data-method="Upay"]   .pr-reqid-value { color: #1976d2; }
+
+        /* Notice inside card */
+        .pr-notice {
+            font-size: 12.5px; color: #64748b;
+            background: white; border-radius: 12px;
+            padding: 12px 14px; margin-bottom: 16px;
+            border-left: 4px solid;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            line-height: 1.6;
+        }
+        .payment-request-page[data-method="Bikash"] .pr-notice { border-color: #e91e8c; }
+        .payment-request-page[data-method="Nagad"]  .pr-notice { border-color: #f57c00; }
+        .payment-request-page[data-method="Rocket"] .pr-notice { border-color: #8e24aa; }
+        .payment-request-page[data-method="Upay"]   .pr-notice { border-color: #1976d2; }
         /* ===== END PAYMENT REQUEST PAGE ===== */
 
         /* Custom Animated Error Toast Notification */
@@ -2694,93 +2727,70 @@ font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
 
     <!-- PAYMENT REQUEST SUCCESS PAGE -->
     <div class="payment-request-page" id="paymentRequestPage" data-method="">
-
-        <!-- HERO BANNER -->
-        <div class="pr-hero">
-            <div class="pr-hero-bubble b1"></div>
-            <div class="pr-hero-bubble b2"></div>
-            <div class="pr-hero-bubble b3"></div>
-            <div class="pr-anim-icon">
-                <i class="fa-solid fa-circle-check"></i>
+        <div class="pr-top-bar">
+            <button class="pr-back-btn" onclick="closePaymentRequestPage()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="pr-title-badge">
+                <i id="prMethodIcon" class="fa-solid fa-wallet"></i>
+                <span id="prMethodName">Payment</span>
             </div>
-            <div class="pr-hero-title">রিকোয়েস্ট সফল হয়েছে!</div>
-            <div class="pr-hero-sub">আপনার পেমেন্ট রিকোয়েস্ট ভেরিফিকেশনের জন্য<br>সফলভাবে সাবমিট হয়েছে।</div>
-            <div class="pr-reqid-pill">
-                <i class="fa-solid fa-hashtag"></i>
-                <span id="prReqId">#PAY000000</span>
+            <div style="width:36px;"></div>
+        </div>
+        <div class="pr-success-icon">
+            <div class="pr-check-circle">
+                <i class="fa-solid fa-paper-plane"></i>
             </div>
+            <div class="pr-success-text">রিকোয়েস্ট পাঠানো হয়েছে!</div>
+            <div class="pr-success-sub">আপনার পেমেন্ট রিকোয়েস্ট সফলভাবে<br>ভেরিফিকেশনের জন্য সাবমিট হয়েছে।</div>
+        </div>
+        <!-- REQUEST ID TOP -->
+        <div class="pr-reqid-box" style="margin: 0 16px 0;">
+            <span class="pr-reqid-label"><i class="fa-solid fa-hashtag"></i> Request ID</span>
+            <span class="pr-reqid-value" id="prReqId">#REQ000000</span>
         </div>
 
-        <!-- WHITE SHEET -->
-        <div class="pr-sheet">
 
-            <!-- পেমেন্ট তথ্য -->
-            <div class="pr-section-label"><i class="fa-solid fa-credit-card" style="margin-right:5px;"></i>পেমেন্ট তথ্য</div>
-            <div class="pr-info-card">
+
+        <!-- BOX 2: ORDER STATUS -->
+        <div class="pr-card" id="prProductCard" style="display:none;">
+            <div class="pr-card-title"><i class="fa-solid fa-gamepad"></i> অর্ডার স্ট্যাটাস</div>
+            <div class="pr-info-box">
                 <div class="pr-info-row">
-                    <div class="pr-info-label"><i class="fa-solid fa-mobile-screen-button"></i> পেমেন্ট মেথড</div>
-                    <div class="pr-info-value accent" id="prDisplayMethod">—</div>
+                    <div class="pr-info-label"><i class="fa-solid fa-box"></i> প্রোডাক্ট</div>
+                    <div class="pr-info-value" id="prProductName">—</div>
                 </div>
-                <div class="pr-info-row">
-                    <div class="pr-info-label"><i class="fa-solid fa-bangladeshi-taka-sign"></i> পরিমাণ</div>
-                    <div class="pr-info-value accent" id="prDisplayAmount">৳0</div>
+                <div class="pr-info-row" id="prDiamondRow">
+                    <div class="pr-info-label"><i class="fa-solid fa-gem"></i> পরিমাণ</div>
+                    <div class="pr-info-value pr-method-accent" id="prDiamondAmt">—</div>
                 </div>
-                <div class="pr-info-row">
-                    <div class="pr-info-label"><i class="fa-solid fa-key"></i> Transaction ID</div>
-                    <div class="pr-info-value" style="font-family:monospace;" id="prDisplayTrx">—</div>
+                <div class="pr-info-row" id="prUidRow">
+                    <div class="pr-info-label"><i class="fa-solid fa-id-card"></i> Player UID</div>
+                    <div class="pr-info-value" style="font-family:monospace; font-weight:700;" id="prUid">—</div>
                 </div>
                 <div class="pr-info-row">
                     <div class="pr-info-label"><i class="fa-solid fa-clock"></i> সময়</div>
-                    <div class="pr-info-value" id="prDisplayTime">—</div>
+                    <div class="pr-info-value" id="prDisplayTimeOrder">—</div>
                 </div>
                 <div class="pr-info-row">
-                    <div class="pr-info-label"><i class="fa-solid fa-circle-dot"></i> পেমেন্ট স্ট্যাটাস</div>
+                    <div class="pr-info-label"><i class="fa-solid fa-circle-check"></i> অর্ডার স্ট্যাটাস</div>
                     <div class="pr-info-value">
-                        <span class="pr-status-badge"><span class="pr-status-dot"></span> Pending</span>
+                        <span class="pr-status-badge">
+                            <span class="pr-status-dot"></span> Pending
+                        </span>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- অর্ডার তথ্য (hidden by default, shown when FF/LUP order) -->
-            <div id="prProductCard" style="display:none;">
-                <div class="pr-section-label" style="margin-top:18px;"><i class="fa-solid fa-gamepad" style="margin-right:5px;"></i>অর্ডার তথ্য</div>
-                <div class="pr-info-card">
-                    <div class="pr-info-row">
-                        <div class="pr-info-label"><i class="fa-solid fa-box"></i> প্রোডাক্ট</div>
-                        <div class="pr-info-value" id="prProductName">—</div>
-                    </div>
-                    <div class="pr-info-row" id="prDiamondRow">
-                        <div class="pr-info-label"><i class="fa-solid fa-gem"></i> ডায়মন্ড</div>
-                        <div class="pr-info-value accent" id="prDiamondAmt">—</div>
-                    </div>
-                    <div class="pr-info-row" id="prUidRow">
-                        <div class="pr-info-label"><i class="fa-solid fa-id-card"></i> Player UID</div>
-                        <div class="pr-info-value" style="font-family:monospace;" id="prUid">—</div>
-                    </div>
-                    <div class="pr-info-row">
-                        <div class="pr-info-label"><i class="fa-solid fa-clock"></i> সময়</div>
-                        <div class="pr-info-value" id="prDisplayTimeOrder">—</div>
-                    </div>
-                    <div class="pr-info-row">
-                        <div class="pr-info-label"><i class="fa-solid fa-circle-check"></i> অর্ডার স্ট্যাটাস</div>
-                        <div class="pr-info-value">
-                            <span class="pr-status-badge"><span class="pr-status-dot"></span> Pending</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Notice -->
-            <div class="pr-notice-strip">
-                <strong>📋 বিঃদ্রঃ</strong> অ্যাডমিন আপনার Transaction ID যাচাই করার পর ডায়মন্ড দেওয়া হবে। সাধারণত ১–২৪ ঘণ্টার মধ্যে সম্পন্ন হয়।
-            </div>
-
-            <!-- Home Button -->
+        <div class="pr-notice" style="margin: 0 16px 16px;">
+            <strong>📋 বিঃদ্রঃ</strong> অ্যাডমিন আপনার Transaction ID যাচাই করার পর ডায়মন্ড দেওয়া হবে। সাধারণত ১–২৪ ঘণ্টার মধ্যে সম্পন্ন হয়।
+        </div>
+        <div style="padding: 0 16px 30px;">
             <button class="pr-home-btn" onclick="closePaymentRequestPage()">
                 <i class="fa-solid fa-house"></i> হোমে ফিরে যান
             </button>
-
-        </div><!-- end pr-sheet -->
+        </div>
     </div>
     <!-- END PAYMENT REQUEST PAGE -->
 
@@ -4829,13 +4839,25 @@ font-weight:700;
                         if (uidInput) { uidInput.style.border='2px solid #e51a1a'; setTimeout(function(){ uidInput.style.border=''; }, 2500); }
                         return;
                     }
-                    window.parent.postMessage({
-                        action: 'openPayMethod',
-                        productName: 'Weekly Lite (BD Server)',
-                        diamonds: labelTxt,
-                        price: priceVal,
-                        uid: uid
-                    }, '*');
+                    // Check if wallet pay selected (first .pay-card)
+                    var payCards = document.querySelectorAll('.pay-card');
+                    var walletSelected = payCards.length > 0 && payCards[0].classList.contains('active');
+                    if (walletSelected) {
+                        window.parent.postMessage({
+                            action: 'openOrderDirect',
+                            productName: 'Weekly Lite (BD Server)',
+                            label: labelTxt,
+                            uid: uid
+                        }, '*');
+                    } else {
+                        window.parent.postMessage({
+                            action: 'openPayMethod',
+                            productName: 'Weekly Lite (BD Server)',
+                            diamonds: labelTxt,
+                            price: priceVal,
+                            uid: uid
+                        }, '*');
+                    }
                 } else {
                     window.parent.postMessage({action:'openLogin',from:'weeklyLite'},'*');
                 }
@@ -5752,6 +5774,66 @@ function submitFFOrder() {
 
 // ── Unipin Submit ──
 function submitUnipinOrder() {
+    // Wallet pay (first .pay-opt) selected → directly open order page
+    const payOpts = document.querySelectorAll('#unipinPage .pay-opt');
+    const walletSelected = payOpts.length > 0 && payOpts[0].classList.contains('selected');
+
+    if (walletSelected) {
+        // Package info
+        const selPkg = document.querySelector('#unipinPage .pkg.selected');
+        let pkgName = 'Unipin Voucher';
+        let pkgAmt = '—';
+        if (selPkg) {
+            const nm = selPkg.querySelector('.pkg-name, [class*="name"]');
+            const pr = selPkg.querySelector('.pkg-price, [class*="price"]');
+            if (nm) pkgName = nm.textContent.trim();
+            if (pr) pkgAmt = pr.textContent.trim();
+        }
+
+        const now = new Date().toLocaleString('bn-BD');
+        const reqId = '#REQ' + Date.now().toString().slice(-6);
+        const set = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val; };
+
+        // Set white background (Wallet has no color theme)
+        const prPage = document.getElementById('paymentRequestPage');
+        prPage.setAttribute('data-method', 'Wallet');
+
+        // Header
+        document.getElementById('prMethodIcon').className = 'fa-solid fa-wallet';
+        document.getElementById('prMethodName').innerText = 'Wallet Pay';
+        set('prReqId', reqId);
+
+        // Show order status card
+        const productCard = document.getElementById('prProductCard');
+        if (productCard) productCard.style.display = '';
+
+        // Fill rows: Product, পরিমাণ, সময়, Status
+        set('prProductName', pkgName);
+
+        // পরিমাণ row — reuse prDiamondRow for amount
+        const dRow = document.getElementById('prDiamondRow');
+        const dAmt = document.getElementById('prDiamondAmt');
+        if (dRow && dAmt) {
+            dRow.style.display = '';
+            // Change label to পরিমাণ
+            const dLabel = dRow.querySelector('.pr-info-label');
+            if (dLabel) dLabel.innerHTML = '<i class="fa-solid fa-bangladeshi-taka-sign"></i> পরিমাণ';
+            dAmt.innerText = pkgAmt;
+        }
+
+        // Hide UID row (not needed for wallet)
+        const uRow = document.getElementById('prUidRow');
+        if (uRow) uRow.style.display = 'none';
+
+        set('prDisplayTimeOrder', now);
+
+        // Open order page
+        prPage.classList.add('show');
+        document.body.style.overflow = 'hidden';
+        return;
+    }
+
+    // Instant pay → original flow
     if (typeof window.unipinSubmitOrder === 'function') {
         window.unipinSubmitOrder();
     } else {
@@ -6164,6 +6246,39 @@ window.addEventListener('message', function(e) {
     if (!e.data) return;
     if (e.data.action === 'showToast') {
         showAuthToast(e.data.msg || '', e.data.type || 'error');
+        return;
+    }
+    if (e.data.action === 'openOrderDirect') {
+        // Wallet pay → open order page directly
+        var now = new Date().toLocaleString('bn-BD');
+        var reqId = '#REQ' + Date.now().toString().slice(-6);
+        var set = function(id, val) { var el = document.getElementById(id); if (el) el.innerText = val; };
+        var prPage = document.getElementById('paymentRequestPage');
+        prPage.setAttribute('data-method', 'Wallet');
+        document.getElementById('prMethodIcon').className = 'fa-solid fa-wallet';
+        document.getElementById('prMethodName').innerText = 'Wallet Pay';
+        set('prReqId', reqId);
+        var productCard = document.getElementById('prProductCard');
+        if (productCard) productCard.style.display = '';
+        set('prProductName', e.data.productName || 'Weekly Lite');
+        // label row
+        var dRow = document.getElementById('prDiamondRow');
+        var dAmt = document.getElementById('prDiamondAmt');
+        if (dRow && dAmt) {
+            dRow.style.display = '';
+            var dLabel = dRow.querySelector('.pr-info-label');
+            if (dLabel) dLabel.innerHTML = '<i class="fa-solid fa-gem"></i> প্যাকেজ';
+            dAmt.innerText = e.data.label || '—';
+        }
+        var uRow = document.getElementById('prUidRow');
+        var uVal = document.getElementById('prUid');
+        if (uRow && uVal) {
+            uRow.style.display = '';
+            uVal.innerText = e.data.uid || '—';
+        }
+        set('prDisplayTimeOrder', now);
+        prPage.classList.add('show');
+        document.body.style.overflow = 'hidden';
         return;
     }
     if (e.data.action !== 'openPayMethod') return;
