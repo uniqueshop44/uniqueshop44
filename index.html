@@ -5762,6 +5762,39 @@ function submitFFOrder() {
 
 // ── Unipin Submit ──
 function submitUnipinOrder() {
+    // Wallet pay (first .pay-opt) selected → directly open order page
+    const payOpts = document.querySelectorAll('#unipinPage .pay-opt');
+    const walletSelected = payOpts.length > 0 && payOpts[0].classList.contains('selected');
+
+    if (walletSelected) {
+        const selPkg = document.querySelector('#unipinPage .pkg.selected');
+        let pkgName = 'Unipin Voucher';
+        if (selPkg) {
+            const nm = selPkg.querySelector('.pkg-name, [class*="name"]');
+            if (nm) pkgName = 'Unipin: ' + nm.textContent.trim();
+        }
+        const now = new Date().toLocaleString('bn-BD');
+        const reqId = '#REQ' + Date.now().toString().slice(-6);
+        const set = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val; };
+
+        // Fill order status box
+        const productCard = document.getElementById('prProductCard');
+        if (productCard) productCard.style.display = '';
+        set('prProductName', pkgName);
+        set('prDisplayTimeOrder', now);
+        set('prReqId', reqId);
+        const dRow = document.getElementById('prDiamondRow');
+        if (dRow) dRow.style.display = 'none';
+        const uRow = document.getElementById('prUidRow');
+        if (uRow) uRow.style.display = 'none';
+
+        // Open order request page
+        document.getElementById('paymentRequestPage').classList.add('show');
+        document.body.style.overflow = 'hidden';
+        return;
+    }
+
+    // Instant pay → original flow
     if (typeof window.unipinSubmitOrder === 'function') {
         window.unipinSubmitOrder();
     } else {
