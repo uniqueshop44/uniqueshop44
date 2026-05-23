@@ -4014,8 +4014,8 @@ font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
 
                 // Populate payment request page
                 // Use window fallback for cross-script-block variables
-                var _method = (typeof selectedMethodValue !== 'undefined' && selectedMethodValue) ? selectedMethodValue : (window.selectedMethodValue || '');
-                var _amount = (typeof selectedAmountValue !== 'undefined' && selectedAmountValue) ? selectedAmountValue : (window.selectedAmountValue || 0);
+                var _method = window.selectedMethodValue || selectedMethodValue || '';
+                var _amount = window.selectedAmountValue || selectedAmountValue || 0;
                 const prPage = document.getElementById('paymentRequestPage');
                 prPage.setAttribute('data-method', _method);
                 document.getElementById('prMethodIcon').className = iconMap[_method] || 'fa-solid fa-wallet';
@@ -4072,8 +4072,8 @@ font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
             if(typeof window.saveAddMoneyToFirebase === 'function') {
                 const verifyBtn = document.getElementById('gatewayVerifyBtn');
                 if(verifyBtn) { verifyBtn.disabled = true; verifyBtn.innerText = "⏳ Please wait..."; }
-                var _m = (typeof selectedMethodValue !== 'undefined' && selectedMethodValue) ? selectedMethodValue : (window.selectedMethodValue || '');
-                var _a = (typeof selectedAmountValue !== 'undefined' && selectedAmountValue) ? selectedAmountValue : (window.selectedAmountValue || 0);
+                var _m = window.selectedMethodValue || selectedMethodValue || '';
+                var _a = window.selectedAmountValue || selectedAmountValue || 0;
                 window.saveAddMoneyToFirebase(_a, _m, trxID)
                 .then(() => {
                     doOpenRequestPage();
