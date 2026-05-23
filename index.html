@@ -5767,29 +5767,57 @@ function submitUnipinOrder() {
     const walletSelected = payOpts.length > 0 && payOpts[0].classList.contains('selected');
 
     if (walletSelected) {
+        // Package info
         const selPkg = document.querySelector('#unipinPage .pkg.selected');
         let pkgName = 'Unipin Voucher';
+        let pkgAmt = '—';
         if (selPkg) {
             const nm = selPkg.querySelector('.pkg-name, [class*="name"]');
-            if (nm) pkgName = 'Unipin: ' + nm.textContent.trim();
+            const pr = selPkg.querySelector('.pkg-price, [class*="price"]');
+            if (nm) pkgName = nm.textContent.trim();
+            if (pr) pkgAmt = pr.textContent.trim();
         }
+
         const now = new Date().toLocaleString('bn-BD');
         const reqId = '#REQ' + Date.now().toString().slice(-6);
         const set = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val; };
 
-        // Fill order status box
+        // Set white background (Wallet has no color theme)
+        const prPage = document.getElementById('paymentRequestPage');
+        prPage.setAttribute('data-method', 'Wallet');
+        prPage.style.background = '#f4f6f9';
+
+        // Header
+        document.getElementById('prMethodIcon').className = 'fa-solid fa-wallet';
+        document.getElementById('prMethodName').innerText = 'Wallet Pay';
+        set('prReqId', reqId);
+
+        // Show order status card
         const productCard = document.getElementById('prProductCard');
         if (productCard) productCard.style.display = '';
+
+        // Fill rows: Product, পরিমাণ, সময়, Status
         set('prProductName', pkgName);
-        set('prDisplayTimeOrder', now);
-        set('prReqId', reqId);
+
+        // পরিমাণ row — reuse prDiamondRow for amount
         const dRow = document.getElementById('prDiamondRow');
-        if (dRow) dRow.style.display = 'none';
+        const dAmt = document.getElementById('prDiamondAmt');
+        if (dRow && dAmt) {
+            dRow.style.display = '';
+            // Change label to পরিমাণ
+            const dLabel = dRow.querySelector('.pr-info-label');
+            if (dLabel) dLabel.innerHTML = '<i class="fa-solid fa-bangladeshi-taka-sign"></i> পরিমাণ';
+            dAmt.innerText = pkgAmt;
+        }
+
+        // Hide UID row (not needed for wallet)
         const uRow = document.getElementById('prUidRow');
         if (uRow) uRow.style.display = 'none';
 
-        // Open order request page
-        document.getElementById('paymentRequestPage').classList.add('show');
+        set('prDisplayTimeOrder', now);
+
+        // Open order page
+        prPage.classList.add('show');
         document.body.style.overflow = 'hidden';
         return;
     }
