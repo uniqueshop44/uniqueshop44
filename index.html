@@ -1045,19 +1045,21 @@ body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100
       <button class="slider-dot" onclick="sliderGo(1)"></button>
       <button class="slider-dot" onclick="sliderGo(2)"></button>
     </div>
-    <!-- Telegram Button — সবসময় দেখাবে -->
-    <a href="https://t.me/uniqueshop" target="_blank" id="sliderTelegramBtn"
-      style="display:flex;align-items:center;justify-content:center;gap:8px;
-             background:linear-gradient(135deg,#229ED9,#1a86bb);
-             color:#fff;font-size:14px;font-weight:700;
-             padding:11px 0;width:100%;border:none;cursor:pointer;
-             text-decoration:none;letter-spacing:0.3px;">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8l-1.68 7.92c-.12.56-.46.7-.92.44l-2.54-1.88-1.22 1.18c-.14.14-.26.26-.52.26l.18-2.6 4.74-4.28c.2-.18-.04-.28-.32-.1L7.46 14.4l-2.5-.78c-.54-.17-.55-.54.12-.8l9.78-3.77c.45-.16.84.11.78.75z" fill="white"/>
-      </svg>
-      আমাদের Telegram Channel Join করুন
-    </a>
   </div>
+
+  <!-- Telegram Button — slider এর বাইরে -->
+  <a href="https://t.me/uniqueshop" target="_blank" id="sliderTelegramBtn"
+    style="display:flex;align-items:center;justify-content:center;gap:8px;
+           background:linear-gradient(135deg,#229ED9,#1a86bb);
+           color:#fff;font-size:14px;font-weight:700;
+           padding:12px 0;margin:0 14px;border-radius:0 0 14px 14px;
+           text-decoration:none;letter-spacing:0.3px;">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8l-1.68 7.92c-.12.56-.46.7-.92.44l-2.54-1.88-1.22 1.18c-.14.14-.26.26-.52.26l.18-2.6 4.74-4.28c.2-.18-.04-.28-.32-.1L7.46 14.4l-2.5-.78c-.54-.17-.55-.54.12-.8l9.78-3.77c.45-.16.84.11.78.75z" fill="white"/>
+    </svg>
+    আমাদের Telegram Channel Join করুন
+  </a>
+
   <script>
   (function(){
     var cur=0,total=0,timer;
