@@ -1038,52 +1038,92 @@ body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100
       </div>
 
     </div>
-    <button class="slider-arrow prev" onclick="sliderMove(-1)">&#8249;</button>
-    <button class="slider-arrow next" onclick="sliderMove(1)">&#8250;</button>
+    <button class="slider-arrow prev" onclick="sliderMove(-1)" style="display:none">&#8249;</button>
+    <button class="slider-arrow next" onclick="sliderMove(1)" style="display:none">&#8250;</button>
     <div class="slider-dots" id="sliderDots">
       <button class="slider-dot active" onclick="sliderGo(0)"></button>
       <button class="slider-dot" onclick="sliderGo(1)"></button>
       <button class="slider-dot" onclick="sliderGo(2)"></button>
     </div>
+    <!-- Telegram Button — সবসময় দেখাবে -->
+    <a href="https://t.me/uniqueshop" target="_blank" id="sliderTelegramBtn"
+      style="display:flex;align-items:center;justify-content:center;gap:8px;
+             background:linear-gradient(135deg,#229ED9,#1a86bb);
+             color:#fff;font-size:14px;font-weight:700;
+             padding:11px 0;width:100%;border:none;cursor:pointer;
+             text-decoration:none;letter-spacing:0.3px;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8l-1.68 7.92c-.12.56-.46.7-.92.44l-2.54-1.88-1.22 1.18c-.14.14-.26.26-.52.26l.18-2.6 4.74-4.28c.2-.18-.04-.28-.32-.1L7.46 14.4l-2.5-.78c-.54-.17-.55-.54.12-.8l9.78-3.77c.45-.16.84.11.78.75z" fill="white"/>
+      </svg>
+      আমাদের Telegram Channel Join করুন
+    </a>
   </div>
   <script>
   (function(){
-    var cur=0,total=3,timer;
-    // যেসব slide visible সেগুলো track করি
+    var cur=0,total=0,timer;
     var slides = document.querySelectorAll('#mainSlider .slide');
     var visibleSlides = [];
+
     function rebuild(){
       visibleSlides = [];
       slides.forEach(function(s){ if(s.style.display !== 'none') visibleSlides.push(s); });
       total = visibleSlides.length;
-      if(total===0){ document.getElementById('mainSlider').style.display='none'; }
-      else if(total===1){ document.querySelector('.slider-arrow.prev').style.display='none'; document.querySelector('.slider-arrow.next').style.display='none'; }
-      cur=0; update();
+      if(total===0){
+        document.getElementById('mainSlider').style.display='none';
+        return;
+      }
+      document.getElementById('mainSlider').style.display='';
+      // Arrow — একটার বেশি slide থাকলে দেখাও
+      var prev = document.querySelector('#mainSlider .slider-arrow.prev');
+      var next = document.querySelector('#mainSlider .slider-arrow.next');
+      if(prev) prev.style.display = total>1 ? '' : 'none';
+      if(next) next.style.display = total>1 ? '' : 'none';
+      if(cur >= total) cur=0;
+      update();
     }
-    window.sliderCheckVisible = function(){ rebuild(); reset(); }
+
+    window.sliderCheckVisible = function(){ rebuild(); reset(); };
+
     function update(){
       if(!visibleSlides.length) return;
-      // সব slide hide করি, শুধু current টা দেখাই
-      slides.forEach(function(s){ s.style.minWidth='0'; s.style.position='absolute'; s.style.opacity='0'; s.style.pointerEvents='none'; });
+      slides.forEach(function(s){
+        s.style.minWidth='0';
+        s.style.position='absolute';
+        s.style.opacity='0';
+        s.style.pointerEvents='none';
+        s.style.transition='opacity 0.4s ease';
+      });
       var track = document.getElementById('sliderTrack');
       track.style.transform='none';
       var active = visibleSlides[cur];
-      if(active){ active.style.minWidth='100%'; active.style.position='relative'; active.style.opacity='1'; active.style.pointerEvents='auto'; }
-      // dots
+      if(active){
+        active.style.minWidth='100%';
+        active.style.position='relative';
+        active.style.opacity='1';
+        active.style.pointerEvents='auto';
+      }
+      // dots update
       var dots = document.querySelectorAll('#sliderDots .slider-dot');
       var vi=0;
-      dots.forEach(function(d){ if(d.style.display!=='none'){ d.classList.toggle('active',vi===cur); vi++; } });
+      dots.forEach(function(d){
+        if(d.style.display!=='none'){ d.classList.toggle('active',vi===cur); vi++; }
+      });
     }
-    window.sliderMove=function(d){cur=(cur+d+total)%total;update();reset();};
-    window.sliderGo=function(i){
-      var vi=0;
+
+    window.sliderMove = function(d){ cur=(cur+d+total)%total; update(); reset(); };
+    window.sliderGo = function(i){
+      var vi=0, mapped=0;
       var dots=document.querySelectorAll('#sliderDots .slider-dot');
-      var mapped=0;
       dots.forEach(function(d,idx){ if(d.style.display!=='none'){ if(idx===i) mapped=vi; vi++; } });
       cur=mapped; update(); reset();
     };
-    function reset(){clearInterval(timer);if(total>1){timer=setInterval(function(){cur=(cur+1)%total;update();},4000);}}
-    // DOM ready হলে প্রথমবার build করি
+
+    // Auto-play — ২ সেকেন্ড
+    function reset(){
+      clearInterval(timer);
+      if(total>1){ timer=setInterval(function(){ cur=(cur+1)%total; update(); },2000); }
+    }
+
     rebuild(); reset();
   })();
   </script>
