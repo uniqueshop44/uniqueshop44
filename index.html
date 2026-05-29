@@ -2469,6 +2469,7 @@ function applyFirebasePaymentNumbers() {
 applyFirebasePaymentNumbers();
 
 function openPayment() {
+  if (!window._currentUser) { openLogin(); return; }
   document.getElementById('payOverlay').classList.add('show');
   pushOverlayState('payOverlay');
   document.body.style.overflow = 'hidden';
@@ -2931,6 +2932,7 @@ function goHome() {
 }
 
 function openRedeem() {
+  if (!window._currentUser) { openLogin(); return; }
   document.getElementById('redeemOverlay').classList.add('show');
   pushOverlayState('redeemOverlay');
   document.body.style.overflow = 'hidden';
@@ -2982,6 +2984,7 @@ function closeRedeemRequest() {
 }
 
 function openRefer() {
+  if (!window._currentUser) { openLogin(); return; }
   document.getElementById('referOverlay').classList.add('show');
   pushOverlayState('referOverlay');
   document.body.style.overflow = 'hidden';
@@ -3196,7 +3199,6 @@ function selectFFPay(type) {
   document.getElementById('ff-pay-instant').classList.toggle('selected', type==='instant');
 }
 function ffBuyNow() {
-  if (!window._currentUser) { closeFFTopup(); openLogin(); return; }
   if (!ffSelRecharge) { showToast('অনুগ্রহ করে একটি প্যাকেজ বেছে নিন।', 'error'); return; }
   var uid = document.getElementById('ffUidInput').value.trim();
   if (!uid) { showToast('অনুগ্রহ করে Player ID (UID) দিন।', 'error'); return; }
@@ -3401,7 +3403,6 @@ function selectUnipinPay(method) {
   document.getElementById('unipin-pay-instant').classList.toggle('selected', method === 'instant');
 }
 function unipinBuyNow() {
-  if (!window._currentUser) { closeUnipinTopup(); openLogin(); return; }
   if (!unipinSelRecharge) { showToast('অনুগ্রহ করে একটি রিচার্জ প্যাকেজ বেছে নিন।', 'error'); return; }
   if (unipinSelPay === 'instant') {
     unipinVerifyMode = true;
