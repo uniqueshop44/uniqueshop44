@@ -3472,6 +3472,7 @@ function switchTab(tab) {
   
 // ===== BROWSER BACK BUTTON SUPPORT =====
 
+// সব overlay-র সঠিক order — সবচেয়ে উপরেরটা আগে
 var OVERLAY_ORDER = [
   'loginOverlay','registerOverlay',
   'unireqOverlay','ffreqOverlay','reqOverlay','rdreqOverlay',
@@ -3481,61 +3482,45 @@ var OVERLAY_ORDER = [
   'accountOverlay','inboxOverlay','historyOverlay'
 ];
 
-// ── Back Button System ──
-// একটাই নিয়ম: যখনই back চাপে, সবচেয়ে উপরের overlay বন্ধ করো।
-// কোনো overlay না থাকলে আবার একটা dummy entry push করো যাতে app থেকে বের না হয়।
+// ── Back Button System (Bulletproof) ──
+// নিয়ম: stack এ সবসময় কমপক্ষে ২টা entry থাকবে।
+// back চাপলে overlay বন্ধ হবে — কখনো browser বাইরে যাবে না।
 
-function closeTopOverlay() {
+function initBackButtonSupport() {
+  // stack এ ২টা entry দিয়ে শুরু:
+  // [0] = bottom (এটা কখনো pop হবে না চাইলে)
+  // [1] = current (এটা pop হলে popstate fire হয়)
+  history.replaceState({ us: 'bottom' }, '');
+  history.pushState({ us: 'top' }, '');
+}
+
+function pushOverlayState(overlayId) {
+  // overlay খুললে একটা entry push করো
+  history.pushState({ us: 'top' }, '');
+}
+
+window.addEventListener('popstate', function(e) {
+  // সবচেয়ে উপরের overlay বন্ধ করো
+  var closed = false;
   for (var i = 0; i < OVERLAY_ORDER.length; i++) {
     var el = document.getElementById(OVERLAY_ORDER[i]);
     if (el && el.classList.contains('show')) {
       el.classList.remove('show');
       document.body.style.overflow = '';
-      // nav fix
       ['home','history','inbox','account'].forEach(function(t) {
         var nav = document.getElementById('nav-' + t);
         if (nav) nav.classList.remove('active');
       });
       var homeNav = document.getElementById('nav-home');
       if (homeNav) homeNav.classList.add('active');
-      return true;
+      closed = true;
+      break;
     }
   }
-  return false;
-}
-
-function anyOverlayOpen() {
-  for (var i = 0; i < OVERLAY_ORDER.length; i++) {
-    var el = document.getElementById(OVERLAY_ORDER[i]);
-    if (el && el.classList.contains('show')) return true;
-  }
-  return false;
-}
-
-function initBackButtonSupport() {
-  // শুধু একটাই dummy entry — এটাই সবসময় stack এ থাকবে
-  history.replaceState({ page: 'app' }, '');
-  history.pushState({ page: 'app' }, '');
-}
-
-function pushOverlayState(overlayId) {
-  // প্রতিটা overlay খোলার সময় একটা entry push করো
-  history.pushState({ page: 'app' }, '');
-}
-
-window.addEventListener('popstate', function(e) {
-  // যেকোনো back press এ — সবার আগে overlay বন্ধ করার চেষ্টা
-  var closed = closeTopOverlay();
-
-  if (closed) {
-    // overlay বন্ধ হলো — stack এ আবার একটা entry রাখো
-    // যাতে পরের back press ও ধরা যায়
-    history.pushState({ page: 'app' }, '');
-  } else {
-    // কোনো overlay নেই — home এ আছি
-    // app থেকে বের হতে না দিয়ে আবার entry push করো
-    history.pushState({ page: 'app' }, '');
-  }
+  // overlay বন্ধ হোক বা না হোক —
+  // সবসময় একটা নতুন entry push করো
+  // এতে stack এ সবসময় entry থাকবে, browser বাইরে যাবে না
+  history.pushState({ us: 'top' }, '');
 });
 
 // Close ALL overlays first (except login/register)
