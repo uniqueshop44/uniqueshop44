@@ -952,6 +952,7 @@ body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100
         window._currentUser = userData;
         // Update balance display if visible
         if (typeof updateBalanceDisplay === 'function') updateBalanceDisplay(userData);
+        if (typeof updateNavbar === 'function') updateNavbar();
       }
     } else {
       window._currentUser = null;
@@ -975,9 +976,10 @@ body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100
       <span class="logo-unique">UNIQUE</span>
       <span class="logo-shop">&nbsp;SHOP</span>
     </div>
-    <div class="nav-btns">
-      <button class="btn-login">Login</button>
-      <button class="btn-register">Register</button>
+    <div class="nav-btns" id="mainNavBtns">
+      <button class="btn-login" id="mainLoginBtn">Login</button>
+      <button class="btn-register" id="mainRegisterBtn">Register</button>
+      <button class="btn-user-nav" id="mainUserBtn" style="display:none;background:#FF6B35;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;" onclick="switchTab('account')">👤 <span id="mainUserName">Account</span></button>
     </div>
   </nav>
 
@@ -3661,6 +3663,7 @@ async function handleGoogleLogin() {
       showToast('✅ Google Login সফল!', 'success');
       closeLogin();
       closeRegister();
+      updateNavbar();
     } else {
       showToast(result.error || 'Google Login failed', 'error');
     }
@@ -3680,6 +3683,7 @@ async function handleLogin() {
     if (result.success) {
       showToast('✅ Login সফল হয়েছে!', 'success');
       closeLogin();
+      updateNavbar();
     } else {
       showToast(result.error || 'Login failed', 'error');
     }
@@ -3724,6 +3728,7 @@ async function handleRegister() {
     if (result.success) {
       showToast('✅ Registration সফল!', 'success');
       closeRegister();
+      updateNavbar();
     } else {
       showToast(result.error || 'Registration failed', 'error');
     }
@@ -3742,6 +3747,7 @@ async function handleLogout() {
     if (window._fbLogout) await window._fbLogout();
     closeAccount();
     showToast('Logout হয়েছে।', 'warn');
+    updateNavbar();
   }
 }
 
@@ -3885,7 +3891,38 @@ function copyUID() {
     showToast('User ID: ' + uid, 'warn');
   }
 }
+
+// ══════════════════════════════════════════════════
+//  updateNavbar — login/logout হলে topbar আপডেট হবে
+// ══════════════════════════════════════════════════
+function updateNavbar() {
+  var profile = loadUserProfile();
+  var loggedIn = !!profile;
+  var displayName = loggedIn ? (profile.name || 'Account') : '';
+
+  // Main navbar
+  var loginBtns = document.querySelectorAll('.btn-login');
+  var regBtns = document.querySelectorAll('.btn-register');
+  var userBtns = document.querySelectorAll('.btn-user-nav');
+  var userNames = document.querySelectorAll('#mainUserName, .injected-user-name');
+
+  loginBtns.forEach(function(b){ b.style.display = loggedIn ? 'none' : ''; });
+  regBtns.forEach(function(b){ b.style.display = loggedIn ? 'none' : ''; });
+  userBtns.forEach(function(b){ b.style.display = loggedIn ? '' : 'none'; });
+  userNames.forEach(function(s){ s.textContent = displayName; });
+}
+
+// Balance display update
+function updateBalanceDisplay(profile) {
+  if (!profile) return;
+  var balEl = document.getElementById('balanceAmount');
+  var diaEl = document.getElementById('diamondAmount');
+  if (balEl) balEl.textContent = (profile.balance || 0) + ' ৳';
+  if (diaEl) diaEl.textContent = (profile.diamonds || 0);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
+  updateNavbar();
   document.addEventListener('click', function(e) {
     if (e.target.classList.contains('btn-login')) { openLogin(); }
     if (e.target.classList.contains('btn-register')) { openRegister(); }
@@ -3905,9 +3942,10 @@ var NAVBAR_HTML = `
     <span class="logo-bolt">⚡</span>
     <span class="logo-unique">Unique</span><span class="logo-shop"> Shop</span>
   </div>
-  <div class="nav-btns">
+  <div class="nav-btns injected-nav-btns">
     <button class="btn-login">Login</button>
     <button class="btn-register">Register</button>
+    <button class="btn-user-nav injected-user-btn" style="display:none;background:#FF6B35;color:#fff;border:none;padding:8px 14px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;" onclick="switchTab('account')">👤 <span class="injected-user-name">Account</span></button>
   </div>
 </nav>`;
 
