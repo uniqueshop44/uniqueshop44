@@ -3471,35 +3471,55 @@ function updateUnireqCodeRows(qty) {
 function switchTab(tab) {
   
 // ===== BROWSER BACK BUTTON SUPPORT =====
-// Push a state whenever an overlay opens
-function pushOverlayState(overlayId) {
-  history.pushState({ overlay: overlayId }, '', '');
+
+// সব overlay-র সঠিক order — সবচেয়ে উপরেরটা আগে
+var OVERLAY_ORDER = [
+  'loginOverlay','registerOverlay',
+  'unireqOverlay','ffreqOverlay','reqOverlay','rdreqOverlay',
+  'verifyOverlay','gatewayOverlay','autopayOverlay',
+  'unipinOverlay','ffOverlay','referOverlay',
+  'redeemOverlay','payOverlay',
+  'accountOverlay','inboxOverlay','historyOverlay'
+];
+
+// Base state — app এর শুরুতে একটা state push করা হবে
+// যাতে home page থেকে back চাপলে app বন্ধ না হয়
+function initBackButtonSupport() {
+  // Base state — index 0
+  history.replaceState({ overlayDepth: 0 }, '');
 }
 
-// On back button press, close the topmost visible overlay
+function pushOverlayState(overlayId) {
+  history.pushState({ overlay: overlayId, overlayDepth: 1 }, '');
+}
+
 window.addEventListener('popstate', function(e) {
-  // Find which overlay is currently visible (check in reverse priority order)
-  var order = [
-    'unireqOverlay','ffreqOverlay','reqOverlay','rdreqOverlay',
-    'verifyOverlay','gatewayOverlay','autopayOverlay',
-    'unipinOverlay','ffOverlay','referOverlay',
-    'redeemOverlay','payOverlay',
-    'accountOverlay','inboxOverlay','historyOverlay'
-  ];
-  for (var i = 0; i < order.length; i++) {
-    var el = document.getElementById(order[i]);
+  // কোনো overlay খোলা আছে কিনা দেখো
+  var found = false;
+  for (var i = 0; i < OVERLAY_ORDER.length; i++) {
+    var el = document.getElementById(OVERLAY_ORDER[i]);
     if (el && el.classList.contains('show')) {
+      // এই overlay বন্ধ করো
       el.classList.remove('show');
       document.body.style.overflow = '';
-      // Update nav active state back to home if needed
+      // nav active state ঠিক করো
       ['home','history','inbox','account'].forEach(function(t) {
         var nav = document.getElementById('nav-' + t);
         if (nav) nav.classList.remove('active');
       });
       var homeNav = document.getElementById('nav-home');
       if (homeNav) homeNav.classList.add('active');
-      return;
+      found = true;
+      // আবার base state push করো যাতে পরের back-এও কাজ করে
+      history.pushState({ overlayDepth: 0 }, '');
+      break;
     }
+  }
+
+  if (!found) {
+    // কোনো overlay নেই — home page এ আছি
+    // Base state re-push করো যাতে app থেকে বের না হয়
+    history.pushState({ overlayDepth: 0 }, '');
   }
 });
 
@@ -3704,6 +3724,7 @@ function showToast(msg, type) {
 function openLogin() {
   document.getElementById('loginOverlay').classList.add('show');
   document.getElementById('registerOverlay').classList.remove('show');
+  pushOverlayState('loginOverlay');
   document.body.style.overflow = 'hidden';
 }
 function closeLogin() {
@@ -3713,6 +3734,7 @@ function closeLogin() {
 function openRegister() {
   document.getElementById('registerOverlay').classList.add('show');
   document.getElementById('loginOverlay').classList.remove('show');
+  pushOverlayState('registerOverlay');
   document.body.style.overflow = 'hidden';
 }
 function closeRegister() {
@@ -3994,6 +4016,7 @@ function updateBalanceDisplay(profile) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+  initBackButtonSupport();
   updateNavbar();
   document.addEventListener('click', function(e) {
     if (e.target.classList.contains('btn-login')) { openLogin(); }
