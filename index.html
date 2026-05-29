@@ -807,17 +807,44 @@ body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100
     }
 
     // Slider links (image URLs)
-    const sliderLinks = await window._fbGet('admin/sliderLinks');
-    if (sliderLinks && Array.isArray(sliderLinks)) {
+    // Firebase array কে object হিসেবে store করে তাই Object.values() দিয়ে handle করা হচ্ছে
+    const sliderRaw = await window._fbGet('admin/sliderLinks');
+    if (sliderRaw) {
+      // Firebase object {0:url, 1:url, 2:url} অথবা সরাসরি array দুটোই handle করে
+      const sliderLinks = Array.isArray(sliderRaw)
+        ? sliderRaw
+        : Object.keys(sliderRaw).sort().map(k => sliderRaw[k]);
+
       localStorage.setItem('uniqueShopSliderLinks', JSON.stringify(sliderLinks));
-      const slides = document.querySelectorAll('#mainSlider .slide img');
-      const slideWrappers = document.querySelectorAll('#mainSlider .slide');
-      slides.forEach((img, i) => {
-        if (sliderLinks[i]) {
-          img.src = sliderLinks[i];
-          img.onerror = null; // Clear old error handler
+
+      const slides = document.querySelectorAll('#mainSlider .slide');
+      slides.forEach((slide, i) => {
+        const url = sliderLinks[i];
+        if (url && url.startsWith('http')) {
+          // image src update
+          const img = slide.querySelector('img');
+          if (img) {
+            img.onerror = null;
+            img.src = url;
+            slide.style.display = '';
+          }
+          // slide click link update — onclick এ প্রথম url ব্যবহার করা হচ্ছে
+          // (click link আলাদা রাখতে চাইলে admin-এ আলাদা field লাগবে)
+        } else if (!url || url === '') {
+          // empty link হলে slide hide করো
+          slide.style.display = 'none';
+          const dot = document.getElementById('sliderDots');
+          if (dot) {
+            const dots = dot.querySelectorAll('.slider-dot');
+            if (dots[i]) dots[i].style.display = 'none';
+          }
         }
       });
+
+      // Slider rebuild করো visible slide count update করতে
+      if (typeof sliderCheckVisible === 'function') {
+        setTimeout(sliderCheckVisible, 100);
+      }
     }
 
     // Image links
