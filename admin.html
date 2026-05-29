@@ -390,8 +390,13 @@ small {
     if (notice) { localStorage.setItem('uniqueShopNotice', notice); }
 
     // Slider links
-    const sliderLinks = await window._fbGet('admin/sliderLinks');
-    if (sliderLinks) { localStorage.setItem('uniqueShopSliderLinks', JSON.stringify(sliderLinks)); }
+    const sliderRaw = await window._fbGet('admin/sliderLinks');
+    if (sliderRaw) {
+      const sliderLinks = Array.isArray(sliderRaw)
+        ? sliderRaw
+        : Object.keys(sliderRaw).sort().map(k => sliderRaw[k]);
+      localStorage.setItem('uniqueShopSliderLinks', JSON.stringify(sliderLinks));
+    }
 
     // Rules
     const rules = await window._fbGet('admin/rules');
