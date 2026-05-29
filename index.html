@@ -3482,65 +3482,55 @@ var OVERLAY_ORDER = [
   'accountOverlay','inboxOverlay','historyOverlay'
 ];
 
-// ── Back Button System — Hash Based (সব browser এ কাজ করে) ──
-// hash পরিবর্তন করে overlay track করা হয়
-// back চাপলে hash বদলায় → hashchange fire হয় → overlay বন্ধ হয়
-
-var _overlayStack = []; // currently open overlays stack
+// ── Back Button System ──
+var _overlayStack = [];
 
 function initBackButtonSupport() {
-  // শুরুতে hash #home দিয়ে রাখো
-  if (!window.location.hash) {
-    history.replaceState(null, '', '#home');
-  }
+  // শুরুতে #home hash দিয়ে রাখো
+  history.replaceState(null, '', window.location.pathname + '#home');
+  _overlayStack = [];
 }
 
 function pushOverlayState(overlayId) {
   _overlayStack.push(overlayId);
-  // hash এ overlay id যোগ করো
-  history.pushState(null, '', '#' + overlayId);
+  history.pushState(null, '', window.location.pathname + '#' + overlayId);
 }
 
-function _closeOverlayById(id) {
-  var el = document.getElementById(id);
-  if (el) {
-    el.classList.remove('show');
-    document.body.style.overflow = '';
-  }
-  // nav fix
-  ['home','history','inbox','account'].forEach(function(t) {
-    var nav = document.getElementById('nav-' + t);
-    if (nav) nav.classList.remove('active');
-  });
-  var homeNav = document.getElementById('nav-home');
-  if (homeNav) homeNav.classList.add('active');
-}
-
-window.addEventListener('hashchange', function() {
-  var hash = window.location.hash.replace('#','');
-
-  if (_overlayStack.length > 0) {
-    // stack এর উপরের overlay বন্ধ করো
-    var top = _overlayStack.pop();
-    _closeOverlayById(top);
-
-    // যদি stack এখনো থাকে, hash সেই অনুযায়ী রাখো
-    if (_overlayStack.length > 0) {
-      var newTop = _overlayStack[_overlayStack.length - 1];
-      history.replaceState(null, '', '#' + newTop);
-    } else {
-      history.replaceState(null, '', '#home');
+function _closeTopOverlay() {
+  for (var i = 0; i < OVERLAY_ORDER.length; i++) {
+    var el = document.getElementById(OVERLAY_ORDER[i]);
+    if (el && el.classList.contains('show')) {
+      el.classList.remove('show');
+      document.body.style.overflow = '';
+      ['home','history','inbox','account'].forEach(function(t) {
+        var nav = document.getElementById('nav-' + t);
+        if (nav) nav.classList.remove('active');
+      });
+      var homeNav = document.getElementById('nav-home');
+      if (homeNav) homeNav.classList.add('active');
+      return true;
     }
-  } else {
-    // stack খালি — home এ আছি, hash reset করো
-    history.replaceState(null, '', '#home');
   }
-});
+  return false;
+}
 
-// page load এ যদি hash থাকে — সব overlay বন্ধ করো
-window.addEventListener('load', function() {
-  history.replaceState(null, '', '#home');
-  _overlayStack = [];
+window.addEventListener('popstate', function(e) {
+  // overlay stack থেকে সরাও
+  if (_overlayStack.length > 0) {
+    _overlayStack.pop();
+  }
+
+  // সবচেয়ে উপরের overlay বন্ধ করো
+  var closed = _closeTopOverlay();
+
+  // সবসময় একটা নতুন entry push করো
+  // এতে stack কখনো শেষ হবে না — browser বাইরে যাবে না
+  setTimeout(function() {
+    var hash = _overlayStack.length > 0
+      ? '#' + _overlayStack[_overlayStack.length - 1]
+      : '#home';
+    history.pushState(null, '', window.location.pathname + hash);
+  }, 0);
 });
 
 // Close ALL overlays first (except login/register)
