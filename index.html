@@ -3472,7 +3472,6 @@ function switchTab(tab) {
   
 // ===== BROWSER BACK BUTTON SUPPORT =====
 
-// সব overlay-র সঠিক order — সবচেয়ে উপরেরটা আগে
 var OVERLAY_ORDER = [
   'loginOverlay','registerOverlay',
   'unireqOverlay','ffreqOverlay','reqOverlay','rdreqOverlay',
@@ -3482,44 +3481,67 @@ var OVERLAY_ORDER = [
   'accountOverlay','inboxOverlay','historyOverlay'
 ];
 
-// Base state — app এর শুরুতে একটা state push করা হবে
-// যাতে home page থেকে back চাপলে app বন্ধ না হয়
-function initBackButtonSupport() {
-  // Base state — index 0
-  history.replaceState({ overlayDepth: 0 }, '');
-}
-
-function pushOverlayState(overlayId) {
-  history.pushState({ overlay: overlayId, overlayDepth: 1 }, '');
-}
-
-window.addEventListener('popstate', function(e) {
-  // কোনো overlay খোলা আছে কিনা দেখো
-  var found = false;
+function closeTopOverlay() {
   for (var i = 0; i < OVERLAY_ORDER.length; i++) {
     var el = document.getElementById(OVERLAY_ORDER[i]);
     if (el && el.classList.contains('show')) {
-      // এই overlay বন্ধ করো
       el.classList.remove('show');
       document.body.style.overflow = '';
-      // nav active state ঠিক করো
       ['home','history','inbox','account'].forEach(function(t) {
         var nav = document.getElementById('nav-' + t);
         if (nav) nav.classList.remove('active');
       });
       var homeNav = document.getElementById('nav-home');
       if (homeNav) homeNav.classList.add('active');
-      found = true;
-      // আবার base state push করো যাতে পরের back-এও কাজ করে
-      history.pushState({ overlayDepth: 0 }, '');
-      break;
+      return true;
     }
   }
+  return false;
+}
 
-  if (!found) {
-    // কোনো overlay নেই — home page এ আছি
-    // Base state re-push করো যাতে app থেকে বের না হয়
-    history.pushState({ overlayDepth: 0 }, '');
+function initBackButtonSupport() {
+  // দুটো state push করি:
+  // [0] = sentinel (এখানে এলে মানে একদম বাইরে যাওয়ার চেষ্টা)
+  // [1] = home (এটাই সবসময় active থাকে)
+  history.replaceState({ page: 'sentinel' }, '');
+  history.pushState({ page: 'home' }, '');
+}
+
+function pushOverlayState(overlayId) {
+  history.pushState({ page: 'overlay', overlay: overlayId }, '');
+}
+
+window.addEventListener('popstate', function(e) {
+  var state = e.state;
+
+  // Sentinel state মানে browser একদম বাইরে যাওয়ার চেষ্টা করছে
+  if (!state || state.page === 'sentinel') {
+    // যদি কোনো overlay খোলা থাকে সেটা বন্ধ করো
+    var closed = closeTopOverlay();
+    // সবসময় home state-এ ফিরিয়ে দাও — app থেকে বের হতে দেবো না
+    history.pushState({ page: 'home' }, '');
+    return;
+  }
+
+  // Home state — কোনো overlay বন্ধ করো যদি খোলা থাকে
+  if (state.page === 'home') {
+    var closed = closeTopOverlay();
+    if (closed) {
+      // overlay বন্ধ হলে home state আবার push করো
+      history.pushState({ page: 'home' }, '');
+    } else {
+      // কিছু নেই — home-এ আছি, আবার home push করো
+      history.pushState({ page: 'home' }, '');
+    }
+    return;
+  }
+
+  // Overlay state — overlay বন্ধ করো
+  if (state.page === 'overlay') {
+    closeTopOverlay();
+    // home state push করো
+    history.pushState({ page: 'home' }, '');
+    return;
   }
 });
 
