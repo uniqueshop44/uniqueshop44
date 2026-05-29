@@ -3481,12 +3481,17 @@ var OVERLAY_ORDER = [
   'accountOverlay','inboxOverlay','historyOverlay'
 ];
 
+// ── Back Button System ──
+// একটাই নিয়ম: যখনই back চাপে, সবচেয়ে উপরের overlay বন্ধ করো।
+// কোনো overlay না থাকলে আবার একটা dummy entry push করো যাতে app থেকে বের না হয়।
+
 function closeTopOverlay() {
   for (var i = 0; i < OVERLAY_ORDER.length; i++) {
     var el = document.getElementById(OVERLAY_ORDER[i]);
     if (el && el.classList.contains('show')) {
       el.classList.remove('show');
       document.body.style.overflow = '';
+      // nav fix
       ['home','history','inbox','account'].forEach(function(t) {
         var nav = document.getElementById('nav-' + t);
         if (nav) nav.classList.remove('active');
@@ -3499,49 +3504,37 @@ function closeTopOverlay() {
   return false;
 }
 
+function anyOverlayOpen() {
+  for (var i = 0; i < OVERLAY_ORDER.length; i++) {
+    var el = document.getElementById(OVERLAY_ORDER[i]);
+    if (el && el.classList.contains('show')) return true;
+  }
+  return false;
+}
+
 function initBackButtonSupport() {
-  // দুটো state push করি:
-  // [0] = sentinel (এখানে এলে মানে একদম বাইরে যাওয়ার চেষ্টা)
-  // [1] = home (এটাই সবসময় active থাকে)
-  history.replaceState({ page: 'sentinel' }, '');
-  history.pushState({ page: 'home' }, '');
+  // শুধু একটাই dummy entry — এটাই সবসময় stack এ থাকবে
+  history.replaceState({ page: 'app' }, '');
+  history.pushState({ page: 'app' }, '');
 }
 
 function pushOverlayState(overlayId) {
-  history.pushState({ page: 'overlay', overlay: overlayId }, '');
+  // প্রতিটা overlay খোলার সময় একটা entry push করো
+  history.pushState({ page: 'app' }, '');
 }
 
 window.addEventListener('popstate', function(e) {
-  var state = e.state;
+  // যেকোনো back press এ — সবার আগে overlay বন্ধ করার চেষ্টা
+  var closed = closeTopOverlay();
 
-  // Sentinel state মানে browser একদম বাইরে যাওয়ার চেষ্টা করছে
-  if (!state || state.page === 'sentinel') {
-    // যদি কোনো overlay খোলা থাকে সেটা বন্ধ করো
-    var closed = closeTopOverlay();
-    // সবসময় home state-এ ফিরিয়ে দাও — app থেকে বের হতে দেবো না
-    history.pushState({ page: 'home' }, '');
-    return;
-  }
-
-  // Home state — কোনো overlay বন্ধ করো যদি খোলা থাকে
-  if (state.page === 'home') {
-    var closed = closeTopOverlay();
-    if (closed) {
-      // overlay বন্ধ হলে home state আবার push করো
-      history.pushState({ page: 'home' }, '');
-    } else {
-      // কিছু নেই — home-এ আছি, আবার home push করো
-      history.pushState({ page: 'home' }, '');
-    }
-    return;
-  }
-
-  // Overlay state — overlay বন্ধ করো
-  if (state.page === 'overlay') {
-    closeTopOverlay();
-    // home state push করো
-    history.pushState({ page: 'home' }, '');
-    return;
+  if (closed) {
+    // overlay বন্ধ হলো — stack এ আবার একটা entry রাখো
+    // যাতে পরের back press ও ধরা যায়
+    history.pushState({ page: 'app' }, '');
+  } else {
+    // কোনো overlay নেই — home এ আছি
+    // app থেকে বের হতে না দিয়ে আবার entry push করো
+    history.pushState({ page: 'app' }, '');
   }
 });
 
