@@ -2474,7 +2474,8 @@ function openPayment() {
   document.body.style.overflow = 'hidden';
 }
 function closePayment() {
-  goBackFromOverlay();
+  document.getElementById('payOverlay').classList.remove('show');
+  document.body.style.overflow = '';
 }
 function selectAmt(el, val) {
   document.querySelectorAll('.amt-btn').forEach(function(b){ b.classList.remove('selected'); });
@@ -2935,10 +2936,11 @@ function openRedeem() {
   document.body.style.overflow = 'hidden';
 }
 function closeRedeem() {
+  document.getElementById('redeemOverlay').classList.remove('show');
+  document.body.style.overflow = '';
   selDiamond = 0;
   document.querySelectorAll('.diamond-btn').forEach(function(b){ b.classList.remove('selected'); });
   document.getElementById('uidInput').value = '';
-  goBackFromOverlay();
 }
 function selectDiamond(el, val) {
   document.querySelectorAll('.diamond-btn').forEach(function(b){ b.classList.remove('selected'); });
@@ -2975,7 +2977,8 @@ function closeRedeemSuccess() {
   closeRedeem();
 }
 function closeRedeemRequest() {
-  goBackFromOverlay();
+  document.getElementById('rdreqOverlay').classList.remove('show');
+  closeRedeem();
 }
 
 function openRefer() {
@@ -2984,7 +2987,8 @@ function openRefer() {
   document.body.style.overflow = 'hidden';
 }
 function closeRefer() {
-  goBackFromOverlay();
+  document.getElementById('referOverlay').classList.remove('show');
+  document.body.style.overflow = '';
 }
 function copyReferLink() {
   var link = document.getElementById('referLinkText').textContent;
@@ -3177,7 +3181,8 @@ function openFFTopup() {
   document.getElementById('ffOverlay').scrollTop = 0;
 }
 function closeFFTopup() {
-  goBackFromOverlay();
+  document.getElementById('ffOverlay').classList.remove('show');
+  document.body.style.overflow = '';
 }
 function selectRecharge(el, name, price) {
   document.querySelectorAll('.ff-recharge-item').forEach(function(b){ b.classList.remove('selected'); });
@@ -3191,6 +3196,7 @@ function selectFFPay(type) {
   document.getElementById('ff-pay-instant').classList.toggle('selected', type==='instant');
 }
 function ffBuyNow() {
+  if (!window._currentUser) { closeFFTopup(); openLogin(); return; }
   if (!ffSelRecharge) { showToast('অনুগ্রহ করে একটি প্যাকেজ বেছে নিন।', 'error'); return; }
   var uid = document.getElementById('ffUidInput').value.trim();
   if (!uid) { showToast('অনুগ্রহ করে Player ID (UID) দিন।', 'error'); return; }
@@ -3224,13 +3230,14 @@ function ffBuyNow() {
   document.getElementById('ffreqOverlay').scrollTop = 0;
 }
 function closeFFreq() {
+  document.getElementById('ffreqOverlay').classList.remove('show');
   ffIsWeeklyLite = false;
-  goBackFromOverlay();
+  closeFFTopup();
 }
 function closeAutopay() {
+  document.getElementById('autopayOverlay').classList.remove('show');
   selAutopayMethod = '';
   document.querySelectorAll('.autopay-method-card').forEach(function(c){ c.classList.remove('ap-selected'); });
-  goBackFromOverlay();
 }
 var selAutopayMethod = '';
 function chooseAutopay(el, method) {
@@ -3342,10 +3349,10 @@ function openGateway(method) {
 }
 
 function closeGateway() {
+  document.getElementById('verifyOverlay').classList.remove('show');
   ffVerifyMode = false;
   ffVerifyMethod = '';
   unipinVerifyMode = false;
-  goBackFromOverlay();
 }
 
 // ===== UNIPIN VOUCHER =====
@@ -3371,7 +3378,7 @@ function openUnipinTopup() {
   document.getElementById('unipinOverlay').scrollTop = 0;
 }
 function closeUnipinTopup() {
-  goBackFromOverlay();
+  document.getElementById('unipinOverlay').classList.remove('show');
 }
 function selectUnipinRecharge(el, name, price) {
   document.querySelectorAll('.unipin-recharge-item').forEach(function(i){ i.classList.remove('selected'); });
@@ -3394,6 +3401,7 @@ function selectUnipinPay(method) {
   document.getElementById('unipin-pay-instant').classList.toggle('selected', method === 'instant');
 }
 function unipinBuyNow() {
+  if (!window._currentUser) { closeUnipinTopup(); openLogin(); return; }
   if (!unipinSelRecharge) { showToast('অনুগ্রহ করে একটি রিচার্জ প্যাকেজ বেছে নিন।', 'error'); return; }
   if (unipinSelPay === 'instant') {
     unipinVerifyMode = true;
@@ -3428,7 +3436,8 @@ function unipinBuyNow() {
 }
 
 function closeUnireq() {
-  goBackFromOverlay();
+  document.getElementById('unireqOverlay').classList.remove('show');
+  closeUnipinTopup();
 }
 
 function copySingleCode(n) {
@@ -3475,54 +3484,45 @@ var OVERLAY_ORDER = [
   'accountOverlay','inboxOverlay','historyOverlay'
 ];
 
-// ── Back Button System ──
-// নিয়ম:
-// 1. overlay খুললে pushState করো
-// 2. back চাপলে popstate fire → overlay বন্ধ করো
-// 3. close button চাপলে history.back() call করো → popstate fire → overlay বন্ধ হবে
-// এতে stack সবসময় sync থাকবে
-
-var _isHandlingBack = false;
-
+// Base state — app এর শুরুতে একটা state push করা হবে
+// যাতে home page থেকে back চাপলে app বন্ধ না হয়
 function initBackButtonSupport() {
-  history.replaceState({ page: 'home', depth: 0 }, '');
-  history.pushState({ page: 'home', depth: 0 }, '');
+  // Base state — index 0
+  history.replaceState({ overlayDepth: 0 }, '');
 }
 
 function pushOverlayState(overlayId) {
-  history.pushState({ page: 'overlay', id: overlayId }, '');
-}
-
-// close button থেকে call করা হবে — history.back() ট্রিগার করে
-function goBackFromOverlay() {
-  _isHandlingBack = true;
-  history.back();
+  history.pushState({ overlay: overlayId, overlayDepth: 1 }, '');
 }
 
 window.addEventListener('popstate', function(e) {
-  _isHandlingBack = false;
-
-  // সবচেয়ে উপরের visible overlay খোঁজো
+  // কোনো overlay খোলা আছে কিনা দেখো
+  var found = false;
   for (var i = 0; i < OVERLAY_ORDER.length; i++) {
     var el = document.getElementById(OVERLAY_ORDER[i]);
     if (el && el.classList.contains('show')) {
+      // এই overlay বন্ধ করো
       el.classList.remove('show');
       document.body.style.overflow = '';
+      // nav active state ঠিক করো
       ['home','history','inbox','account'].forEach(function(t) {
         var nav = document.getElementById('nav-' + t);
         if (nav) nav.classList.remove('active');
       });
       var homeNav = document.getElementById('nav-home');
       if (homeNav) homeNav.classList.add('active');
-
-      // পরের back press এর জন্য আবার একটা entry রাখো
-      history.pushState({ page: 'home', depth: 0 }, '');
-      return;
+      found = true;
+      // আবার base state push করো যাতে পরের back-এও কাজ করে
+      history.pushState({ overlayDepth: 0 }, '');
+      break;
     }
   }
 
-  // কোনো overlay নেই — home এ আছি, বাইরে যেতে দেবো না
-  history.pushState({ page: 'home', depth: 0 }, '');
+  if (!found) {
+    // কোনো overlay নেই — home page এ আছি
+    // Base state re-push করো যাতে app থেকে বের না হয়
+    history.pushState({ overlayDepth: 0 }, '');
+  }
 });
 
 // Close ALL overlays first (except login/register)
@@ -3643,9 +3643,10 @@ function openInbox() {
   document.body.style.overflow = 'hidden';
 }
 function closeInbox() {
+  document.getElementById('inboxOverlay').classList.remove('show');
+  document.body.style.overflow = '';
   var ni = document.getElementById('nav-inbox'); if (ni) ni.classList.remove('active');
   var nhome2 = document.getElementById('nav-home'); if (nhome2) nhome2.classList.add('active');
-  goBackFromOverlay();
 }
 
 function openInboxDetail(msg) {
@@ -3684,9 +3685,10 @@ function openHistory() {
   switchHistoryTab('order');
 }
 function closeHistory() {
+  document.getElementById('historyOverlay').classList.remove('show');
+  document.body.style.overflow = '';
   var nh = document.getElementById('nav-history'); if (nh) nh.classList.remove('active');
   var nhome = document.getElementById('nav-home'); if (nhome) nhome.classList.add('active');
-  goBackFromOverlay();
 }
 function switchHistoryTab(tab) {
   ['order','payment'].forEach(function(t){
@@ -3728,7 +3730,8 @@ function openLogin() {
   document.body.style.overflow = 'hidden';
 }
 function closeLogin() {
-  goBackFromOverlay();
+  document.getElementById('loginOverlay').classList.remove('show');
+  document.body.style.overflow = '';
 }
 function openRegister() {
   document.getElementById('registerOverlay').classList.add('show');
@@ -3737,7 +3740,8 @@ function openRegister() {
   document.body.style.overflow = 'hidden';
 }
 function closeRegister() {
-  goBackFromOverlay();
+  document.getElementById('registerOverlay').classList.remove('show');
+  document.body.style.overflow = '';
 }
 function switchToRegister() {
   document.getElementById('loginOverlay').classList.remove('show');
@@ -3902,9 +3906,10 @@ function openAccount() {
 }
 
 function closeAccount() {
+  document.getElementById('accountOverlay').classList.remove('show');
+  document.body.style.overflow = '';
   var na = document.getElementById('nav-account'); if (na) na.classList.remove('active');
   var nhome3 = document.getElementById('nav-home'); if (nhome3) nhome3.classList.add('active');
-  goBackFromOverlay();
 }
 
 function toggleEditForm() {
