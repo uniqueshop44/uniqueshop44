@@ -1,1116 +1,612 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unique Shop — Admin Panel</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Noto+Sans+Bengali:wght@400;500;600&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Unique Shop - সম্পূর্ণ অ্যাডমিন প্যানেল | রুলস ও পেমেন্ট নম্বর</title>
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-        :root {
-            --bg: #0d1117;
-            --surface: #161b22;
-            --surface2: #21262d;
-            --border: #30363d;
-            --accent: #1a46e5;
-            --accent2: #e51a1a;
-            --green: #00c853;
-            --yellow: #f0b429;
-            --text: #e6edf3;
-            --text2: #8b949e;
-            --font-display: 'Rajdhani', sans-serif;
-            --font-body: 'Noto Sans Bengali', sans-serif;
-        }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: #f4f7fc;
+  min-height: 100vh;
+}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+.topbar {
+  background: #fff;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0 28px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
 
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: var(--font-body);
-            min-height: 100vh;
-        }
+.logo {
+  font-size: 22px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #111 0%, #2d2f36 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  letter-spacing: -0.3px;
+}
 
-        /* ─── LOGIN SCREEN ─── */
-        #loginScreen {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: radial-gradient(ellipse at 60% 40%, #1a2744 0%, #0d1117 70%);
-        }
+.icon-nav {
+  background: #fff;
+  border-bottom: 1px solid #e9edf2;
+  padding: 12px 28px;
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  position: relative;
+  flex-wrap: wrap;
+}
 
-        .login-box {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 40px 36px;
-            width: 100%;
-            max-width: 380px;
-            box-shadow: 0 24px 60px rgba(0,0,0,0.5);
-        }
+.icon-nav .nav-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  color: #2c3e4e;
+  transition: all 0.2s ease;
+  user-select: none;
+  padding: 6px 12px;
+  border-radius: 48px;
+}
 
-        .login-logo {
-            font-family: var(--font-display);
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--accent);
-            text-align: center;
-            margin-bottom: 6px;
-            letter-spacing: 1px;
-        }
-        .login-logo span { color: var(--accent2); }
+.icon-nav .nav-item:hover {
+  background: #f1f5f9;
+  color: #000;
+  transform: translateY(-2px);
+}
 
-        .login-sub {
-            text-align: center;
-            color: var(--text2);
-            font-size: 13px;
-            margin-bottom: 32px;
-        }
+.icon-nav .nav-item .icon {
+  font-size: 26px;
+  line-height: 1;
+}
 
-        .login-field {
-            position: relative;
-            margin-bottom: 18px;
-        }
-        .login-field i {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text2);
-            font-size: 14px;
-        }
-        .login-field input {
-            width: 100%;
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 12px 14px 12px 38px;
-            color: var(--text);
-            font-size: 14px;
-            font-family: var(--font-body);
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        .login-field input:focus { border-color: var(--accent); }
+.icon-nav .nav-item .label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+}
 
-        .login-btn {
-            width: 100%;
-            background: linear-gradient(135deg, var(--accent), #3d63ff);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 13px;
-            font-size: 15px;
-            font-weight: 700;
-            font-family: var(--font-display);
-            letter-spacing: 1px;
-            cursor: pointer;
-            margin-top: 8px;
-            transition: opacity 0.2s;
-        }
-        .login-btn:hover { opacity: 0.9; }
+.icon-nav .nav-item:hover .label {
+  color: #0f172a;
+}
 
-        .login-error {
-            background: rgba(229,26,26,0.12);
-            border: 1px solid rgba(229,26,26,0.3);
-            color: #ff6b6b;
-            border-radius: 7px;
-            padding: 10px 14px;
-            font-size: 13px;
-            margin-top: 12px;
-            display: none;
-            text-align: center;
-        }
+/* Dropdown styles */
+.dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  background: #ffffff;
+  border: 1px solid #eef2f6;
+  border-radius: 20px;
+  box-shadow: 0 20px 35px -12px rgba(0,0,0,0.15);
+  min-width: 250px;
+  z-index: 999;
+  overflow: hidden;
+  animation: fadeDown 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+}
 
-        /* ─── DASHBOARD ─── */
-        #dashboard { display: none; min-height: 100vh; }
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-        /* Sidebar */
-        /* ─── TOP NAVBAR ─── */
-        .sidebar {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            width: 100%;
-            height: auto;
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            z-index: 100;
-            padding: 0 12px;
-            gap: 4px;
-        }
+.dropdown.open {
+  display: block;
+}
 
-        .sidebar-logo {
-            padding: 12px 14px 12px 4px;
-            border-bottom: none;
-            border-right: 1px solid var(--border);
-            font-family: var(--font-display);
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--accent);
-            letter-spacing: 1px;
-            white-space: nowrap;
-            margin-right: 8px;
-        }
-        .sidebar-logo span { color: var(--accent2); }
-        .sidebar-logo small {
-            display: block;
-            font-size: 10px;
-            color: var(--text2);
-            font-weight: 400;
-            font-family: var(--font-body);
-            letter-spacing: 0;
-            margin-top: 1px;
-        }
+.dropdown-header {
+  background: #1e293b;
+  color: #f8fafc;
+  padding: 12px 18px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
 
-        .sidebar-nav {
-            flex: 1;
-            padding: 6px 0;
-            display: flex;
-            flex-direction: row;
-            gap: 2px;
-            flex-wrap: wrap;
-        }
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1e293b;
+  cursor: pointer;
+  transition: background 0.15s;
+  border-bottom: 1px solid #f0f2f5;
+}
 
-        .nav-btn {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 12px;
-            border-radius: 8px;
-            border: none;
-            background: none;
-            color: var(--text2);
-            font-size: 13px;
-            font-family: var(--font-body);
-            cursor: pointer;
-            text-align: left;
-            transition: all 0.2s;
-            position: relative;
-            white-space: nowrap;
-        }
-        .nav-btn i { width: 15px; text-align: center; font-size: 13px; }
-        .nav-btn:hover { background: var(--surface2); color: var(--text); }
-        .nav-btn.active {
-            background: rgba(26,70,229,0.15);
-            color: #5b87ff;
-            font-weight: 600;
-        }
-        .nav-btn .badge {
-            background: var(--accent2);
-            color: white;
-            font-size: 10px;
-            font-weight: 700;
-            border-radius: 10px;
-            padding: 1px 6px;
-            min-width: 18px;
-            text-align: center;
-        }
+.dropdown-item:last-child {
+  border-bottom: none;
+}
 
-        .sidebar-footer {
-            padding: 6px 0 6px 12px;
-            border-top: none;
-            border-left: 1px solid var(--border);
-            margin-left: 4px;
-        }
+.dropdown-item:hover {
+  background: #f8fafc;
+  color: #f97316;
+}
 
-        .logout-btn {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            background: rgba(229,26,26,0.1);
-            border: 1px solid rgba(229,26,26,0.2);
-            color: #ff6b6b;
-            border-radius: 8px;
-            padding: 8px 12px;
-            font-size: 13px;
-            font-family: var(--font-body);
-            cursor: pointer;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-        .logout-btn:hover { background: rgba(229,26,26,0.2); }
+.dropdown-item .item-icon {
+  font-size: 20px;
+  width: 28px;
+  text-align: center;
+}
 
-        /* Main Content */
-        .main-content {
-            margin-left: 0;
-            margin-top: 58px;
-            min-height: 100vh;
-            padding: 24px;
-        }
+/* Modal Common */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0.2s, opacity 0.2s;
+}
 
-        /* Top bar */
-        .topbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 28px;
-        }
-        .page-title {
-            font-family: var(--font-display);
-            font-size: 26px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-        .page-title span {
-            font-size: 14px;
-            color: var(--text2);
-            font-family: var(--font-body);
-            font-weight: 400;
-            margin-left: 10px;
-        }
+.modal-overlay.active {
+  visibility: visible;
+  opacity: 1;
+}
 
-        .live-badge {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(0,200,83,0.1);
-            border: 1px solid rgba(0,200,83,0.3);
-            color: var(--green);
-            border-radius: 20px;
-            padding: 6px 14px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-        .live-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--green);
-            border-radius: 50%;
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
+.modal-card {
+  background: #ffffff;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 32px;
+  box-shadow: 0 25px 45px rgba(0,0,0,0.25);
+  padding: 28px;
+  transform: scale(0.96);
+  transition: transform 0.2s ease;
+}
 
-        /* Tab panels */
-        .tab-panel { display: none; }
-        .tab-panel.active { display: block; }
+.modal-overlay.active .modal-card {
+  transform: scale(1);
+}
 
-        /* Home (empty) panel */
-        .home-panel {
-            display: none;
-            min-height: 60vh;
-        }
-        .home-panel.active { display: block; }
+.modal-title {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #f1f5f9;
+  color: #0f172a;
+}
 
-        /* Stat Cards */
-        .stat-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-bottom: 28px;
-        }
+.modal-field {
+  margin-bottom: 22px;
+}
 
-        .stat-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 3px;
-        }
-        .stat-card.blue::before { background: var(--accent); }
-        .stat-card.red::before { background: var(--accent2); }
-        .stat-card.green::before { background: var(--green); }
-        .stat-card.yellow::before { background: var(--yellow); }
+.modal-field label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #1e293b;
+  font-size: 14px;
+}
 
-        .stat-label { font-size: 12px; color: var(--text2); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
-        .stat-value { font-family: var(--font-display); font-size: 32px; font-weight: 700; line-height: 1; }
-        .stat-icon { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 28px; opacity: 0.08; }
+.modal-field input, .modal-field textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 18px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: 0.2s;
+  background: #fff;
+}
 
-        /* Table */
-        .table-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-            margin-bottom: 24px;
-        }
-        .table-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 18px 20px;
-            border-bottom: 1px solid var(--border);
-        }
-        .table-title {
-            font-family: var(--font-display);
-            font-size: 17px;
-            font-weight: 600;
-        }
+.modal-field input:focus, .modal-field textarea:focus {
+  border-color: #f97316;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(249,115,22,0.15);
+}
 
-        .search-input {
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            border-radius: 7px;
-            padding: 8px 12px;
-            color: var(--text);
-            font-size: 13px;
-            font-family: var(--font-body);
-            outline: none;
-            width: 220px;
-            transition: border-color 0.2s;
-        }
-        .search-input:focus { border-color: var(--accent); }
+.modal-field textarea {
+  min-height: 120px;
+  resize: vertical;
+}
 
-        .data-table { width: 100%; border-collapse: collapse; }
-        .data-table th {
-            text-align: left;
-            padding: 12px 16px;
-            font-size: 11px;
-            color: var(--text2);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 1px solid var(--border);
-            background: var(--surface2);
-        }
-        .data-table td {
-            padding: 13px 16px;
-            font-size: 13px;
-            border-bottom: 1px solid #1e242c;
-            vertical-align: middle;
-        }
-        .data-table tr:last-child td { border-bottom: none; }
-        .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+.modal-actions {
+  display: flex;
+  gap: 14px;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
 
-        .badge-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-        .badge-pending { background: rgba(240,180,41,0.15); color: var(--yellow); border: 1px solid rgba(240,180,41,0.3); }
-        .badge-approved { background: rgba(0,200,83,0.12); color: var(--green); border: 1px solid rgba(0,200,83,0.3); }
-        .badge-rejected { background: rgba(229,26,26,0.12); color: #ff6b6b; border: 1px solid rgba(229,26,26,0.3); }
+.btn {
+  border: none;
+  padding: 10px 24px;
+  border-radius: 40px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.15s;
+}
 
-        .action-btn {
-            padding: 5px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            margin-right: 4px;
-            font-family: var(--font-body);
-            transition: opacity 0.2s;
-        }
-        .action-btn:hover { opacity: 0.8; }
-        .btn-approve { background: rgba(0,200,83,0.15); color: var(--green); border: 1px solid rgba(0,200,83,0.3); }
-        .btn-reject { background: rgba(229,26,26,0.12); color: #ff6b6b; border: 1px solid rgba(229,26,26,0.3); }
-        .btn-delete { background: rgba(139,148,158,0.12); color: var(--text2); border: 1px solid var(--border); }
+.btn-primary {
+  background: #f97316;
+  color: white;
+  box-shadow: 0 2px 4px rgba(249,115,22,0.2);
+}
 
-        .empty-state {
-            text-align: center;
-            padding: 50px 20px;
-            color: var(--text2);
-        }
-        .empty-state i { font-size: 36px; margin-bottom: 12px; display: block; opacity: 0.3; }
+.btn-primary:hover {
+  background: #ea580c;
+  transform: scale(0.97);
+}
 
-        /* Settings Section */
-        .settings-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-        .settings-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 24px;
-        }
-        .settings-card h3 {
-            font-family: var(--font-display);
-            font-size: 17px;
-            font-weight: 600;
-            margin-bottom: 18px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--text);
-        }
-        .settings-card h3 i { color: var(--accent); font-size: 15px; }
+.btn-secondary {
+  background: #eef2ff;
+  color: #1e293b;
+}
 
-        .form-row { margin-bottom: 16px; }
-        .form-row label {
-            display: block;
-            font-size: 12px;
-            color: var(--text2);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 7px;
-        }
-        .form-row input, .form-row select, .form-row textarea {
-            width: 100%;
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 10px 14px;
-            color: var(--text);
-            font-size: 13px;
-            font-family: var(--font-body);
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        .form-row input:focus,
-        .form-row select:focus,
-        .form-row textarea:focus { border-color: var(--accent); }
-        .form-row textarea { height: 80px; resize: vertical; }
+.btn-secondary:hover {
+  background: #e2e8f0;
+}
 
-        .save-btn {
-            background: linear-gradient(135deg, var(--accent), #3d63ff);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 11px 20px;
-            font-size: 14px;
-            font-weight: 700;
-            font-family: var(--font-display);
-            letter-spacing: 0.5px;
-            cursor: pointer;
-            transition: opacity 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .save-btn:hover { opacity: 0.88; }
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(25px);
+  background: #0f172a;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 60px;
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 2100;
+  opacity: 0;
+  transition: opacity 0.25s, transform 0.25s;
+  pointer-events: none;
+  box-shadow: 0 5px 12px rgba(0,0,0,0.2);
+  backdrop-filter: blur(4px);
+}
 
-        /* Notice Input */
-        .notice-preview {
-            background: linear-gradient(135deg, #ff6a00, #ee0979);
-            border-radius: 8px;
-            padding: 12px 15px;
-            font-size: 13px;
-            margin-top: 10px;
-            line-height: 1.5;
-        }
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
 
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 28px;
-            right: 28px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 14px 20px;
-            font-size: 14px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transform: translateY(80px);
-            opacity: 0;
-            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .toast.show { transform: translateY(0); opacity: 1; }
-        .toast.success { border-left: 4px solid var(--green); }
-        .toast.error { border-left: 4px solid var(--accent2); }
+.main-content {
+  padding: 40px 28px;
+  font-size: 15px;
+  color: #334155;
+  text-align: center;
+  background: #fefcf5;
+  margin: 20px 28px;
+  border-radius: 28px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
 
-        /* Mobile responsiveness */
-        @media (max-width: 700px) {
-            .sidebar { flex-wrap: wrap; padding: 4px 8px; }
-            .sidebar-logo { font-size: 15px; padding: 8px 10px 8px 0; margin-right: 4px; }
-            .sidebar-nav { gap: 1px; }
-            .nav-btn { padding: 7px 8px; font-size: 11px; gap: 4px; }
-            .nav-btn span { display: none; }
-            .nav-btn i { font-size: 15px; width: auto; }
-            .logout-btn span { display: none; }
-            .logout-btn { padding: 7px 10px; }
-            .main-content { margin-top: 54px; padding: 14px; }
-            .stat-grid { grid-template-columns: repeat(2, 1fr); }
-            .settings-grid { grid-template-columns: 1fr; }
-        }
+hr {
+  margin: 0 28px;
+  border-color: #e9edf2;
+}
 
-        @media (max-width: 400px) {
-            .sidebar-logo small { display: none; }
-            .stat-grid { grid-template-columns: 1fr 1fr; }
-        }
+.slider-group, .rules-group {
+  background: #f9fafb;
+  border-radius: 20px;
+  padding: 8px 4px;
+}
 
-        .loading-spinner {
-            display: inline-block;
-            width: 14px; height: 14px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-            margin-right: 6px;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
+small {
+  display: block;
+  margin-top: 5px;
+  font-size: 11px;
+  color: #5b6e8c;
+}
 
-        .filter-tabs {
-            display: flex;
-            gap: 6px;
-            padding: 0 20px 16px;
-        }
-        .filter-tab {
-            padding: 5px 14px;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            background: none;
-            color: var(--text2);
-            font-size: 12px;
-            font-family: var(--font-body);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .filter-tab.active {
-            background: rgba(26,70,229,0.15);
-            border-color: rgba(26,70,229,0.4);
-            color: #5b87ff;
-            font-weight: 600;
-        }
-    </style>
-</head>
-<body>
+@media (max-width: 550px) {
+  .icon-nav { gap: 16px; padding: 12px 16px; }
+  .modal-card { padding: 20px; }
+}
+</style>
 
-<!-- ─── TOAST ─── -->
-<div id="toast" class="toast">
-    <i id="toastIcon"></i>
-    <span id="toastMsg"></span>
-</div>
+<!-- ===== FIREBASE SDK ===== -->
+<script type="module">
+  // ══════════════════════════════════════════════════
+  //  🔥 এখানে আপনার Firebase Config বসান
+  //  Firebase Console → Project Settings → Your apps → SDK setup
+  // ══════════════════════════════════════════════════
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-<!-- ─── LOGIN ─── -->
-<div id="loginScreen">
-    <div class="login-box">
-        <div class="login-logo"><i class="fa-solid fa-bolt"></i> UNIQUE <span>SHOP</span></div>
-        <div class="login-sub">Admin Control Panel — সুরক্ষিত প্রবেশ</div>
-        <div class="login-field">
-            <i class="fa-solid fa-user"></i>
-            <input type="text" id="adminUser" placeholder="Admin Username" autocomplete="off">
-        </div>
-        <div class="login-field">
-            <i class="fa-solid fa-lock"></i>
-            <input type="password" id="adminPass" placeholder="Password" onkeydown="if(event.key==='Enter') doLogin()">
-        </div>
-        <button class="login-btn" onclick="doLogin()">
-            <i class="fa-solid fa-right-to-bracket"></i> প্রবেশ করুন
-        </button>
-        <div id="loginError" class="login-error"><i class="fa-solid fa-circle-xmark"></i> ভুল তথ্য! আবার চেষ্টা করুন।</div>
-    </div>
-</div>
-
-<!-- ─── DASHBOARD ─── -->
-<div id="dashboard">
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="sidebar-logo">
-            <i class="fa-solid fa-bolt"></i>
-            <span class="logo-text"> UNIQUE <span style="color:var(--accent2)">SHOP</span></span>
-            <small>Admin Dashboard</small>
-        </div>
-        <nav class="sidebar-nav">
-            <button class="nav-btn" onclick="switchTab('notice', this)">
-                <i class="fa-solid fa-bullhorn"></i><span>Notice</span>
-            </button>
-            <button class="nav-btn" onclick="switchTab('image', this)">
-                <i class="fa-solid fa-images"></i><span>Image</span>
-            </button>
-            <button class="nav-btn" onclick="switchTab('url', this)">
-                <i class="fa-solid fa-link"></i><span>URL</span>
-            </button>
-            <button class="nav-btn" onclick="switchTab('number', this)">
-                <i class="fa-solid fa-mobile-screen-button"></i><span>Number</span>
-            </button>
-            <button class="nav-btn" onclick="switchTab('product', this)">
-                <i class="fa-solid fa-box-open"></i><span>Product</span>
-                <span class="badge" id="orderBadge">0</span>
-            </button>
-        </nav>
-        <div class="sidebar-footer">
-            <button class="logout-btn" onclick="doLogout()">
-                <i class="fa-solid fa-right-from-bracket"></i><span>Logout</span>
-            </button>
-        </div>
-    </div>
-
-    <!-- Main -->
-    <div class="main-content">
-        <div class="topbar">
-            <div class="page-title" id="pageTitle">Notice <span>সাইটের নোটিস আপডেট করুন</span></div>
-            <div class="live-badge"><div class="live-dot"></div> Live Firebase</div>
-        </div>
-
-        <!-- ── NOTICE ── -->
-        <div class="tab-panel" id="tab-notice">
-            <div class="settings-card" style="max-width:700px;">
-                <h3><i class="fa-solid fa-bullhorn"></i> Notice Board</h3>
-                <p style="font-size:13px; color:var(--text2); margin-bottom:20px;">সাইটের নোটিস বোর্ডে যা দেখাতে চান তা এখানে লিখুন।</p>
-                <div class="form-row">
-                    <label>Notice Text</label>
-                    <textarea id="noticeText" placeholder="নোটিস টেক্সট লিখুন..."></textarea>
-                </div>
-                <div class="notice-preview" id="noticePreview">Preview এখানে দেখাবে...</div>
-                <br>
-                <button class="save-btn" onclick="saveNotice()"><i class="fa-solid fa-floppy-disk"></i> Notice সেভ করুন</button>
-            </div>
-        </div>
-
-        <!-- ── IMAGE ── -->
-        <div class="tab-panel" id="tab-image">
-            <div class="settings-card" style="max-width:700px;">
-                <h3><i class="fa-solid fa-images"></i> প্রোডাক্ট ইমেজ আপডেট</h3>
-                <p style="font-size:13px; color:var(--text2); margin-bottom:20px;">প্রতিটি প্রোডাক্টের ইমেজ URL দিন — Firebase এ সরাসরি সেভ হবে।</p>
-                <div id="logoFormRows"></div>
-                <button class="save-btn" onclick="saveLogos()"><i class="fa-solid fa-floppy-disk"></i> ইমেজ আপডেট করুন</button>
-            </div>
-        </div>
-
-        <!-- ── URL ── -->
-        <div class="tab-panel" id="tab-url">
-            <div class="settings-card" style="max-width:700px;">
-                <h3><i class="fa-solid fa-link"></i> WhatsApp & Telegram Links</h3>
-                <p style="font-size:13px; color:var(--text2); margin-bottom:20px;">সাইটের WhatsApp ও Telegram লিংক আপডেট করুন।</p>
-                <div class="form-row"><label>WhatsApp Number</label>
-                    <input type="text" id="waNum" placeholder="880XXXXXXXXXX"></div>
-                <div class="form-row"><label>Telegram Group Link</label>
-                    <input type="url" id="tgLink" placeholder="https://t.me/..."></div>
-                <button class="save-btn" onclick="saveLinks()"><i class="fa-solid fa-floppy-disk"></i> Links সেভ করুন</button>
-            </div>
-        </div>
-
-        <!-- ── NUMBER ── -->
-        <div class="tab-panel" id="tab-number">
-            <div class="settings-grid">
-                <div class="settings-card">
-                    <h3><i class="fa-solid fa-mobile-screen-button"></i> Payment Numbers</h3>
-                    <p style="font-size:13px; color:var(--text2); margin-bottom:20px;">পেমেন্ট মেথডের নম্বরগুলো আপডেট করুন।</p>
-                    <div class="form-row"><label>Bkash Number</label>
-                        <input type="text" id="bkashNum" placeholder="01XXXXXXXXX (Personal)"></div>
-                    <div class="form-row"><label>Nagad Number</label>
-                        <input type="text" id="nagadNum" placeholder="01XXXXXXXXX (Personal)"></div>
-                    <div class="form-row"><label>Rocket Number</label>
-                        <input type="text" id="rocketNum" placeholder="01XXXXXXXXX (Personal)"></div>
-                    <div class="form-row"><label>Upay Number</label>
-                        <input type="text" id="upayNum" placeholder="01XXXXXXXXX (Personal)"></div>
-                    <button class="save-btn" onclick="savePaymentNums()"><i class="fa-solid fa-floppy-disk"></i> Numbers সেভ করুন</button>
-                </div>
-                <div class="settings-card">
-                    <h3><i class="fa-solid fa-gem"></i> Admin Credentials</h3>
-                    <p style="font-size:13px; color:var(--text2); margin-bottom:20px;">Admin এর username ও password পরিবর্তন করুন।</p>
-                    <div class="form-row"><label>Username</label>
-                        <input type="text" id="newAdminUser" placeholder="নতুন Username"></div>
-                    <div class="form-row"><label>Password</label>
-                        <input type="password" id="newAdminPass" placeholder="নতুন Password"></div>
-                    <button class="save-btn" onclick="saveAdminCreds()"><i class="fa-solid fa-key"></i> Credentials আপডেট করুন</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ── PRODUCT ── -->
-        <div class="tab-panel" id="tab-product">
-            <!-- Stats -->
-            <div class="stat-grid" style="margin-bottom:24px;">
-                <div class="stat-card blue">
-                    <div class="stat-label">মোট অর্ডার</div>
-                    <div class="stat-value" id="stat-orders">—</div>
-                    <i class="fa-solid fa-box stat-icon"></i>
-                </div>
-                <div class="stat-card yellow">
-                    <div class="stat-label">পেন্ডিং অর্ডার</div>
-                    <div class="stat-value" id="stat-pending-orders">—</div>
-                    <i class="fa-solid fa-clock stat-icon"></i>
-                </div>
-                <div class="stat-card green">
-                    <div class="stat-label">মোট পেমেন্ট রিকোয়েস্ট</div>
-                    <div class="stat-value" id="stat-payments">—</div>
-                    <i class="fa-solid fa-wallet stat-icon"></i>
-                </div>
-                <div class="stat-card red">
-                    <div class="stat-label">পেন্ডিং পেমেন্ট</div>
-                    <div class="stat-value" id="stat-pending-pay">—</div>
-                    <i class="fa-solid fa-hourglass-half stat-icon"></i>
-                </div>
-            </div>
-
-            <!-- Orders Table -->
-            <div class="table-card" style="margin-bottom:24px;">
-                <div class="table-header">
-                    <div class="table-title"><i class="fa-solid fa-box-open" style="color:var(--accent);margin-right:8px;"></i> সব অর্ডার</div>
-                    <input class="search-input" type="text" placeholder="🔍 অর্ডার খুঁজুন..." oninput="filterTable('ordersBody', this.value)">
-                </div>
-                <div class="filter-tabs">
-                    <button class="filter-tab active" onclick="filterByStatus('ordersBody', '', this)">সব</button>
-                    <button class="filter-tab" onclick="filterByStatus('ordersBody', 'Pending', this)">Pending</button>
-                    <button class="filter-tab" onclick="filterByStatus('ordersBody', 'Approved', this)">Approved</button>
-                    <button class="filter-tab" onclick="filterByStatus('ordersBody', 'Rejected', this)">Rejected</button>
-                </div>
-                <table class="data-table">
-                    <thead><tr>
-                        <th>#</th><th>প্রোডাক্ট</th><th>প্যাকেজ</th><th>Player ID</th><th>WhatsApp</th><th>সময়</th><th>স্ট্যাটাস</th><th>Action</th>
-                    </tr></thead>
-                    <tbody id="ordersBody"></tbody>
-                </table>
-            </div>
-
-            <!-- Payments Table -->
-            <div class="table-card">
-                <div class="table-header">
-                    <div class="table-title"><i class="fa-solid fa-money-bill-wave" style="color:var(--green);margin-right:8px;"></i> Add Money Requests</div>
-                    <input class="search-input" type="text" placeholder="🔍 TrxID বা মেথড খুঁজুন..." oninput="filterTable('paymentsBody', this.value)">
-                </div>
-                <div class="filter-tabs">
-                    <button class="filter-tab active" onclick="filterByStatus('paymentsBody', '', this)">সব</button>
-                    <button class="filter-tab" onclick="filterByStatus('paymentsBody', 'Pending', this)">Pending</button>
-                    <button class="filter-tab" onclick="filterByStatus('paymentsBody', 'Approved', this)">Approved</button>
-                    <button class="filter-tab" onclick="filterByStatus('paymentsBody', 'Rejected', this)">Rejected</button>
-                </div>
-                <table class="data-table">
-                    <thead><tr>
-                        <th>#</th><th>পরিমাণ</th><th>মেথড</th><th>Transaction ID</th><th>সময়</th><th>স্ট্যাটাস</th><th>Action</th>
-                    </tr></thead>
-                    <tbody id="paymentsBody"></tbody>
-                </table>
-            </div>
-        </div>
-    </div><!-- main content -->
-</div><!-- dashboard -->
-
-<!-- ── Firebase + Script ── -->
-<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
-<script>
-const firebaseConfig = {
+  const firebaseConfig = {
     apiKey: "AIzaSyAihR-8QjslhjSAHPAPERRD68LQvF2dC7s",
     authDomain: "uniqueshop44.firebaseapp.com",
+    databaseURL: "https://uniqueshop44-default-rtdb.firebaseio.com",
     projectId: "uniqueshop44",
-    databaseURL: "https://uniqueshop44-default-rtdb.firebaseio.com/",
     storageBucket: "uniqueshop44.firebasestorage.app",
     messagingSenderId: "574506419832",
     appId: "1:574506419832:web:5ca7093caec4e404830f8d",
     measurementId: "G-2W8LM2DS22"
-}
+  };
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
 
-// Helper wrappers to match modular API used below
-function ref(dbOrPath, path) { 
-    if (path !== undefined) return db.ref(path); 
-    return db.ref(dbOrPath); 
-}
-function onValue(r, cb) { r.on('value', snap => cb(snap)); }
-function get(r) { return r.once('value'); }
-function update(r, data) { return r.update(data); }
-function remove(r) { return r.remove(); }
-function set(r, data) { return r.set(data); }
-
-// ─── Auth ───
-const ADMIN_CREDS_KEY = 'us_admin_creds';
-let storedCreds = JSON.parse(localStorage.getItem(ADMIN_CREDS_KEY) || '{"user":"admin","pass":"admin44"}');
-
-function doLogin() {
-    const u = document.getElementById('adminUser').value.trim();
-    const p = document.getElementById('adminPass').value.trim();
-    // Also check Firebase for updated creds
-    get(ref(db, 'adminSettings/credentials')).then(snap => {
-        const fbCreds = snap.val();
-        const validUser = fbCreds ? fbCreds.user : storedCreds.user;
-        const validPass = fbCreds ? fbCreds.pass : storedCreds.pass;
-        if (u === validUser && p === validPass) {
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
-            initDashboard();
-        } else {
-            document.getElementById('loginError').style.display = 'block';
-            setTimeout(() => document.getElementById('loginError').style.display = 'none', 3000);
-        }
-    }).catch(() => {
-        if (u === storedCreds.user && p === storedCreds.pass) {
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
-            initDashboard();
-        } else {
-            document.getElementById('loginError').style.display = 'block';
-            setTimeout(() => document.getElementById('loginError').style.display = 'none', 3000);
-        }
-    });
-}
-
-function doLogout() {
-    document.getElementById('dashboard').style.display = 'none';
-    document.getElementById('loginScreen').style.display = 'flex';
-    document.getElementById('adminUser').value = '';
-    document.getElementById('adminPass').value = '';
-}
-
-// ─── Data stores ───
-let allOrders = {};
-let allPayments = {};
-
-function initDashboard() {
-    // Show empty home state (no tab active)
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('pageTitle').innerHTML = `Dashboard <span>স্বাগতম, Admin!</span>`;
-
-    // Orders
-    onValue(ref(db, 'orders'), snap => {
-        allOrders = snap.val() || {};
-        renderOrders();
-        updateStats();
-    });
-    // Add money
-    onValue(ref(db, 'addMoneyRequests'), snap => {
-        allPayments = snap.val() || {};
-        renderPayments();
-        updateStats();
-    });
-    // Product logos
-    onValue(ref(db, 'productLogos'), snap => {
-        const data = snap.val() || {};
-        buildLogoForm(data);
-    });
-    // Settings
-    loadSettings();
-}
-
-// ─── Stats ───
-function updateStats() {
-    const orders = Object.values(allOrders);
-    const pays   = Object.values(allPayments);
-    document.getElementById('stat-orders').textContent = orders.length;
-    document.getElementById('stat-pending-orders').textContent = orders.filter(o => o.status === 'Pending').length;
-    document.getElementById('stat-payments').textContent = pays.length;
-    document.getElementById('stat-pending-pay').textContent = pays.filter(p => p.status === 'Pending').length;
-
-    // Badges
-    const ob = document.getElementById('orderBadge');
-    if (ob) ob.textContent = orders.filter(o => o.status === 'Pending').length;
-
-    // Recent orders removed (no overview tab)
-}
-
-// ─── Orders ───
-function renderOrders() {
-    const tbody = document.getElementById('ordersBody');
-    const entries = Object.entries(allOrders).reverse();
-    if (!entries.length) { tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><i class="fa-solid fa-box-open"></i>কোনো অর্ডার নেই।</div></td></tr>`; return; }
-    let i = 1;
-    tbody.innerHTML = entries.map(([key, o]) => `
-        <tr data-status="${o.status}" data-text="${(o.product+o.package+o.playerId+o.whatsapp).toLowerCase()}">
-            <td style="color:var(--text2)">${i++}</td>
-            <td><strong>${o.product}</strong></td>
-            <td>${o.package}</td>
-            <td><code style="color:#79c0ff">${o.playerId}</code></td>
-            <td>${o.whatsapp}</td>
-            <td style="color:var(--text2);font-size:11px">${o.time}</td>
-            <td>${statusBadge(o.status)}</td>
-            <td>
-                ${o.status === 'Pending' ? `<button class="action-btn btn-approve" onclick="updateOrderStatus('${key}','Approved')"><i class="fa-solid fa-check"></i> Approve</button>
-                <button class="action-btn btn-reject" onclick="updateOrderStatus('${key}','Rejected')"><i class="fa-solid fa-xmark"></i> Reject</button>` : ''}
-                <button class="action-btn btn-delete" onclick="deleteOrder('${key}')"><i class="fa-solid fa-trash"></i></button>
-            </td>
-        </tr>`).join('');
-}
-
-function renderRecentOrders(orders) {
-    const tbody = document.getElementById('recentOrdersBody');
-    if (!orders.length) { tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fa-solid fa-box-open"></i>কোনো অর্ডার নেই।</div></td></tr>`; return; }
-    tbody.innerHTML = orders.map(o => `
-        <tr>
-            <td><strong>${o.product}</strong></td>
-            <td>${o.package}</td>
-            <td><code style="color:#79c0ff">${o.playerId}</code></td>
-            <td>${o.whatsapp}</td>
-            <td style="color:var(--text2);font-size:11px">${o.time}</td>
-            <td>${statusBadge(o.status)}</td>
-        </tr>`).join('');
-}
-
-function updateOrderStatus(key, status) {
-    update(ref(db, `orders/${key}`), { status }).then(() => showToast(`অর্ডার ${status} করা হয়েছে!`, 'success'));
-}
-function deleteOrder(key) {
-    if (!confirm('এই অর্ডারটি মুছে দেবেন?')) return;
-    remove(ref(db, `orders/${key}`)).then(() => showToast('অর্ডার ডিলিট হয়েছে।', 'success'));
-}
-
-// ─── Payments ───
-function renderPayments() {
-    const tbody = document.getElementById('paymentsBody');
-    const entries = Object.entries(allPayments).reverse();
-    if (!entries.length) { tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><i class="fa-solid fa-wallet"></i>কোনো রিকোয়েস্ট নেই।</div></td></tr>`; return; }
-    let i = 1;
-    tbody.innerHTML = entries.map(([key, p]) => `
-        <tr data-status="${p.status}" data-text="${(p.method+p.transactionId).toLowerCase()}">
-            <td style="color:var(--text2)">${i++}</td>
-            <td><strong style="color:var(--green)">৳${p.amount}</strong></td>
-            <td>${methodIcon(p.method)} ${p.method}</td>
-            <td><code style="color:#79c0ff">${p.transactionId}</code></td>
-            <td style="color:var(--text2);font-size:11px">${p.time}</td>
-            <td>${statusBadge(p.status)}</td>
-            <td>
-                ${p.status === 'Pending' ? `<button class="action-btn btn-approve" onclick="updatePayStatus('${key}','Approved')"><i class="fa-solid fa-check"></i> Approve</button>
-                <button class="action-btn btn-reject" onclick="updatePayStatus('${key}','Rejected')"><i class="fa-solid fa-xmark"></i> Reject</button>` : ''}
-                <button class="action-btn btn-delete" onclick="deletePay('${key}')"><i class="fa-solid fa-trash"></i></button>
-            </td>
-        </tr>`).join('');
-}
-
-function updatePayStatus(key, status) {
-    update(ref(db, `addMoneyRequests/${key}`), { status }).then(() => showToast(`পেমেন্ট ${status} করা হয়েছে!`, 'success'));
-}
-function deletePay(key) {
-    if (!confirm('এই রিকোয়েস্টটি মুছে দেবেন?')) return;
-    remove(ref(db, `addMoneyRequests/${key}`)).then(() => showToast('মুছে দেওয়া হয়েছে।', 'success'));
-}
-
-// ─── Logo Form ───
-const logoItems = [
-    'Rafer & Earn Diamond',
-    'Uid Topup BD Server',
-    'Unipin Voucher BD Server',
-    'Weekly Lite BD Server',
-    'Weekly & Monthly BD Server',
-    'Level Up Pass BD Server',
-    'Uid Evo Access'
-];
-
-function buildLogoForm(data) {
-    const container = document.getElementById('logoFormRows');
-    container.innerHTML = logoItems.map((name, idx) => `
-        <div class="form-row">
-            <label>${idx + 1}. ${name}</label>
-            <input type="url" id="logo-item${idx+1}" value="${data['item'+(idx+1)] || ''}" placeholder="ইমেজ URL বসান">
-        </div>`).join('');
-}
-
-function saveLogos() {
-    const data = {};
-    for (let i = 1; i <= 7; i++) {
-        const val = document.getElementById(`logo-item${i}`)?.value.trim();
-        if (val) data['item'+i] = val;
+  // ══════════════════════════════════════════════════
+  //  Firebase save helper — admin panel থেকে যা save হয়
+  //  সব Firebase-এ যাবে AND localStorage-এও থাকবে (backup)
+  // ══════════════════════════════════════════════════
+  window._fbSet = async function(path, value) {
+    try {
+      await set(ref(db, path), value);
+      return true;
+    } catch(e) {
+      console.error("Firebase write error:", e);
+      return false;
     }
-    set(ref(db, 'productLogos'), data).then(() => showToast('লোগো সফলভাবে আপডেট হয়েছে!', 'success'))
-        .catch(e => showToast('সমস্যা হয়েছে: ' + e.message, 'error'));
-}
+  };
 
-// ─── Settings ───
-function loadSettings() {
-    get(ref(db, 'adminSettings')).then(snap => {
-        const s = snap.val() || {};
-        if (s.notice) {
-            document.getElementById('noticeText').value = s.notice;
-            document.getElementById('noticePreview').textContent = s.notice;
-        }
-        if (s.paymentNums) {
-            document.getElementById('bkashNum').value  = s.paymentNums.Bikash  || '';
-            document.getElementById('nagadNum').value  = s.paymentNums.Nagad   || '';
-            document.getElementById('rocketNum').value = s.paymentNums.Rocket  || '';
-            document.getElementById('upayNum').value   = s.paymentNums.Upay    || '';
-        }
-        if (s.links) {
-            document.getElementById('waNum').value  = s.links.whatsapp  || '';
-            document.getElementById('tgLink').value = s.links.telegram  || '';
-        }
-    });
-    document.getElementById('noticeText').addEventListener('input', function() {
-        document.getElementById('noticePreview').textContent = this.value;
-    });
-}
+  window._fbGet = async function(path) {
+    try {
+      const snap = await get(ref(db, path));
+      return snap.exists() ? snap.val() : null;
+    } catch(e) {
+      console.error("Firebase read error:", e);
+      return null;
+    }
+  };
 
-function saveNotice() {
-    const text = document.getElementById('noticeText').value.trim();
-    update(ref(db, 'adminSettings'), { notice: text }).then(() => showToast('Notice সেভ হয়েছে!', 'success'));
-}
+  // ══════════════════════════════════════════════════
+  //  Page load-এ Firebase থেকে সব data load করুন
+  // ══════════════════════════════════════════════════
+  window.addEventListener('DOMContentLoaded', async function() {
+    // Image links
+    const imgLinks = await window._fbGet('admin/imageLinks');
+    if (imgLinks) { localStorage.setItem('uniqueShopLinks', JSON.stringify(imgLinks)); }
 
-function savePaymentNums() {
-    const nums = {
-        Bikash: document.getElementById('bkashNum').value.trim(),
-        Nagad:  document.getElementById('nagadNum').value.trim(),
-        Rocket: document.getElementById('rocketNum').value.trim(),
-        Upay:   document.getElementById('upayNum').value.trim()
-    };
-    update(ref(db, 'adminSettings'), { paymentNums: nums }).then(() => showToast('Payment numbers সেভ হয়েছে!', 'success'));
-}
+    // Product links
+    const prodLinks = await window._fbGet('admin/productLinks');
+    if (prodLinks) { localStorage.setItem('uniqueShopProductLinks', JSON.stringify(prodLinks)); }
 
-function saveLinks() {
-    const links = {
-        whatsapp: document.getElementById('waNum').value.trim(),
-        telegram: document.getElementById('tgLink').value.trim()
-    };
-    update(ref(db, 'adminSettings'), { links }).then(() => showToast('Links সেভ হয়েছে!', 'success'));
-}
+    // Notice
+    const notice = await window._fbGet('admin/notice');
+    if (notice) { localStorage.setItem('uniqueShopNotice', notice); }
 
-function saveAdminCreds() {
-    const u = document.getElementById('newAdminUser').value.trim();
-    const p = document.getElementById('newAdminPass').value.trim();
-    if (!u || !p) { showToast('Username ও Password দিন!', 'error'); return; }
-    const creds = { user: u, pass: p };
-    update(ref(db, 'adminSettings'), { credentials: creds }).then(() => {
-        localStorage.setItem(ADMIN_CREDS_KEY, JSON.stringify(creds));
-        showToast('Credentials আপডেট হয়েছে!', 'success');
-        document.getElementById('newAdminUser').value = '';
-        document.getElementById('newAdminPass').value = '';
-    });
-}
+    // Slider links
+    const sliderLinks = await window._fbGet('admin/sliderLinks');
+    if (sliderLinks) { localStorage.setItem('uniqueShopSliderLinks', JSON.stringify(sliderLinks)); }
 
-// ─── Helpers ───
-function statusBadge(status) {
-    if (status === 'Approved') return `<span class="badge-status badge-approved"><i class="fa-solid fa-circle-check"></i> Approved</span>`;
-    if (status === 'Rejected') return `<span class="badge-status badge-rejected"><i class="fa-solid fa-circle-xmark"></i> Rejected</span>`;
-    return `<span class="badge-status badge-pending"><i class="fa-solid fa-clock"></i> Pending</span>`;
-}
+    // Rules
+    const rules = await window._fbGet('admin/rules');
+    if (rules) { localStorage.setItem('uniqueShopRules', JSON.stringify(rules)); }
 
-function methodIcon(m) {
-    const icons = { Bikash:'fa-money-bill-wave', Nagad:'fa-money-bill-transfer', Rocket:'fa-building-columns', Upay:'fa-mobile-screen-button' };
-    return `<i class="fa-solid ${icons[m] || 'fa-wallet'}"></i>`;
-}
+    // Payment numbers
+    const payments = await window._fbGet('admin/payments');
+    if (payments) { localStorage.setItem('uniqueShopPayments', JSON.stringify(payments)); }
 
-function showToast(msg, type = 'success') {
-    const t = document.getElementById('toast');
-    const icon = document.getElementById('toastIcon');
-    document.getElementById('toastMsg').textContent = msg;
-    t.className = `toast ${type}`;
-    icon.className = type === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark';
-    icon.style.color = type === 'success' ? 'var(--green)' : 'var(--accent2)';
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3000);
-}
+    console.log("✅ Firebase থেকে সব admin data load হয়েছে");
+  });
+</script>
+</head>
+<body>
 
-// ─── Tab + Filter ───
-function switchTab(name, btn) {
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('tab-' + name).classList.add('active');
-    btn.classList.add('active');
-    const titles = { notice:'Notice', image:'Image', url:'URL', number:'Number', product:'Product' };
-    const subs   = { notice:'সাইটের নোটিস আপডেট করুন', image:'প্রোডাক্ট ইমেজ আপডেট করুন', url:'WhatsApp ও Telegram লিংক', number:'পেমেন্ট নম্বর ও Admin Credentials', product:'অর্ডার ও পেমেন্ট ম্যানেজ করুন' };
-    document.getElementById('pageTitle').innerHTML = `${titles[name]} <span>${subs[name]}</span>`;
-}
+<div class="topbar">
+  <div class="logo">⚡ Unique Shop — অ্যাডমিন প্যানেল (পণ্য + রুলস + পেমেন্ট)</div>
+</div>
 
-function filterTable(tbodyId, query) {
-    const q = query.toLowerCase();
-    document.querySelectorAll(`#${tbodyId} tr`).forEach(row => {
-        row.style.display = row.dataset.text?.includes(q) ? '' : 'none';
-    });
-}
+<div class="icon-nav">
+  <!-- Image Icon with Dropdown -->
+  <div class="nav-item" id="imageNav" onclick="toggleDropdown('imageDropdown', event)">
+    <span class="icon">🖼️</span>
+    <span class="label">Image</span>
+    <div class="dropdown" id="imageDropdown">
+      <div class="dropdown-header">📂 ইমেজ ক্যাটাগরি</div>
+      <div class="dropdown-item" data-category="Refer & Earn" data-icon="🤝"><span class="item-icon">🤝</span> Refer &amp; Earn</div>
+      <div class="dropdown-item" data-category="Free Fire UID Topup" data-icon="🔥"><span class="item-icon">🔥</span> Free Fire UID Topup</div>
+      <div class="dropdown-item" data-category="UniPin" data-icon="🎮"><span class="item-icon">🎮</span> UniPin</div>
+      <div class="dropdown-item" data-category="Weekly Lite" data-icon="📅"><span class="item-icon">📅</span> Weekly Lite</div>
+      <div class="dropdown-item" data-category="Weekly & Monthly" data-icon="🗓️"><span class="item-icon">🗓️</span> Weekly &amp; Monthly</div>
+      <div class="dropdown-item" data-category="Level Up Pass" data-icon="⬆️"><span class="item-icon">⬆️</span> Level Up Pass</div>
+    </div>
+  </div>
 
-function filterByStatus(tbodyId, status, btn) {
-    btn.closest('.filter-tabs').querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll(`#${tbodyId} tr`).forEach(row => {
-        row.style.display = (!status || row.dataset.status === status) ? '' : 'none';
-    });
-}
+  <!-- Notification Icon -->
+  <div class="nav-item" id="notificationNav" onclick="handleNotificationClick()">
+    <span class="icon">📢</span>
+    <span class="label">Notification</span>
+  </div>
+
+  <!-- Slider Icon -->
+  <div class="nav-item" id="sliderNav" onclick="handleSliderClick()">
+    <span class="icon">🖥️</span>
+    <span class="label">Slider</span>
+  </div>
+
+  <!-- Product Icon -->
+  <div class="nav-item" id="productNav" onclick="toggleDropdown('productDropdown', event)">
+    <span class="icon">🛍️</span>
+    <span class="label">Product</span>
+    <div class="dropdown" id="productDropdown">
+      <div class="dropdown-header">📦 পণ্যের লিংক</div>
+      <div class="dropdown-item" data-product-category="Free Fire UID Topup" data-product-icon="🔥"><span class="item-icon">🔥</span> Free Fire UID Topup</div>
+      <div class="dropdown-item" data-product-category="Unipin Voucher" data-product-icon="🎮"><span class="item-icon">🎮</span> Unipin Voucher</div>
+      <div class="dropdown-item" data-product-category="Weekly Lite" data-product-icon="📅"><span class="item-icon">📅</span> Weekly Lite</div>
+      <div class="dropdown-item" data-product-category="Weekly and Monthly" data-product-icon="🗓️"><span class="item-icon">🗓️</span> Weekly and Monthly</div>
+      <div class="dropdown-item" data-product-category="Level Up Pass" data-product-icon="⬆️"><span class="item-icon">⬆️</span> Level Up Pass</div>
+    </div>
+  </div>
+
+  <!-- 🆕 RULES Icon with Dropdown -->
+  <div class="nav-item" id="rulesNav" onclick="toggleDropdown('rulesDropdown', event)">
+    <span class="icon">📜</span>
+    <span class="label">Rules</span>
+    <div class="dropdown" id="rulesDropdown">
+      <div class="dropdown-header">⚙️ নিয়ম ও শর্তাবলী</div>
+      <div class="dropdown-item" data-rule-category="Free Fire UID Topup" data-rule-icon="🔥"><span class="item-icon">🔥</span> Free Fire UID Topup</div>
+      <div class="dropdown-item" data-rule-category="Unipin" data-rule-icon="🎮"><span class="item-icon">🎮</span> Unipin</div>
+      <div class="dropdown-item" data-rule-category="Weekly Lite" data-rule-icon="📅"><span class="item-icon">📅</span> Weekly Lite</div>
+      <div class="dropdown-item" data-rule-category="Weekly and Monthly Offer" data-rule-icon="🗓️"><span class="item-icon">🗓️</span> Weekly and Monthly Offer</div>
+      <div class="dropdown-item" data-rule-category="Level Up Pass" data-rule-icon="⬆️"><span class="item-icon">⬆️</span> Level Up Pass</div>
+    </div>
+  </div>
+
+  <!-- 🆕 PAYMENT NUMBER Icon with Dropdown -->
+  <div class="nav-item" id="paymentNav" onclick="toggleDropdown('paymentDropdown', event)">
+    <span class="icon">💰</span>
+    <span class="label">Payment Number</span>
+    <div class="dropdown" id="paymentDropdown">
+      <div class="dropdown-header">📞 পেমেন্ট নম্বর আপডেট</div>
+      <div class="dropdown-item" data-payment-method="Bikash" data-payment-icon="💸"><span class="item-icon">💸</span> Bikash</div>
+      <div class="dropdown-item" data-payment-method="Nagad" data-payment-icon="📱"><span class="item-icon">📱</span> Nagad</div>
+      <div class="dropdown-item" data-payment-method="Roket" data-payment-icon="🚀"><span class="item-icon">🚀</span> Roket</div>
+      <div class="dropdown-item" data-payment-method="Upay" data-payment-icon="🔼"><span class="item-icon">🔼</span> Upay</div>
+    </div>
+  </div>
+</div>
+
+<hr>
+<div class="main-content">
+  📌 ইমেজ ক্যাটাগরির লিংক, 🛍️ পণ্যের লিংক, 📜 রুলস (নিয়ম), 💰 পেমেন্ট নম্বর সংরক্ষণ করুন।
+</div>
+
+<!-- ইমেজ লিংক মোডাল -->
+<div id="linkModal" class="modal-overlay"><div class="modal-card"><div class="modal-title"><span id="modalIcon">🔗</span><span id="modalCategory"></span> — লিংক সেট করুন</div><div class="modal-field"><label>🔗 URL</label><input type="url" id="linkInput" placeholder="https://..."></div><div class="modal-actions"><button class="btn btn-secondary" id="closeModalBtn">বাতিল</button><button class="btn btn-primary" id="saveLinkBtn">সংরক্ষণ</button></div></div></div>
+
+<!-- নোটিশ মোডাল -->
+<div id="noticeModal" class="modal-overlay"><div class="modal-card"><div class="modal-title"><span>📢</span><span>নোটিশ লিখুন</span></div><div class="modal-field"><label>বার্তা</label><textarea id="noticeTextarea" rows="3" placeholder="অফার, বিজ্ঞপ্তি..."></textarea></div><div class="modal-actions"><button class="btn btn-secondary" id="closeNoticeBtn">বাতিল</button><button class="btn btn-primary" id="saveNoticeBtn">সংরক্ষণ</button></div></div></div>
+
+<!-- স্লাইডার মোডাল -->
+<div id="sliderModal" class="modal-overlay"><div class="modal-card"><div class="modal-title"><span>🖼️</span><span>স্লাইডার লিংক (৩টি)</span></div><div class="slider-group"><div class="modal-field"><label>লিংক ১</label><input type="url" id="sliderLink1" placeholder="https://..."></div><div class="modal-field"><label>লিংক ২</label><input type="url" id="sliderLink2" placeholder="https://..."></div><div class="modal-field"><label>লিংক ৩</label><input type="url" id="sliderLink3" placeholder="https://..."></div></div><div class="modal-actions"><button class="btn btn-secondary" id="closeSliderBtn">বাতিল</button><button class="btn btn-primary" id="saveSliderBtn">সংরক্ষণ</button></div></div></div>
+
+<!-- পণ্য লিংক মোডাল -->
+<div id="productLinkModal" class="modal-overlay"><div class="modal-card"><div class="modal-title"><span id="productModalIcon">🛍️</span><span id="productModalCategory"></span> — পণ্যের লিংক</div><div class="modal-field"><label>পণ্য URL</label><input type="url" id="productLinkInput" placeholder="https://..."></div><div class="modal-actions"><button class="btn btn-secondary" id="closeProductModalBtn">বাতিল</button><button class="btn btn-primary" id="saveProductLinkBtn">সংরক্ষণ</button></div></div></div>
+
+<!-- 🆕 রুলস (নিয়ম) মোডাল -->
+<div id="rulesModal" class="modal-overlay"><div class="modal-card"><div class="modal-title"><span id="rulesModalIcon">📜</span><span id="rulesModalCategory"></span> — নিয়ম ও শর্তাবলী</div><div class="modal-field"><label>📝 বিস্তারিত নিয়ম লিখুন</label><textarea id="rulesTextarea" rows="6" placeholder="যেমন: ১. টপআপ করতে নিচের লিংকে ক্লিক করুন&#10;২. সঠিক UID দিন&#10;৩. ২৪ ঘন্টার মধ্যে ডেলিভারি"></textarea><small>এই নিয়ম সংশ্লিষ্ট পণ্যের পেজে দেখাবে।</small></div><div class="modal-actions"><button class="btn btn-secondary" id="closeRulesBtn">বাতিল</button><button class="btn btn-primary" id="saveRulesBtn">নিয়ম সংরক্ষণ</button></div></div></div>
+
+<!-- 🆕 পেমেন্ট নম্বর মোডাল -->
+<div id="paymentModal" class="modal-overlay"><div class="modal-card"><div class="modal-title"><span id="paymentModalIcon">💰</span><span id="paymentModalMethod"></span> — পেমেন্ট নম্বর</div><div class="modal-field"><label>📞 মোবাইল নম্বর / একাউন্ট আইডি</label><input type="text" id="paymentNumberInput" placeholder="01XXXXXXXXX বা user@id" autocomplete="off"><small>পেমেন্ট গ্রহণের জন্য বৈধ নম্বর দিন।</small></div><div class="modal-actions"><button class="btn btn-secondary" id="closePaymentBtn">বাতিল</button><button class="btn btn-primary" id="savePaymentBtn">নম্বর সংরক্ষণ</button></div></div></div>
+
+<div id="toastMsg" class="toast">✅ সংরক্ষিত হয়েছে</div>
+
+<script>
+  // ---------- টোস্ট মেসেজ ----------
+  function showToast(message, isError = false) {
+    const toast = document.getElementById("toastMsg");
+    toast.textContent = message;
+    toast.style.background = isError ? "#b91c1c" : "#0f172a";
+    toast.classList.add("show");
+    setTimeout(() => {
+      toast.classList.remove("show");
+      toast.style.background = "#0f172a";
+    }, 2600);
+  }
+
+  // ========== 1. ইমেজ লিংক (বিদ্যমান) ==========
+  function loadImageLinks() { const saved = localStorage.getItem("uniqueShopLinks"); return saved ? JSON.parse(saved) : {}; }
+  async function saveImageLink(category, link) { const links = loadImageLinks(); links[category] = link; localStorage.setItem("uniqueShopLinks", JSON.stringify(links)); const ok = await window._fbSet('admin/imageLinks', links); showToast(ok ? `✅ ইমেজ "${category}" Firebase-এ সংরক্ষিত` : `✅ "${category}" locally সংরক্ষিত`); }
+  function getImageLink(category) { return loadImageLinks()[category] || ""; }
+  let currentImageCat = "", currentImageIcon = "";
+  function openImageEditor(cat, icon) { currentImageCat = cat; currentImageIcon = icon; document.getElementById("modalIcon").innerHTML = icon; document.getElementById("modalCategory").innerText = cat; document.getElementById("linkInput").value = getImageLink(cat); document.getElementById("linkModal").classList.add("active"); }
+  function closeImageModal() { document.getElementById("linkModal").classList.remove("active"); currentImageCat = ""; }
+  function setupImageDropdown() { document.querySelectorAll("#imageDropdown .dropdown-item").forEach(item => { item.removeEventListener("click", imageHandler); item.addEventListener("click", imageHandler); }); }
+  function imageHandler(e) { e.stopPropagation(); const cat = this.getAttribute("data-category"), icon = this.querySelector(".item-icon")?.innerText || "🔗"; if(cat) { document.getElementById("imageDropdown").classList.remove("open"); openImageEditor(cat, icon); } }
+
+  // ========== 2. পণ্য লিংক ==========
+  function loadProductLinks() { const saved = localStorage.getItem("uniqueShopProductLinks"); return saved ? JSON.parse(saved) : {}; }
+  async function saveProductLink(cat, link) { const links = loadProductLinks(); links[cat] = link; localStorage.setItem("uniqueShopProductLinks", JSON.stringify(links)); const ok = await window._fbSet('admin/productLinks', links); showToast(ok ? `🛍️ পণ্য "${cat}" Firebase-এ সংরক্ষিত` : `🛍️ "${cat}" locally সংরক্ষিত`); }
+  function getProductLink(cat) { return loadProductLinks()[cat] || ""; }
+  let currentProductCat = "", currentProductIcon = "";
+  function openProductEditor(cat, icon) { currentProductCat = cat; currentProductIcon = icon; document.getElementById("productModalIcon").innerHTML = icon; document.getElementById("productModalCategory").innerText = cat; document.getElementById("productLinkInput").value = getProductLink(cat); document.getElementById("productLinkModal").classList.add("active"); }
+  function closeProductModal() { document.getElementById("productLinkModal").classList.remove("active"); currentProductCat = ""; }
+  function setupProductDropdown() { document.querySelectorAll("#productDropdown .dropdown-item").forEach(item => { item.removeEventListener("click", productHandler); item.addEventListener("click", productHandler); }); }
+  function productHandler(e) { e.stopPropagation(); const cat = this.getAttribute("data-product-category"), icon = this.querySelector(".item-icon")?.innerText || "📦"; if(cat) { document.getElementById("productDropdown").classList.remove("open"); openProductEditor(cat, icon); } }
+
+  // ========== 3. নোটিশ ও স্লাইডার ==========
+  function openNoticeModal() { document.getElementById("noticeTextarea").value = localStorage.getItem("uniqueShopNotice") || ""; document.getElementById("noticeModal").classList.add("active"); }
+  function closeNoticeModal() { document.getElementById("noticeModal").classList.remove("active"); }
+  async function saveNotice() { let txt = document.getElementById("noticeTextarea").value.trim(); if(!txt) { showToast("নোটিশ লিখুন!", true); return; } localStorage.setItem("uniqueShopNotice", txt); const ok = await window._fbSet('admin/notice', txt); showToast(ok ? "📢 নোটিশ Firebase-এ সংরক্ষিত" : "📢 নোটিশ locally সংরক্ষিত"); closeNoticeModal(); }
+  function openSliderModal() { let arr = ["","",""]; const saved = localStorage.getItem("uniqueShopSliderLinks"); if(saved) try { let p = JSON.parse(saved); if(Array.isArray(p) && p.length===3) arr=p; }catch(e){} document.getElementById("sliderLink1").value=arr[0]; document.getElementById("sliderLink2").value=arr[1]; document.getElementById("sliderLink3").value=arr[2]; document.getElementById("sliderModal").classList.add("active"); }
+  function closeSliderModal() { document.getElementById("sliderModal").classList.remove("active"); }
+  async function saveSliderLinks() { let l1=document.getElementById("sliderLink1").value.trim(), l2=document.getElementById("sliderLink2").value.trim(), l3=document.getElementById("sliderLink3").value.trim(); const valid=(u)=> u==="" || u.startsWith("http://") || u.startsWith("https://"); if(!valid(l1)||!valid(l2)||!valid(l3)) { showToast("URL http:// বা https:// দিয়ে শুরু করুন",true); return; } const arr=[l1,l2,l3]; localStorage.setItem("uniqueShopSliderLinks", JSON.stringify(arr)); const ok = await window._fbSet('admin/sliderLinks', arr); showToast(ok ? "🖼️ স্লাইডার Firebase-এ সংরক্ষিত" : "🖼️ স্লাইডার locally সংরক্ষিত"); closeSliderModal(); }
+
+  // ========== 4. রুলস (Rules) নতুন ==========
+  function loadRules() { const saved = localStorage.getItem("uniqueShopRules"); return saved ? JSON.parse(saved) : {}; }
+  async function saveRule(category, ruleText) { const rules = loadRules(); rules[category] = ruleText; localStorage.setItem("uniqueShopRules", JSON.stringify(rules)); const ok = await window._fbSet('admin/rules', rules); showToast(ok ? `📜 "${category}" Firebase-এ সংরক্ষিত` : `📜 "${category}" locally সংরক্ষিত`); }
+  function getRule(category) { return loadRules()[category] || ""; }
+  let currentRuleCat = "", currentRuleIcon = "";
+  function openRuleEditor(cat, icon) { currentRuleCat = cat; currentRuleIcon = icon; document.getElementById("rulesModalIcon").innerHTML = icon; document.getElementById("rulesModalCategory").innerText = cat; document.getElementById("rulesTextarea").value = getRule(cat); document.getElementById("rulesModal").classList.add("active"); }
+  function closeRulesModal() { document.getElementById("rulesModal").classList.remove("active"); currentRuleCat = ""; }
+  function saveRulesFromModal() { const txt = document.getElementById("rulesTextarea").value.trim(); if(!txt) { showToast("নিয়মের বিবরণ দিন!", true); return; } if(currentRuleCat) { saveRule(currentRuleCat, txt); closeRulesModal(); } else { showToast("ক্যাটাগরি নির্বাচিত নয়", true); } }
+  function setupRulesDropdown() { document.querySelectorAll("#rulesDropdown .dropdown-item").forEach(item => { item.removeEventListener("click", rulesHandler); item.addEventListener("click", rulesHandler); }); }
+  function rulesHandler(e) { e.stopPropagation(); const cat = this.getAttribute("data-rule-category"); const icon = this.querySelector(".item-icon")?.innerText || "📜"; if(cat) { document.getElementById("rulesDropdown").classList.remove("open"); openRuleEditor(cat, icon); } }
+
+  // ========== 5. পেমেন্ট নাম্বার (Payment) ==========
+  function loadPayments() { const saved = localStorage.getItem("uniqueShopPayments"); return saved ? JSON.parse(saved) : {}; }
+  async function savePayment(method, number) { const payments = loadPayments(); payments[method] = number; localStorage.setItem("uniqueShopPayments", JSON.stringify(payments)); const ok = await window._fbSet('admin/payments', payments); showToast(ok ? `💰 ${method} Firebase-এ সংরক্ষিত` : `💰 ${method} locally সংরক্ষিত`); }
+  function getPayment(method) { return loadPayments()[method] || ""; }
+  let currentPaymentMethod = "", currentPaymentIcon = "";
+  function openPaymentEditor(method, icon) { currentPaymentMethod = method; currentPaymentIcon = icon; document.getElementById("paymentModalIcon").innerHTML = icon; document.getElementById("paymentModalMethod").innerText = method; document.getElementById("paymentNumberInput").value = getPayment(method); document.getElementById("paymentModal").classList.add("active"); }
+  function closePaymentModal() { document.getElementById("paymentModal").classList.remove("active"); currentPaymentMethod = ""; }
+  function savePaymentFromModal() { const num = document.getElementById("paymentNumberInput").value.trim(); if(!num) { showToast("পেমেন্ট নম্বর দিন!", true); return; } if(currentPaymentMethod) { savePayment(currentPaymentMethod, num); closePaymentModal(); } else { showToast("মেথড নির্বাচিত নয়", true); } }
+  function setupPaymentDropdown() { document.querySelectorAll("#paymentDropdown .dropdown-item").forEach(item => { item.removeEventListener("click", paymentHandler); item.addEventListener("click", paymentHandler); }); }
+  function paymentHandler(e) { e.stopPropagation(); const method = this.getAttribute("data-payment-method"); const icon = this.querySelector(".item-icon")?.innerText || "💸"; if(method) { document.getElementById("paymentDropdown").classList.remove("open"); openPaymentEditor(method, icon); } }
+
+  // ========== গ্লোবাল ফাংশন ==========
+  window.toggleDropdown = function(id, e) { e.stopPropagation(); document.querySelectorAll('.dropdown').forEach(d => { if(d.id !== id) d.classList.remove('open'); }); const dd = document.getElementById(id); if(dd) dd.classList.toggle('open'); };
+  document.addEventListener('click', () => { document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open')); });
+  window.handleNotificationClick = openNoticeModal;
+  window.handleSliderClick = openSliderModal;
+
+  // ইভেন্ট লিসেনার
+  document.getElementById("saveLinkBtn").addEventListener("click", ()=>{ let link = document.getElementById("linkInput").value.trim(); if(!link || (!link.startsWith("http://") && !link.startsWith("https://"))) { showToast("ভালো URL দিন", true); return; } if(currentImageCat) { saveImageLink(currentImageCat, link); closeImageModal(); } });
+  document.getElementById("closeModalBtn").addEventListener("click", closeImageModal);
+  document.getElementById("linkModal").addEventListener("click", (e)=>{ if(e.target===document.getElementById("linkModal")) closeImageModal(); });
+
+  document.getElementById("saveProductLinkBtn").addEventListener("click", ()=>{ let link = document.getElementById("productLinkInput").value.trim(); if(!link || (!link.startsWith("http://") && !link.startsWith("https://"))) { showToast("পণ্যের লিংক বৈধ URL দিন", true); return; } if(currentProductCat) { saveProductLink(currentProductCat, link); closeProductModal(); } });
+  document.getElementById("closeProductModalBtn").addEventListener("click", closeProductModal);
+  document.getElementById("productLinkModal").addEventListener("click", (e)=>{ if(e.target===document.getElementById("productLinkModal")) closeProductModal(); });
+
+  document.getElementById("closeNoticeBtn").addEventListener("click", closeNoticeModal);
+  document.getElementById("saveNoticeBtn").addEventListener("click", saveNotice);
+  document.getElementById("noticeModal").addEventListener("click", (e)=>{ if(e.target===document.getElementById("noticeModal")) closeNoticeModal(); });
+
+  document.getElementById("closeSliderBtn").addEventListener("click", closeSliderModal);
+  document.getElementById("saveSliderBtn").addEventListener("click", saveSliderLinks);
+  document.getElementById("sliderModal").addEventListener("click", (e)=>{ if(e.target===document.getElementById("sliderModal")) closeSliderModal(); });
+
+  document.getElementById("closeRulesBtn").addEventListener("click", closeRulesModal);
+  document.getElementById("saveRulesBtn").addEventListener("click", saveRulesFromModal);
+  document.getElementById("rulesModal").addEventListener("click", (e)=>{ if(e.target===document.getElementById("rulesModal")) closeRulesModal(); });
+
+  document.getElementById("closePaymentBtn").addEventListener("click", closePaymentModal);
+  document.getElementById("savePaymentBtn").addEventListener("click", savePaymentFromModal);
+  document.getElementById("paymentModal").addEventListener("click", (e)=>{ if(e.target===document.getElementById("paymentModal")) closePaymentModal(); });
+
+  // বন্ধ করার জন্য modal-card এ ক্লিক থামানো
+  document.querySelectorAll('.modal-card').forEach(card => { card.addEventListener('click', e => e.stopPropagation()); });
+
+  document.addEventListener('keydown', (e) => { if(e.key === 'Escape') { closeImageModal(); closeNoticeModal(); closeSliderModal(); closeProductModal(); closeRulesModal(); closePaymentModal(); } });
+
+  function init() { setupImageDropdown(); setupProductDropdown(); setupRulesDropdown(); setupPaymentDropdown(); console.log("✅ সব ক্যাটাগরি লোড: ইমেজ, পণ্য, রুলস, পেমেন্ট নম্বর"); }
+  document.addEventListener("DOMContentLoaded", init);
 </script>
 </body>
 </html>
