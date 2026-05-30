@@ -826,8 +826,20 @@ body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100
         const img   = document.getElementById('slideImg' + i);
         const dot   = allDots[i];
 
-        if (url && url.startsWith('http') && slide && img) {
-          img.src = url;
+        // imgbb share link → direct image link auto-convert
+        // https://ibb.co/XXXXX → try direct fetch (imgbb share page থেকে img বের করা যায় না সরাসরি)
+        // তাই শুধু i.ibb.co direct link accept করব, ibb.co share link হলে warn করব
+        let finalUrl = url;
+        if (url && url.match(/^https?:\/\/ibb\.co\//)) {
+          // share link — direct image হবে না, skip করব এবং console-এ জানাব
+          console.warn('⚠️ Slider: imgbb share link দেওয়া হয়েছে, direct image link দিন: ' + url);
+          if (slide) slide.style.display = 'none';
+          if (dot) dot.style.display = 'none';
+          return;
+        }
+
+        if (finalUrl && finalUrl.startsWith('http') && slide && img) {
+          img.src = finalUrl;
           img.onload = function() {
             // image সফলভাবে load হলেই slide দেখাও
             slide.style.display = '';
@@ -844,7 +856,7 @@ body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100
             if (dot) dot.style.display = 'none';
           };
         } else {
-          // URL নেই — hide রাখো
+          // URL নেই বা invalid — hide রাখো
           if (slide) slide.style.display = 'none';
           if (dot) dot.style.display = 'none';
         }
