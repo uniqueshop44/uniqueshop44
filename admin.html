@@ -501,7 +501,26 @@ small {
 <div id="sliderModal" class="modal-overlay"><div class="modal-card"><div class="modal-title"><span>🖼️</span><span>স্লাইডার লিংক (৩টি)</span></div><div class="slider-group"><div class="modal-field"><label>লিংক ১</label><input type="url" id="sliderLink1" placeholder="https://i.ibb.co/..."><small style="color:#e65100;font-size:12px;">⚠️ imgbb direct link দিন: <b>i.ibb.co</b> (ibb.co share link কাজ করবে না)</small></div><div class="modal-field"><label>লিংক ২</label><input type="url" id="sliderLink2" placeholder="https://i.ibb.co/..."></div><div class="modal-field"><label>লিংক ৩</label><input type="url" id="sliderLink3" placeholder="https://i.ibb.co/..."></div></div><div class="modal-actions"><button class="btn btn-secondary" id="closeSliderBtn">বাতিল</button><button class="btn btn-primary" id="saveSliderBtn">সংরক্ষণ</button></div></div></div>
 
 <!-- পণ্য লিংক মোডাল -->
-<div id="productLinkModal" class="modal-overlay"><div class="modal-card"><div class="modal-title"><span id="productModalIcon">🛍️</span><span id="productModalCategory"></span> — পণ্যের লিংক</div><div class="modal-field"><label>পণ্য URL</label><input type="url" id="productLinkInput" placeholder="https://..."></div><div class="modal-actions"><button class="btn btn-secondary" id="closeProductModalBtn">বাতিল</button><button class="btn btn-primary" id="saveProductLinkBtn">সংরক্ষণ</button></div></div></div>
+<div id="productLinkModal" class="modal-overlay">
+  <div class="modal-card" style="max-width:480px;width:96%;">
+    <div class="modal-title"><span id="productModalIcon">🛍️</span> <span id="productModalCategory"></span> — পণ্য তালিকা</div>
+
+    <!-- Add new product row -->
+    <div style="display:flex;gap:8px;margin-bottom:14px;align-items:center;">
+      <input type="text" id="newProductName" placeholder="পণ্যের নাম (যেমন: 1850 Diamond)" style="flex:2;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:14px;font-family:inherit;">
+      <input type="number" id="newProductPrice" placeholder="দাম (৳)" style="flex:1;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:14px;font-family:inherit;">
+      <button onclick="addFFProduct()" style="padding:9px 14px;background:#ff6b00;color:#fff;border:none;border-radius:8px;font-size:20px;cursor:pointer;font-weight:700;">+</button>
+    </div>
+
+    <!-- Product list -->
+    <div id="ffProductList" style="display:flex;flex-direction:column;gap:8px;max-height:340px;overflow-y:auto;margin-bottom:14px;"></div>
+
+    <div class="modal-actions">
+      <button class="btn btn-secondary" id="closeProductModalBtn">বাতিল</button>
+      <button class="btn btn-primary" id="saveProductLinkBtn">Firebase এ সংরক্ষণ</button>
+    </div>
+  </div>
+</div>
 
 <!-- 🆕 রুলস (নিয়ম) মোডাল -->
 <div id="rulesModal" class="modal-overlay"><div class="modal-card"><div class="modal-title"><span id="rulesModalIcon">📜</span><span id="rulesModalCategory"></span> — নিয়ম ও শর্তাবলী</div><div class="modal-field"><label>📝 বিস্তারিত নিয়ম লিখুন</label><textarea id="rulesTextarea" rows="6" placeholder="যেমন: ১. টপআপ করতে নিচের লিংকে ক্লিক করুন&#10;২. সঠিক UID দিন&#10;৩. ২৪ ঘন্টার মধ্যে ডেলিভারি"></textarea><small>এই নিয়ম সংশ্লিষ্ট পণ্যের পেজে দেখাবে।</small></div><div class="modal-actions"><button class="btn btn-secondary" id="closeRulesBtn">বাতিল</button><button class="btn btn-primary" id="saveRulesBtn">নিয়ম সংরক্ষণ</button></div></div></div>
@@ -536,10 +555,91 @@ small {
 
   // ========== 2. পণ্য লিংক ==========
   function loadProductLinks() { const saved = localStorage.getItem("uniqueShopProductLinks"); return saved ? JSON.parse(saved) : {}; }
-  async function saveProductLink(cat, link) { const links = loadProductLinks(); links[cat] = link; localStorage.setItem("uniqueShopProductLinks", JSON.stringify(links)); const ok = await window._fbSet('admin/productLinks', links); showToast(ok ? `🛍️ পণ্য "${cat}" Firebase-এ সংরক্ষিত` : `🛍️ "${cat}" locally সংরক্ষিত`); }
+  // ── FF Products ──
+  var _ffProducts = [];
+
+  function loadFFProductsFromFB() {
+    if (window._fbGet) {
+      window._fbGet('admin/ffProducts').then(function(data) {
+        if (data && Array.isArray(data)) {
+          _ffProducts = data;
+        } else {
+          // Default products যদি Firebase এ না থাকে
+          _ffProducts = [
+            {name:'1850 Diamond', price:'1200'},
+            {name:'Weekly Lite', price:'45'},
+            {name:'2 Monthly', price:'1580'},
+            {name:'Monthly', price:'790'},
+            {name:'2 Weekly', price:'316'},
+            {name:'Weekly', price:'158'},
+            {name:'10120 Diamond', price:'6440'},
+            {name:'5060 Diamond', price:'3220'},
+            {name:'2530 Diamond', price:'1610'},
+            {name:'25 Diamond', price:'22'},
+            {name:'1240 Diamond', price:'800'},
+            {name:'850 Diamond', price:'558'},
+            {name:'610 Diamond', price:'400'},
+            {name:'355 Diamond', price:'237'},
+            {name:'240 Diamond', price:'158'},
+            {name:'115 Diamond', price:'79'},
+            {name:'50 Diamond', price:'38'}
+          ];
+        }
+        renderFFProductList();
+      });
+    }
+  }
+
+  function renderFFProductList() {
+    var list = document.getElementById('ffProductList');
+    if (!list) return;
+    list.innerHTML = '';
+    _ffProducts.forEach(function(p, i) {
+      var row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;';
+      row.innerHTML =
+        '<input type="text" value="' + p.name + '" style="flex:2;border:1px solid #e2e8f0;border-radius:6px;padding:6px 8px;font-size:13px;font-family:inherit;" onchange="_ffProducts[' + i + '].name=this.value">' +
+        '<span style="color:#888;font-size:13px;">৳</span>' +
+        '<input type="number" value="' + p.price + '" style="flex:1;border:1px solid #e2e8f0;border-radius:6px;padding:6px 8px;font-size:13px;font-family:inherit;" onchange="_ffProducts[' + i + '].price=this.value">' +
+        '<button onclick="deleteFFProduct(' + i + ')" style="background:#fee2e2;border:none;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:14px;color:#dc2626;">🗑</button>';
+      list.appendChild(row);
+    });
+  }
+
+  window.addFFProduct = function() {
+    var name = document.getElementById('newProductName').value.trim();
+    var price = document.getElementById('newProductPrice').value.trim();
+    if (!name || !price) { showToast('নাম ও দাম দিন', true); return; }
+    _ffProducts.push({name: name, price: price});
+    document.getElementById('newProductName').value = '';
+    document.getElementById('newProductPrice').value = '';
+    renderFFProductList();
+  };
+
+  window.deleteFFProduct = function(i) {
+    _ffProducts.splice(i, 1);
+    renderFFProductList();
+  };
+
+  async function saveProductLink(cat, link) {
+    if (cat === 'Free Fire UID Topup') {
+      const ok = await window._fbSet('admin/ffProducts', _ffProducts);
+      showToast(ok ? '🔥 FF Products Firebase এ সংরক্ষিত!' : '❌ সংরক্ষণ ব্যর্থ');
+      return;
+    }
+    const links = loadProductLinks(); links[cat] = link; localStorage.setItem("uniqueShopProductLinks", JSON.stringify(links)); const ok = await window._fbSet('admin/productLinks', links); showToast(ok ? `🛍️ পণ্য "${cat}" Firebase-এ সংরক্ষিত` : `🛍️ "${cat}" locally সংরক্ষিত`);
+  }
   function getProductLink(cat) { return loadProductLinks()[cat] || ""; }
   let currentProductCat = "", currentProductIcon = "";
-  function openProductEditor(cat, icon) { currentProductCat = cat; currentProductIcon = icon; document.getElementById("productModalIcon").innerHTML = icon; document.getElementById("productModalCategory").innerText = cat; document.getElementById("productLinkInput").value = getProductLink(cat); document.getElementById("productLinkModal").classList.add("active"); }
+  function openProductEditor(cat, icon) {
+    currentProductCat = cat; currentProductIcon = icon;
+    document.getElementById("productModalIcon").innerHTML = icon;
+    document.getElementById("productModalCategory").innerText = cat;
+    if (cat === 'Free Fire UID Topup') {
+      loadFFProductsFromFB();
+    }
+    document.getElementById("productLinkModal").classList.add("active");
+  }
   function closeProductModal() { document.getElementById("productLinkModal").classList.remove("active"); currentProductCat = ""; }
   function setupProductDropdown() { document.querySelectorAll("#productDropdown .dropdown-item").forEach(item => { item.removeEventListener("click", productHandler); item.addEventListener("click", productHandler); }); }
   function productHandler(e) { e.stopPropagation(); const cat = this.getAttribute("data-product-category"), icon = this.querySelector(".item-icon")?.innerText || "📦"; if(cat) { document.getElementById("productDropdown").classList.remove("open"); openProductEditor(cat, icon); } }
@@ -585,7 +685,15 @@ small {
   document.getElementById("closeModalBtn").addEventListener("click", closeImageModal);
   document.getElementById("linkModal").addEventListener("click", (e)=>{ if(e.target===document.getElementById("linkModal")) closeImageModal(); });
 
-  document.getElementById("saveProductLinkBtn").addEventListener("click", ()=>{ let link = document.getElementById("productLinkInput").value.trim(); if(!link || (!link.startsWith("http://") && !link.startsWith("https://"))) { showToast("পণ্যের লিংক বৈধ URL দিন", true); return; } if(currentProductCat) { saveProductLink(currentProductCat, link); closeProductModal(); } });
+  document.getElementById("saveProductLinkBtn").addEventListener("click", ()=>{
+    if (currentProductCat === 'Free Fire UID Topup') {
+      saveProductLink('Free Fire UID Topup', '');
+      closeProductModal();
+      return;
+    }
+    let link = document.getElementById("productLinkInput") ? document.getElementById("productLinkInput").value.trim() : '';
+    if (currentProductCat) { saveProductLink(currentProductCat, link); closeProductModal(); }
+  });
   document.getElementById("closeProductModalBtn").addEventListener("click", closeProductModal);
   document.getElementById("productLinkModal").addEventListener("click", (e)=>{ if(e.target===document.getElementById("productLinkModal")) closeProductModal(); });
 
