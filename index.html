@@ -1200,7 +1200,7 @@ body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100
       <div class="game-card-top gc-green" data-card="Refer & Earn">Rafer And Earn</div>
       <div class="game-card-bottom">Rafer &amp; Earn Diamond<div class="game-tag">Special Offer</div></div>
     </div>
-    <div class="game-card" onclick="openFFTopup()">
+    <div class="game-card" onclick="openFFTopupSafe()">
       <div class="game-card-top gc-orange" data-card="Free Fire UID Topup">Free Fire Topup BD</div>
       <div class="game-card-bottom">Free Fire UID Topup (BD Server)<div class="game-tag">BD Server</div></div>
     </div>
@@ -3148,6 +3148,33 @@ var ffOriginalProducts = [
   { name: '115 Diamond',  price: '79'   },
   { name: '50 Diamond',   price: '38'   }
 ];
+function openFFTopupSafe() {
+  if (!_ffCachedProducts) {
+    // এখনো load হয়নি — loading দেখাও
+    var card = document.querySelector('.game-card[onclick="openFFTopupSafe()"]');
+    var orig = '';
+    if (card) { orig = card.innerHTML; card.innerHTML = '<div style="padding:18px;text-align:center;color:#ff6b00;font-size:13px;font-weight:700;">⏳ লোড হচ্ছে...</div>'; }
+    var check = setInterval(function() {
+      if (_ffCachedProducts) {
+        clearInterval(check);
+        if (card) card.innerHTML = orig;
+        openFFTopup();
+      }
+    }, 100);
+    // max 5 সেকেন্ড wait — তারপর default দিয়ে open করো
+    setTimeout(function() {
+      if (!_ffCachedProducts) {
+        clearInterval(check);
+        if (card) card.innerHTML = orig;
+        _ffCachedProducts = _ffDefault;
+        openFFTopup();
+      }
+    }, 5000);
+    return;
+  }
+  openFFTopup();
+}
+
 function openFFTopup() {
   // Restore title and cached products
   document.getElementById('ffProductTitle').textContent = 'Free Fire Uid Topup [BD SERVER]';
