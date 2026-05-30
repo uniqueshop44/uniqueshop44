@@ -67,7 +67,8 @@ body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100
 .games-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 0 14px 90px; }
 .game-card { background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 1px 6px rgba(0,0,0,0.06); cursor: pointer; transition: transform 0.15s; }
 .game-card:active { transform: scale(0.97); }
-.game-card-top { height: 100px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; }
+.game-card-top { height: 100px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; overflow: hidden; position: relative; }
+.game-card-top img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 0; }
 .gc-green { background: #e8f8f0; color: #16a34a; }
 .gc-orange { background: #fff4ec; color: #ea580c; }
 .gc-blue { background: #eff6ff; color: #2563eb; }
@@ -852,7 +853,10 @@ body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100
 
     // Image links
     const imgLinks = await window._fbGet('admin/imageLinks');
-    if (imgLinks) localStorage.setItem('uniqueShopLinks', JSON.stringify(imgLinks));
+    if (imgLinks) {
+      localStorage.setItem('uniqueShopLinks', JSON.stringify(imgLinks));
+      applyCardImages(imgLinks);
+    }
 
     // Product links
     const prodLinks = await window._fbGet('admin/productLinks');
@@ -872,6 +876,34 @@ body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100
 
     console.log("✅ Firebase admin data loaded in main site");
   }
+
+  // ══════════════════════════════════════════════════
+  //  Game Card Image Apply
+  // ══════════════════════════════════════════════════
+  function applyCardImages(links) {
+    if (!links) {
+      const saved = localStorage.getItem('uniqueShopLinks');
+      if (saved) try { links = JSON.parse(saved); } catch(e) { return; }
+      else return;
+    }
+    document.querySelectorAll('.game-card-top[data-card]').forEach(function(div) {
+      const key = div.getAttribute('data-card');
+      const url = links[key];
+      if (url && url.startsWith('http')) {
+        // পুরানো img থাকলে সরাও
+        const old = div.querySelector('img');
+        if (old) old.remove();
+        const img = document.createElement('img');
+        img.src = url;
+        img.alt = key;
+        div.appendChild(img);
+      }
+    });
+  }
+  // Page load-এ localStorage থেকে immediately apply করো (Firebase-এর আগে)
+  document.addEventListener('DOMContentLoaded', function() {
+    applyCardImages(null);
+  });
 
   // ══════════════════════════════════════════════════
   //  Firebase Authentication
@@ -1147,27 +1179,27 @@ body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100
 
   <div class="games-grid">
     <div class="game-card" onclick="loginThenRun(openRefer)">
-      <div class="game-card-top gc-green">Rafer And Earn</div>
+      <div class="game-card-top gc-green" data-card="Refer & Earn">Rafer And Earn</div>
       <div class="game-card-bottom">Rafer &amp; Earn Diamond<div class="game-tag">Special Offer</div></div>
     </div>
     <div class="game-card" onclick="openFFTopup()">
-      <div class="game-card-top gc-orange">Free Fire Topup BD</div>
+      <div class="game-card-top gc-orange" data-card="Free Fire UID Topup">Free Fire Topup BD</div>
       <div class="game-card-bottom">Free Fire UID Topup (BD Server)<div class="game-tag">BD Server</div></div>
     </div>
     <div class="game-card" onclick="openUnipinTopup()">
-      <div class="game-card-top gc-blue">Unipin Voucher</div>
+      <div class="game-card-top gc-blue" data-card="UniPin">Unipin Voucher</div>
       <div class="game-card-bottom">Unipin Voucher (Bd Server)<div class="game-tag">BD Server</div></div>
     </div>
     <div class="game-card" onclick="openWeeklyLiteTopup()">
-      <div class="game-card-top gc-purple">Weekly Lite</div>
+      <div class="game-card-top gc-purple" data-card="Weekly Lite">Weekly Lite</div>
       <div class="game-card-bottom">Weekly Lite (Bd Server)<div class="game-tag">BD Server</div></div>
     </div>
     <div class="game-card" onclick="openWeeklyMonthlyTopup()">
-      <div class="game-card-top gc-yellow">Weekly &amp; Monthly</div>
+      <div class="game-card-top gc-yellow" data-card="Weekly & Monthly">Weekly &amp; Monthly</div>
       <div class="game-card-bottom">Weekly &amp; Monthly (Bd Server)<div class="game-tag">BD Server</div></div>
     </div>
     <div class="game-card" onclick="openLevelUpPassTopup()">
-      <div class="game-card-top gc-pink">Level Up Pass BD</div>
+      <div class="game-card-top gc-pink" data-card="Level Up Pass">Level Up Pass BD</div>
       <div class="game-card-bottom">Level Up Pass (Bd Server)<div class="game-tag">BD Server</div></div>
     </div>
   </div>
