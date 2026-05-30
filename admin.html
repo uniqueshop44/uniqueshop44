@@ -502,22 +502,22 @@ small {
 
 <!-- পণ্য লিংক মোডাল -->
 <div id="productLinkModal" class="modal-overlay">
-  <div class="modal-card" style="max-width:480px;width:96%;">
-    <div class="modal-title"><span id="productModalIcon">🛍️</span> <span id="productModalCategory"></span> — পণ্য তালিকা</div>
-
-    <!-- Add new product row -->
-    <div style="display:flex;gap:8px;margin-bottom:14px;align-items:center;">
-      <input type="text" id="newProductName" placeholder="পণ্যের নাম (যেমন: 1850 Diamond)" style="flex:2;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:14px;font-family:inherit;">
-      <input type="number" id="newProductPrice" placeholder="দাম (৳)" style="flex:1;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:14px;font-family:inherit;">
-      <button onclick="addFFProduct()" style="padding:9px 14px;background:#ff6b00;color:#fff;border:none;border-radius:8px;font-size:20px;cursor:pointer;font-weight:700;">+</button>
+  <div class="modal-card" style="max-width:500px;width:96%;padding:24px 20px;">
+    <div class="modal-title" style="margin-bottom:16px;">
+      <span id="productModalIcon">🛍️</span> <span id="productModalCategory"></span> — পণ্য তালিকা
     </div>
 
     <!-- Product list -->
-    <div id="ffProductList" style="display:flex;flex-direction:column;gap:8px;max-height:340px;overflow-y:auto;margin-bottom:14px;"></div>
+    <div id="ffProductList" style="display:flex;flex-direction:column;gap:8px;max-height:380px;overflow-y:auto;margin-bottom:14px;"></div>
+
+    <!-- Add button -->
+    <button onclick="addFFProductRow()" style="width:100%;padding:11px;background:#f0fdf4;color:#16a34a;border:1.5px dashed #16a34a;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:16px;font-family:inherit;">
+      ➕ নতুন পণ্য যোগ করুন
+    </button>
 
     <div class="modal-actions">
       <button class="btn btn-secondary" id="closeProductModalBtn">বাতিল</button>
-      <button class="btn btn-primary" id="saveProductLinkBtn">Firebase এ সংরক্ষণ</button>
+      <button class="btn btn-primary" id="saveProductLinkBtn">💾 Firebase এ সংরক্ষণ</button>
     </div>
   </div>
 </div>
@@ -557,34 +557,32 @@ small {
   function loadProductLinks() { const saved = localStorage.getItem("uniqueShopProductLinks"); return saved ? JSON.parse(saved) : {}; }
   // ── FF Products ──
   var _ffProducts = [];
+  var _editingIndex = -1;
+
+  var FF_DEFAULT = [
+    {name:'1850 Diamond', price:'1200'},
+    {name:'Weekly Lite', price:'45'},
+    {name:'2 Monthly', price:'1580'},
+    {name:'Monthly', price:'790'},
+    {name:'2 Weekly', price:'316'},
+    {name:'Weekly', price:'158'},
+    {name:'10120 Diamond', price:'6440'},
+    {name:'5060 Diamond', price:'3220'},
+    {name:'2530 Diamond', price:'1610'},
+    {name:'25 Diamond', price:'22'},
+    {name:'1240 Diamond', price:'800'},
+    {name:'850 Diamond', price:'558'},
+    {name:'610 Diamond', price:'400'},
+    {name:'355 Diamond', price:'237'},
+    {name:'240 Diamond', price:'158'},
+    {name:'115 Diamond', price:'79'},
+    {name:'50 Diamond', price:'38'}
+  ];
 
   function loadFFProductsFromFB() {
     if (window._fbGet) {
       window._fbGet('admin/ffProducts').then(function(data) {
-        if (data && Array.isArray(data)) {
-          _ffProducts = data;
-        } else {
-          // Default products যদি Firebase এ না থাকে
-          _ffProducts = [
-            {name:'1850 Diamond', price:'1200'},
-            {name:'Weekly Lite', price:'45'},
-            {name:'2 Monthly', price:'1580'},
-            {name:'Monthly', price:'790'},
-            {name:'2 Weekly', price:'316'},
-            {name:'Weekly', price:'158'},
-            {name:'10120 Diamond', price:'6440'},
-            {name:'5060 Diamond', price:'3220'},
-            {name:'2530 Diamond', price:'1610'},
-            {name:'25 Diamond', price:'22'},
-            {name:'1240 Diamond', price:'800'},
-            {name:'850 Diamond', price:'558'},
-            {name:'610 Diamond', price:'400'},
-            {name:'355 Diamond', price:'237'},
-            {name:'240 Diamond', price:'158'},
-            {name:'115 Diamond', price:'79'},
-            {name:'50 Diamond', price:'38'}
-          ];
-        }
+        _ffProducts = (data && Array.isArray(data) && data.length > 0) ? data : JSON.parse(JSON.stringify(FF_DEFAULT));
         renderFFProductList();
       });
     }
@@ -596,27 +594,71 @@ small {
     list.innerHTML = '';
     _ffProducts.forEach(function(p, i) {
       var row = document.createElement('div');
-      row.style.cssText = 'display:flex;align-items:center;gap:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;';
+      row.id = 'ffRow_' + i;
+      row.style.cssText = 'display:flex;align-items:center;gap:8px;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 12px;';
       row.innerHTML =
-        '<input type="text" value="' + p.name + '" style="flex:2;border:1px solid #e2e8f0;border-radius:6px;padding:6px 8px;font-size:13px;font-family:inherit;" onchange="_ffProducts[' + i + '].name=this.value">' +
-        '<span style="color:#888;font-size:13px;">৳</span>' +
-        '<input type="number" value="' + p.price + '" style="flex:1;border:1px solid #e2e8f0;border-radius:6px;padding:6px 8px;font-size:13px;font-family:inherit;" onchange="_ffProducts[' + i + '].price=this.value">' +
-        '<button onclick="deleteFFProduct(' + i + ')" style="background:#fee2e2;border:none;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:14px;color:#dc2626;">🗑</button>';
+        '<div style="flex:2;font-size:14px;font-weight:600;color:#1e293b;">' + escHtml(p.name) + '</div>' +
+        '<div style="font-size:14px;font-weight:700;color:#ff6b00;">৳' + escHtml(p.price) + '</div>' +
+        '<button onclick="editFFProduct(' + i + ')" style="background:#eff6ff;border:none;border-radius:7px;padding:7px 10px;cursor:pointer;font-size:15px;" title="Edit">✏️</button>' +
+        '<button onclick="deleteFFProduct(' + i + ')" style="background:#fee2e2;border:none;border-radius:7px;padding:7px 10px;cursor:pointer;font-size:15px;" title="Delete">🗑</button>';
       list.appendChild(row);
     });
   }
 
-  window.addFFProduct = function() {
-    var name = document.getElementById('newProductName').value.trim();
-    var price = document.getElementById('newProductPrice').value.trim();
+  function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  // নতুন blank row যোগ করো
+  window.addFFProductRow = function() {
+    var list = document.getElementById('ffProductList');
+    var newRow = document.createElement('div');
+    newRow.id = 'ffNewRow';
+    newRow.style.cssText = 'display:flex;align-items:center;gap:8px;background:#f0fdf4;border:1.5px solid #16a34a;border-radius:10px;padding:10px 12px;';
+    newRow.innerHTML =
+      '<input type="text" id="ffNewName" placeholder="পণ্যের নাম" style="flex:2;padding:8px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:14px;font-family:inherit;">' +
+      '<input type="number" id="ffNewPrice" placeholder="দাম" style="flex:1;padding:8px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:14px;font-family:inherit;">' +
+      '<button onclick="confirmAddFF()" style="background:#16a34a;color:#fff;border:none;border-radius:7px;padding:7px 10px;cursor:pointer;font-size:15px;" title="Save">✅</button>' +
+      '<button onclick="cancelAddFF()" style="background:#fee2e2;border:none;border-radius:7px;padding:7px 10px;cursor:pointer;font-size:15px;" title="Cancel">❌</button>';
+    list.appendChild(newRow);
+    document.getElementById('ffNewName').focus();
+  };
+
+  window.confirmAddFF = function() {
+    var name = document.getElementById('ffNewName').value.trim();
+    var price = document.getElementById('ffNewPrice').value.trim();
     if (!name || !price) { showToast('নাম ও দাম দিন', true); return; }
     _ffProducts.push({name: name, price: price});
-    document.getElementById('newProductName').value = '';
-    document.getElementById('newProductPrice').value = '';
+    renderFFProductList();
+  };
+
+  window.cancelAddFF = function() {
+    var r = document.getElementById('ffNewRow');
+    if (r) r.remove();
+  };
+
+  // Edit — inline editing
+  window.editFFProduct = function(i) {
+    var row = document.getElementById('ffRow_' + i);
+    if (!row) return;
+    var p = _ffProducts[i];
+    row.style.background = '#fffbeb';
+    row.style.borderColor = '#f59e0b';
+    row.innerHTML =
+      '<input type="text" id="ffEditName_' + i + '" value="' + escHtml(p.name) + '" style="flex:2;padding:8px 10px;border:1.5px solid #f59e0b;border-radius:8px;font-size:14px;font-family:inherit;">' +
+      '<input type="number" id="ffEditPrice_' + i + '" value="' + escHtml(p.price) + '" style="flex:1;padding:8px 10px;border:1.5px solid #f59e0b;border-radius:8px;font-size:14px;font-family:inherit;">' +
+      '<button onclick="confirmEditFF(' + i + ')" style="background:#f59e0b;color:#fff;border:none;border-radius:7px;padding:7px 10px;cursor:pointer;font-size:15px;" title="Save">✅</button>' +
+      '<button onclick="renderFFProductList()" style="background:#fee2e2;border:none;border-radius:7px;padding:7px 10px;cursor:pointer;font-size:15px;" title="Cancel">❌</button>';
+  };
+
+  window.confirmEditFF = function(i) {
+    var name = document.getElementById('ffEditName_' + i).value.trim();
+    var price = document.getElementById('ffEditPrice_' + i).value.trim();
+    if (!name || !price) { showToast('নাম ও দাম দিন', true); return; }
+    _ffProducts[i] = {name: name, price: price};
     renderFFProductList();
   };
 
   window.deleteFFProduct = function(i) {
+    if (!confirm('"' + _ffProducts[i].name + '" মুছে ফেলবেন?')) return;
     _ffProducts.splice(i, 1);
     renderFFProductList();
   };
