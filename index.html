@@ -882,8 +882,9 @@ body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100
     const payments = await window._fbGet('admin/payments');
     if (payments) {
       localStorage.setItem('uniqueShopPayments', JSON.stringify(payments));
-      // Payment verify page-এ নম্বর আপডেট করুন (যদি visible থাকে)
       window._adminPayments = payments;
+      // ✅ Firebase load হওয়ার পরে দুটো config-ই আপডেট করো
+      if (typeof applyFirebasePaymentNumbers === 'function') applyFirebasePaymentNumbers();
     }
 
     console.log("✅ Firebase admin data loaded in main site");
@@ -2501,16 +2502,24 @@ function applyFirebasePaymentNumbers() {
   if (!stored) return;
   try {
     var payments = JSON.parse(stored);
+    // admin key → config key mapping
     var map = { 'Bikash': 'bkash', 'Nagad': 'nagad', 'Roket': 'rocket', 'Upay': 'upay' };
     Object.keys(payments).forEach(function(method) {
       var key = map[method];
-      if (key && methodConfig[key]) {
-        methodConfig[key].number = payments[method];
+      var num = payments[method];
+      if (!key || !num) return;
+      // ১. Balance topup flow (methodConfig)
+      if (methodConfig[key]) {
+        methodConfig[key].number = num;
+      }
+      // ২. FF / Game topup flow (gatewayConfig)
+      if (typeof gatewayConfig !== 'undefined' && gatewayConfig[key]) {
+        gatewayConfig[key].number = num;
       }
     });
   } catch(e) {}
 }
-applyFirebasePaymentNumbers();
+// (applyFirebasePaymentNumbers() — gatewayConfig define হওয়ার পরে call করা হবে)
 
 // ===== LOGIN GUARD HELPER =====
 function loginThenRun(fn) {
@@ -3364,6 +3373,9 @@ var gatewayConfig = {
     number: '01500000000 (Personal)'
   }
 };
+
+// ✅ এখন gatewayConfig ready — admin payment numbers apply করুন
+applyFirebasePaymentNumbers();
 
 // ffVerifyMode = true means verify page was opened from FF Topup flow
 var ffVerifyMode = false;
