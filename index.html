@@ -381,6 +381,8 @@ body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100
 .ff-recharge-dot { width:18px; height:18px; border-radius:50%; border:2px solid #ccc; flex-shrink:0; transition:all 0.15s; display:flex; align-items:center; justify-content:center; }
 .ff-recharge-item.selected .ff-recharge-dot { border-color:#ff6b00; background:#ff6b00; }
 .ff-recharge-item.selected .ff-recharge-dot::after { content:''; width:6px; height:6px; border-radius:50%; background:#fff; }
+.ff-skel { background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%); background-size:200% 100%; border-radius:12px; height:52px; animation:ffSkelAnim 1.2s ease-in-out infinite; }
+@keyframes ffSkelAnim { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 .ff-recharge-name { font-size:14px; font-weight:700; color:#1a1a2e; flex:1; line-height:1.3; }
 .ff-recharge-price { font-size:14px; font-weight:800; color:#ff6b00; white-space:nowrap; }
 
@@ -874,25 +876,7 @@ body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100
     const prodLinks = await window._fbGet('admin/productLinks');
 
     // FF Products Firebase থেকে load করো
-    const ffProds = await window._fbGet('admin/ffProducts');
-    if (ffProds && Array.isArray(ffProds) && ffProds.length > 0) {
-      var grid = document.getElementById('ffRechargeGrid');
-      if (grid) {
-        grid.innerHTML = '';
-        ffProds.forEach(function(p) {
-          var item = document.createElement('div');
-          item.className = 'ff-recharge-item';
-          item.setAttribute('onclick', "selectRecharge(this,'" + p.name.replace(/'/g,"\'") + "','" + p.price + "')");
-          item.innerHTML =
-            '<div class="ff-recharge-dot"></div>' +
-            '<div>' +
-              '<div class="ff-recharge-name">' + p.name + '</div>' +
-              '<div class="ff-recharge-price">৳' + p.price + '</div>' +
-            '</div>';
-          grid.appendChild(item);
-        });
-      }
-    }
+    renderFFProducts(await window._fbGet('admin/ffProducts'));
     if (prodLinks) localStorage.setItem('uniqueShopProductLinks', JSON.stringify(prodLinks));
 
     // Rules
@@ -1910,91 +1894,9 @@ body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100
           <div class="ff-section-title">Select Recharge</div>
         </div>
         <div class="ff-recharge-grid" id="ffRechargeGrid">
-          <div class="ff-recharge-item" onclick="selectRecharge(this,'1850 Diamond','1200')">
-            <div class="ff-recharge-dot"></div>
-            <div class="ff-recharge-name">1850 Diamond</div>
-            <div class="ff-recharge-price">1200 TK</div>
-          </div>
-          <div class="ff-recharge-item" onclick="selectRecharge(this,'Weekly Lite','45')">
-            <div class="ff-recharge-dot"></div>
-            <div class="ff-recharge-name">Weekly Lite</div>
-            <div class="ff-recharge-price">45 TK</div>
-          </div>
-          <div class="ff-recharge-item" onclick="selectRecharge(this,'2 Monthly','1580')">
-            <div class="ff-recharge-dot"></div>
-            <div class="ff-recharge-name">2 Monthly</div>
-            <div class="ff-recharge-price">1580 TK</div>
-          </div>
-          <div class="ff-recharge-item" onclick="selectRecharge(this,'Monthly','790')">
-            <div class="ff-recharge-dot"></div>
-            <div class="ff-recharge-name">Monthly</div>
-            <div class="ff-recharge-price">790 TK</div>
-          </div>
-          <div class="ff-recharge-item" onclick="selectRecharge(this,'2 Weekly','316')">
-            <div class="ff-recharge-dot"></div>
-            <div class="ff-recharge-name">2 Weekly</div>
-            <div class="ff-recharge-price">316 TK</div>
-          </div>
-          <div class="ff-recharge-item" onclick="selectRecharge(this,'Weekly','158')">
-            <div class="ff-recharge-dot"></div>
-            <div class="ff-recharge-name">Weekly</div>
-            <div class="ff-recharge-price">158 TK</div>
-          </div>
-          <div class="ff-recharge-item" onclick="selectRecharge(this,'10120 Diamond','6440')">
-            <div class="ff-recharge-dot"></div>
-            <div class="ff-recharge-name">10120 Diamond</div>
-            <div class="ff-recharge-price">6440 TK</div>
-          </div>
-          <div class="ff-recharge-item" onclick="selectRecharge(this,'5060 Diamond','3220')">
-            <div class="ff-recharge-dot"></div>
-            <div class="ff-recharge-name">5060 Diamond</div>
-            <div class="ff-recharge-price">3220 TK</div>
-          </div>
-          <div class="ff-recharge-item" onclick="selectRecharge(this,'2530 Diamond','1610')">
-            <div class="ff-recharge-dot"></div>
-            <div class="ff-recharge-name">2530 Diamond</div>
-            <div class="ff-recharge-price">1610 TK</div>
-          </div>
-          <div class="ff-recharge-item" onclick="selectRecharge(this,'25 Diamond','22')">
-            <div class="ff-recharge-dot"></div>
-            <div class="ff-recharge-name">25 Diamond</div>
-            <div class="ff-recharge-price">22 TK</div>
-          </div>
-          <div class="ff-recharge-item" onclick="selectRecharge(this,'1240 Diamond','800')">
-            <div class="ff-recharge-dot"></div>
-            <div class="ff-recharge-name">1240 Diamond</div>
-            <div class="ff-recharge-price">800 TK</div>
-          </div>
-          <div class="ff-recharge-item" onclick="selectRecharge(this,'850 Diamond','558')">
-            <div class="ff-recharge-dot"></div>
-            <div class="ff-recharge-name">850 Diamond</div>
-            <div class="ff-recharge-price">558 TK</div>
-          </div>
-          <div class="ff-recharge-item" onclick="selectRecharge(this,'610 Diamond','400')">
-            <div class="ff-recharge-dot"></div>
-            <div class="ff-recharge-name">610 Diamond</div>
-            <div class="ff-recharge-price">400 TK</div>
-          </div>
-          <div class="ff-recharge-item" onclick="selectRecharge(this,'355 Diamond','237')">
-            <div class="ff-recharge-dot"></div>
-            <div class="ff-recharge-name">355 Diamond</div>
-            <div class="ff-recharge-price">237 TK</div>
-          </div>
-          <div class="ff-recharge-item" onclick="selectRecharge(this,'240 Diamond','158')">
-            <div class="ff-recharge-dot"></div>
-            <div class="ff-recharge-name">240 Diamond</div>
-            <div class="ff-recharge-price">158 TK</div>
-          </div>
-          <div class="ff-recharge-item" onclick="selectRecharge(this,'115 Diamond','79')">
-            <div class="ff-recharge-dot"></div>
-            <div class="ff-recharge-name">115 Diamond</div>
-            <div class="ff-recharge-price">79 TK</div>
-          </div>
-          <div class="ff-recharge-item" onclick="selectRecharge(this,'50 Diamond','38')">
-            <div class="ff-recharge-dot"></div>
-            <div class="ff-recharge-name">50 Diamond</div>
-            <div class="ff-recharge-price">38 TK</div>
-          </div>
+          <div class="ff-skel"></div><div class="ff-skel"></div>
+          <div class="ff-skel"></div><div class="ff-skel"></div>
+          <div class="ff-skel"></div><div class="ff-skel"></div>
         </div>
         <div class="ff-how-link">↗ কিভাবে অর্ডার করবেন ?</div>
       </div>
@@ -4219,6 +4121,25 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+
+// ── FF Products Render ──
+var _ffDefault=[{name:'1850 Diamond',price:'1200'},{name:'Weekly Lite',price:'45'},{name:'2 Monthly',price:'1580'},{name:'Monthly',price:'790'},{name:'2 Weekly',price:'316'},{name:'Weekly',price:'158'},{name:'10120 Diamond',price:'6440'},{name:'5060 Diamond',price:'3220'},{name:'2530 Diamond',price:'1610'},{name:'25 Diamond',price:'22'},{name:'1240 Diamond',price:'800'},{name:'850 Diamond',price:'558'},{name:'610 Diamond',price:'400'},{name:'355 Diamond',price:'237'},{name:'240 Diamond',price:'158'},{name:'115 Diamond',price:'79'},{name:'50 Diamond',price:'38'}];
+function renderFFProducts(data) {
+  var grid = document.getElementById('ffRechargeGrid');
+  if (!grid) return;
+  var products = (data && Array.isArray(data) && data.length > 0) ? data : _ffDefault;
+  grid.innerHTML = '';
+  products.forEach(function(p) {
+    var item = document.createElement('div');
+    item.className = 'ff-recharge-item';
+    item.setAttribute('onclick', "selectRecharge(this,'" + p.name.replace(/'/g,"\'") + "','" + p.price + "')");
+    item.innerHTML =
+      '<div class="ff-recharge-dot"></div>' +
+      '<div><div class="ff-recharge-name">' + p.name + '</div>' +
+      '<div class="ff-recharge-price">৳' + p.price + '</div></div>';
+    grid.appendChild(item);
+  });
+}
 </script>
 </body>
 </html>
