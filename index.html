@@ -1131,22 +1131,22 @@ body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100
   </script>
 
   <div class="balance-row">
-    <div class="balance-card" onclick="openPayment()">
+    <div class="balance-card" onclick="loginThenRun(openPayment)">
       <div class="bal-label">Balance</div>
       <div class="bal-amount"><span>৳</span> 0.00</div>
-      <button class="btn-add" onclick="event.stopPropagation();openPayment()">Add</button>
+      <button class="btn-add" onclick="event.stopPropagation();loginThenRun(openPayment)">Add</button>
     </div>
-    <div class="balance-card" onclick="openRedeem()">
+    <div class="balance-card" onclick="loginThenRun(openRedeem)">
       <div class="bal-label">Diamond</div>
       <div class="diamond-val"><span style="font-size:22px">💎</span><span class="num">0</span></div>
-      <button class="btn-redeem" onclick="event.stopPropagation();openRedeem()">Redeem</button>
+      <button class="btn-redeem" onclick="event.stopPropagation();loginThenRun(openRedeem)">Redeem</button>
     </div>
   </div>
 
   <div class="section-title">Games Top Up</div>
 
   <div class="games-grid">
-    <div class="game-card" onclick="openRefer()">
+    <div class="game-card" onclick="loginThenRun(openRefer)">
       <div class="game-card-top gc-green">Rafer And Earn</div>
       <div class="game-card-bottom">Rafer &amp; Earn Diamond<div class="game-tag">Special Offer</div></div>
     </div>
@@ -2467,6 +2467,17 @@ function applyFirebasePaymentNumbers() {
   } catch(e) {}
 }
 applyFirebasePaymentNumbers();
+
+// ===== LOGIN GUARD HELPER =====
+function loginThenRun(fn) {
+  var profile = loadUserProfile();
+  if (!profile) {
+    showToast('এই সুবিধা পেতে আগে Login করুন।', 'warn');
+    setTimeout(function(){ openLogin(); }, 400);
+    return;
+  }
+  fn();
+}
 
 function openPayment() {
   document.getElementById('payOverlay').classList.add('show');
