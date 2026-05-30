@@ -383,6 +383,7 @@ body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100
 .ff-recharge-item.selected .ff-recharge-dot::after { content:''; width:6px; height:6px; border-radius:50%; background:#fff; }
 .ff-skel { background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%); background-size:200% 100%; border-radius:12px; height:52px; animation:ffSkelAnim 1.2s ease-in-out infinite; }
 @keyframes ffSkelAnim { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+@keyframes ffSpin { to{transform:rotate(360deg)} }
 .ff-recharge-name { font-size:14px; font-weight:700; color:#1a1a2e; flex:1; line-height:1.3; }
 .ff-recharge-price { font-size:14px; font-weight:800; color:#ff6b00; white-space:nowrap; }
 
@@ -3153,11 +3154,20 @@ function openFFTopupSafe() {
     // এখনো load হয়নি — loading দেখাও
     var card = document.querySelector('.game-card[onclick="openFFTopupSafe()"]');
     var orig = '';
-    if (card) { orig = card.innerHTML; card.innerHTML = '<div style="padding:18px;text-align:center;color:#ff6b00;font-size:13px;font-weight:700;">⏳ লোড হচ্ছে...</div>'; }
+    if (card) {
+      orig = card.innerHTML;
+      // card এর উপরে overlay div বসাও — card এর content ঠিক থাকবে
+      var overlay = document.createElement('div');
+      overlay.id = 'ffLoadOverlay';
+      overlay.style.cssText = 'position:absolute;inset:0;border-radius:inherit;background:rgba(255,255,255,0.88);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;z-index:10;';
+      overlay.innerHTML = '<div style="width:22px;height:22px;border:3px solid #f0e0d0;border-top-color:#ff6b00;border-radius:50%;animation:ffSpin 0.7s linear infinite;"></div><div style="font-size:11px;font-weight:700;color:#ff6b00;">Loading...</div>';
+      card.style.position = 'relative';
+      card.appendChild(overlay);
+    }
     var check = setInterval(function() {
       if (_ffCachedProducts) {
         clearInterval(check);
-        if (card) card.innerHTML = orig;
+        if (card) { var ov = document.getElementById('ffLoadOverlay'); if(ov) ov.remove(); }
         openFFTopup();
       }
     }, 100);
@@ -3165,7 +3175,7 @@ function openFFTopupSafe() {
     setTimeout(function() {
       if (!_ffCachedProducts) {
         clearInterval(check);
-        if (card) card.innerHTML = orig;
+        if (card) { var ov = document.getElementById('ffLoadOverlay'); if(ov) ov.remove(); }
         _ffCachedProducts = _ffDefault;
         openFFTopup();
       }
