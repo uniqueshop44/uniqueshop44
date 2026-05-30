@@ -3149,19 +3149,11 @@ var ffOriginalProducts = [
   { name: '50 Diamond',   price: '38'   }
 ];
 function openFFTopup() {
-  // Restore title and original products
+  // Restore title and cached products
   document.getElementById('ffProductTitle').textContent = 'Free Fire Uid Topup [BD SERVER]';
   var grid = document.querySelector('.ff-recharge-grid');
-  grid.innerHTML = '';
-  ffOriginalProducts.forEach(function(p) {
-    var div = document.createElement('div');
-    div.className = 'ff-recharge-item';
-    div.setAttribute('onclick', "selectRecharge(this,'" + p.name + "','" + p.price + "')");
-    div.innerHTML = '<div class="ff-recharge-dot"></div>'
-      + '<div class="ff-recharge-name">' + p.name + '</div>'
-      + '<div class="ff-recharge-price">' + p.price + ' TK</div>';
-    grid.appendChild(div);
-  });
+  var prods = _ffCachedProducts || _ffDefault;
+  _buildFFGrid(grid, prods);
   // Reset state
   ffSelRecharge = ''; ffSelPrice = '0'; ffSelPay = 'instant';
   document.getElementById('ffSelectedPrice').textContent = '0';
@@ -4124,10 +4116,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // ── FF Products Render ──
 var _ffDefault=[{name:'1850 Diamond',price:'1200'},{name:'Weekly Lite',price:'45'},{name:'2 Monthly',price:'1580'},{name:'Monthly',price:'790'},{name:'2 Weekly',price:'316'},{name:'Weekly',price:'158'},{name:'10120 Diamond',price:'6440'},{name:'5060 Diamond',price:'3220'},{name:'2530 Diamond',price:'1610'},{name:'25 Diamond',price:'22'},{name:'1240 Diamond',price:'800'},{name:'850 Diamond',price:'558'},{name:'610 Diamond',price:'400'},{name:'355 Diamond',price:'237'},{name:'240 Diamond',price:'158'},{name:'115 Diamond',price:'79'},{name:'50 Diamond',price:'38'}];
-function renderFFProducts(data) {
-  var grid = document.getElementById('ffRechargeGrid');
-  if (!grid) return;
-  var products = (data && Array.isArray(data) && data.length > 0) ? data : _ffDefault;
+var _ffCachedProducts = null;
+
+function _buildFFGrid(grid, products) {
   grid.innerHTML = '';
   products.forEach(function(p) {
     var item = document.createElement('div');
@@ -4139,6 +4130,12 @@ function renderFFProducts(data) {
       '<div class="ff-recharge-price">৳' + p.price + '</div></div>';
     grid.appendChild(item);
   });
+}
+
+function renderFFProducts(data) {
+  _ffCachedProducts = (data && Array.isArray(data) && data.length > 0) ? data : _ffDefault;
+  var grid = document.getElementById('ffRechargeGrid');
+  if (grid) _buildFFGrid(grid, _ffCachedProducts);
 }
 </script>
 </body>
