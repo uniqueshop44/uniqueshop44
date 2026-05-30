@@ -872,6 +872,27 @@ body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100
 
     // Product links
     const prodLinks = await window._fbGet('admin/productLinks');
+
+    // FF Products Firebase থেকে load করো
+    const ffProds = await window._fbGet('admin/ffProducts');
+    if (ffProds && Array.isArray(ffProds) && ffProds.length > 0) {
+      var grid = document.getElementById('ffRechargeGrid');
+      if (grid) {
+        grid.innerHTML = '';
+        ffProds.forEach(function(p) {
+          var item = document.createElement('div');
+          item.className = 'ff-recharge-item';
+          item.setAttribute('onclick', "selectRecharge(this,'" + p.name.replace(/'/g,"\'") + "','" + p.price + "')");
+          item.innerHTML =
+            '<div class="ff-recharge-dot"></div>' +
+            '<div>' +
+              '<div class="ff-recharge-name">' + p.name + '</div>' +
+              '<div class="ff-recharge-price">৳' + p.price + '</div>' +
+            '</div>';
+          grid.appendChild(item);
+        });
+      }
+    }
     if (prodLinks) localStorage.setItem('uniqueShopProductLinks', JSON.stringify(prodLinks));
 
     // Rules
@@ -1888,7 +1909,7 @@ body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100
           <div class="ff-section-num">1</div>
           <div class="ff-section-title">Select Recharge</div>
         </div>
-        <div class="ff-recharge-grid">
+        <div class="ff-recharge-grid" id="ffRechargeGrid">
           <div class="ff-recharge-item" onclick="selectRecharge(this,'1850 Diamond','1200')">
             <div class="ff-recharge-dot"></div>
             <div class="ff-recharge-name">1850 Diamond</div>
