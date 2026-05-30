@@ -2951,6 +2951,13 @@ function submitRedeem() {
   if (!selDiamond) { showToast('অনুগ্রহ করে Diamond পরিমাণ নির্বাচন করুন।', 'error'); return; }
   var uid = document.getElementById('uidInput').value.trim();
   if (!uid) { showToast('অনুগ্রহ করে আপনার Free Fire UID দিন।', 'error'); return; }
+  // ===== Login Check =====
+  var profile = loadUserProfile();
+  if (!profile) {
+    showToast('Redeem করতে আগে Login করুন।', 'warn');
+    setTimeout(function(){ closeRedeem(); openLogin(); }, 400);
+    return;
+  }
   // Fill request page
   var reqId = 'REQ-' + Date.now().toString().slice(-6);
   var now = new Date();
@@ -3199,6 +3206,13 @@ function ffBuyNow() {
   if (!ffSelRecharge) { showToast('অনুগ্রহ করে একটি প্যাকেজ বেছে নিন।', 'error'); return; }
   var uid = document.getElementById('ffUidInput').value.trim();
   if (!uid) { showToast('অনুগ্রহ করে Player ID (UID) দিন।', 'error'); return; }
+  // ===== Login Check =====
+  var profile = loadUserProfile();
+  if (!profile) {
+    showToast('Buy করতে আগে Login করুন।', 'warn');
+    setTimeout(function(){ openLogin(); }, 400);
+    return;
+  }
   if (ffSelPay !== 'wallet') {
     document.getElementById('autopayOverlay').classList.add('show');
     pushOverlayState('autopayOverlay');
@@ -3401,6 +3415,13 @@ function selectUnipinPay(method) {
 }
 function unipinBuyNow() {
   if (!unipinSelRecharge) { showToast('অনুগ্রহ করে একটি রিচার্জ প্যাকেজ বেছে নিন।', 'error'); return; }
+  // ===== Login Check =====
+  var profile = loadUserProfile();
+  if (!profile) {
+    showToast('Buy করতে আগে Login করুন।', 'warn');
+    setTimeout(function(){ openLogin(); }, 400);
+    return;
+  }
   if (unipinSelPay === 'instant') {
     unipinVerifyMode = true;
     document.getElementById('autopayOverlay').classList.add('show');
