@@ -555,59 +555,82 @@ small {
 
   // ========== 2. পণ্য লিংক ==========
   function loadProductLinks() { const saved = localStorage.getItem("uniqueShopProductLinks"); return saved ? JSON.parse(saved) : {}; }
-  // ── FF Products ──
-  var _ffProducts = [];
-  var _editingIndex = -1;
 
-  var FF_DEFAULT = [
-    {name:'1850 Diamond', price:'1200'},
-    {name:'Weekly Lite', price:'45'},
-    {name:'2 Monthly', price:'1580'},
-    {name:'Monthly', price:'790'},
-    {name:'2 Weekly', price:'316'},
-    {name:'Weekly', price:'158'},
-    {name:'10120 Diamond', price:'6440'},
-    {name:'5060 Diamond', price:'3220'},
-    {name:'2530 Diamond', price:'1610'},
-    {name:'25 Diamond', price:'22'},
-    {name:'1240 Diamond', price:'800'},
-    {name:'850 Diamond', price:'558'},
-    {name:'610 Diamond', price:'400'},
-    {name:'355 Diamond', price:'237'},
-    {name:'240 Diamond', price:'158'},
-    {name:'115 Diamond', price:'79'},
-    {name:'50 Diamond', price:'38'}
-  ];
+  // ── Unified Dynamic Products Manager ──
+  var _dynProducts = [];  // currently editing product list
+  var _dynDefaults = {
+    'Free Fire UID Topup': [
+      {name:'1850 Diamond',price:'1200'},{name:'Weekly Lite',price:'45'},{name:'2 Monthly',price:'1580'},
+      {name:'Monthly',price:'790'},{name:'2 Weekly',price:'316'},{name:'Weekly',price:'158'},
+      {name:'10120 Diamond',price:'6440'},{name:'5060 Diamond',price:'3220'},{name:'2530 Diamond',price:'1610'},
+      {name:'25 Diamond',price:'22'},{name:'1240 Diamond',price:'800'},{name:'850 Diamond',price:'558'},
+      {name:'610 Diamond',price:'400'},{name:'355 Diamond',price:'237'},{name:'240 Diamond',price:'158'},
+      {name:'115 Diamond',price:'79'},{name:'50 Diamond',price:'38'}
+    ],
+    'Unipin Voucher': [
+      {name:'25 Diamond Code',price:'22'},{name:'50 Diamond Code',price:'38'},{name:'115 Diamond Code',price:'79'},
+      {name:'240 Diamond Code',price:'158'},{name:'610 Diamond Code',price:'400'},{name:'1240 Diamond Code',price:'800'},
+      {name:'2530 Diamond Code',price:'1610'},{name:'Weekly Code',price:'158'},{name:'Monthly Code',price:'790'}
+    ],
+    'Weekly Lite': [
+      {name:'Weekly Lite',price:'45'},{name:'Weekly',price:'158'},{name:'2 Weekly',price:'316'},
+      {name:'Monthly',price:'790'},{name:'2 Monthly',price:'1580'}
+    ],
+    'Weekly and Monthly': [
+      {name:'Weekly',price:'158'},{name:'Monthly',price:'790'},{name:'2x Weekly',price:'316'},
+      {name:'5x Weekly',price:'790'},{name:'2X Monthly',price:'1580'},{name:'4Weekly 1Monthly',price:'1422'},
+      {name:'5X Monthly',price:'3950'},{name:'10XWeekly 5Monthly',price:'5530'}
+    ],
+    'Level Up Pass': [
+      {name:'6 level (120 Diamond)',price:'43'},{name:'10 level (200 Diamond)',price:'75'},
+      {name:'15 level (200 Diamond)',price:'75'},{name:'20 level (200 Diamond)',price:'75'},
+      {name:'25 level (200 Diamond)',price:'75'},{name:'30 level (350 Diamond)',price:'105'},
+      {name:'Level Up Pass Full (1270 Diamond)',price:'448'}
+    ]
+  };
+  var _fbKeyMap = {
+    'Free Fire UID Topup': 'admin/ffProducts',
+    'Unipin Voucher':      'admin/unipinProducts',
+    'Weekly Lite':         'admin/weeklyLiteProducts',
+    'Weekly and Monthly':  'admin/weeklyMonthlyProducts',
+    'Level Up Pass':       'admin/levelUpPassProducts'
+  };
 
-  function loadFFProductsFromFB() {
-    if (window._fbGet) {
-      window._fbGet('admin/ffProducts').then(function(data) {
-        _ffProducts = (data && Array.isArray(data) && data.length > 0) ? data : JSON.parse(JSON.stringify(FF_DEFAULT));
-        renderFFProductList();
-      });
-    }
+  function loadDynamicProductsFromFB(cat) {
+    var fbKey = _fbKeyMap[cat];
+    if (!fbKey || !window._fbGet) return;
+    window._fbGet(fbKey).then(function(data) {
+      _dynProducts = (data && Array.isArray(data) && data.length > 0)
+        ? data : JSON.parse(JSON.stringify(_dynDefaults[cat] || []));
+      renderDynProductList();
+    });
   }
 
-  function renderFFProductList() {
+  // Keep old name for backward compat
+  function loadFFProductsFromFB() { loadDynamicProductsFromFB('Free Fire UID Topup'); }
+
+  function renderDynProductList() {
     var list = document.getElementById('ffProductList');
     if (!list) return;
     list.innerHTML = '';
-    _ffProducts.forEach(function(p, i) {
+    _dynProducts.forEach(function(p, i) {
       var row = document.createElement('div');
-      row.id = 'ffRow_' + i;
+      row.id = 'dynRow_' + i;
       row.style.cssText = 'display:flex;align-items:center;gap:8px;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 12px;';
       row.innerHTML =
         '<div style="flex:2;font-size:14px;font-weight:600;color:#1e293b;">' + escHtml(p.name) + '</div>' +
         '<div style="font-size:14px;font-weight:700;color:#ff6b00;">৳' + escHtml(p.price) + '</div>' +
-        '<button onclick="editFFProduct(' + i + ')" style="background:#eff6ff;border:none;border-radius:7px;padding:7px 10px;cursor:pointer;font-size:15px;" title="Edit">✏️</button>' +
-        '<button onclick="deleteFFProduct(' + i + ')" style="background:#fee2e2;border:none;border-radius:7px;padding:7px 10px;cursor:pointer;font-size:15px;" title="Delete">🗑</button>';
+        '<button onclick="editDynProduct(' + i + ')" style="background:#eff6ff;border:none;border-radius:7px;padding:7px 10px;cursor:pointer;font-size:15px;" title="Edit">✏️</button>' +
+        '<button onclick="deleteDynProduct(' + i + ')" style="background:#fee2e2;border:none;border-radius:7px;padding:7px 10px;cursor:pointer;font-size:15px;" title="Delete">🗑</button>';
       list.appendChild(row);
     });
   }
 
+  // Keep old names for backward compat
+  function renderFFProductList() { renderDynProductList(); }
+
   function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-  // নতুন blank row যোগ করো
   window.addFFProductRow = function() {
     var list = document.getElementById('ffProductList');
     var newRow = document.createElement('div');
@@ -616,8 +639,8 @@ small {
     newRow.innerHTML =
       '<input type="text" id="ffNewName" placeholder="পণ্যের নাম" style="flex:2;padding:8px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:14px;font-family:inherit;">' +
       '<input type="number" id="ffNewPrice" placeholder="দাম" style="flex:1;padding:8px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:14px;font-family:inherit;">' +
-      '<button onclick="confirmAddFF()" style="background:#16a34a;color:#fff;border:none;border-radius:7px;padding:7px 10px;cursor:pointer;font-size:15px;" title="Save">✅</button>' +
-      '<button onclick="cancelAddFF()" style="background:#fee2e2;border:none;border-radius:7px;padding:7px 10px;cursor:pointer;font-size:15px;" title="Cancel">❌</button>';
+      '<button onclick="confirmAddFF()" style="background:#16a34a;color:#fff;border:none;border-radius:7px;padding:7px 10px;cursor:pointer;font-size:15px;">✅</button>' +
+      '<button onclick="cancelAddFF()" style="background:#fee2e2;border:none;border-radius:7px;padding:7px 10px;cursor:pointer;font-size:15px;">❌</button>';
     list.appendChild(newRow);
     document.getElementById('ffNewName').focus();
   };
@@ -626,8 +649,8 @@ small {
     var name = document.getElementById('ffNewName').value.trim();
     var price = document.getElementById('ffNewPrice').value.trim();
     if (!name || !price) { showToast('নাম ও দাম দিন', true); return; }
-    _ffProducts.push({name: name, price: price});
-    renderFFProductList();
+    _dynProducts.push({name: name, price: price});
+    renderDynProductList();
   };
 
   window.cancelAddFF = function() {
@@ -635,38 +658,51 @@ small {
     if (r) r.remove();
   };
 
-  // Edit — inline editing
-  window.editFFProduct = function(i) {
-    var row = document.getElementById('ffRow_' + i);
+  window.editDynProduct = function(i) {
+    var row = document.getElementById('dynRow_' + i);
     if (!row) return;
-    var p = _ffProducts[i];
+    var p = _dynProducts[i];
     row.style.background = '#fffbeb';
     row.style.borderColor = '#f59e0b';
     row.innerHTML =
-      '<input type="text" id="ffEditName_' + i + '" value="' + escHtml(p.name) + '" style="flex:2;padding:8px 10px;border:1.5px solid #f59e0b;border-radius:8px;font-size:14px;font-family:inherit;">' +
-      '<input type="number" id="ffEditPrice_' + i + '" value="' + escHtml(p.price) + '" style="flex:1;padding:8px 10px;border:1.5px solid #f59e0b;border-radius:8px;font-size:14px;font-family:inherit;">' +
-      '<button onclick="confirmEditFF(' + i + ')" style="background:#f59e0b;color:#fff;border:none;border-radius:7px;padding:7px 10px;cursor:pointer;font-size:15px;" title="Save">✅</button>' +
-      '<button onclick="renderFFProductList()" style="background:#fee2e2;border:none;border-radius:7px;padding:7px 10px;cursor:pointer;font-size:15px;" title="Cancel">❌</button>';
+      '<input type="text" id="dynEditName_' + i + '" value="' + escHtml(p.name) + '" style="flex:2;padding:8px 10px;border:1.5px solid #f59e0b;border-radius:8px;font-size:14px;font-family:inherit;">' +
+      '<input type="number" id="dynEditPrice_' + i + '" value="' + escHtml(p.price) + '" style="flex:1;padding:8px 10px;border:1.5px solid #f59e0b;border-radius:8px;font-size:14px;font-family:inherit;">' +
+      '<button onclick="confirmEditDyn(' + i + ')" style="background:#f59e0b;color:#fff;border:none;border-radius:7px;padding:7px 10px;cursor:pointer;font-size:15px;">✅</button>' +
+      '<button onclick="renderDynProductList()" style="background:#fee2e2;border:none;border-radius:7px;padding:7px 10px;cursor:pointer;font-size:15px;">❌</button>';
   };
 
-  window.confirmEditFF = function(i) {
-    var name = document.getElementById('ffEditName_' + i).value.trim();
-    var price = document.getElementById('ffEditPrice_' + i).value.trim();
+  // Keep old name
+  window.editFFProduct = window.editDynProduct;
+
+  window.confirmEditDyn = function(i) {
+    var name = document.getElementById('dynEditName_' + i).value.trim();
+    var price = document.getElementById('dynEditPrice_' + i).value.trim();
     if (!name || !price) { showToast('নাম ও দাম দিন', true); return; }
-    _ffProducts[i] = {name: name, price: price};
-    renderFFProductList();
+    _dynProducts[i] = {name: name, price: price};
+    renderDynProductList();
   };
 
-  window.deleteFFProduct = function(i) {
-    if (!confirm('"' + _ffProducts[i].name + '" মুছে ফেলবেন?')) return;
-    _ffProducts.splice(i, 1);
-    renderFFProductList();
+  window.confirmEditFF = window.confirmEditDyn;
+
+  window.deleteDynProduct = function(i) {
+    if (!confirm('"' + _dynProducts[i].name + '" মুছে ফেলবেন?')) return;
+    _dynProducts.splice(i, 1);
+    renderDynProductList();
   };
+
+  window.deleteFFProduct = window.deleteDynProduct;
 
   async function saveProductLink(cat, link) {
-    if (cat === 'Free Fire UID Topup') {
-      const ok = await window._fbSet('admin/ffProducts', _ffProducts);
-      showToast(ok ? '🔥 FF Products Firebase এ সংরক্ষিত!' : '❌ সংরক্ষণ ব্যর্থ');
+    var fbKeyMap = {
+      'Free Fire UID Topup': 'admin/ffProducts',
+      'Unipin Voucher':      'admin/unipinProducts',
+      'Weekly Lite':         'admin/weeklyLiteProducts',
+      'Weekly and Monthly':  'admin/weeklyMonthlyProducts',
+      'Level Up Pass':       'admin/levelUpPassProducts'
+    };
+    if (fbKeyMap[cat]) {
+      const ok = await window._fbSet(fbKeyMap[cat], _dynProducts);
+      showToast(ok ? '✅ "' + cat + '" Firebase এ সংরক্ষিত!' : '❌ সংরক্ষণ ব্যর্থ');
       return;
     }
     const links = loadProductLinks(); links[cat] = link; localStorage.setItem("uniqueShopProductLinks", JSON.stringify(links)); const ok = await window._fbSet('admin/productLinks', links); showToast(ok ? `🛍️ পণ্য "${cat}" Firebase-এ সংরক্ষিত` : `🛍️ "${cat}" locally সংরক্ষিত`);
@@ -677,8 +713,9 @@ small {
     currentProductCat = cat; currentProductIcon = icon;
     document.getElementById("productModalIcon").innerHTML = icon;
     document.getElementById("productModalCategory").innerText = cat;
-    if (cat === 'Free Fire UID Topup') {
-      loadFFProductsFromFB();
+    var dynamicCats = ['Free Fire UID Topup','Unipin Voucher','Weekly Lite','Weekly and Monthly','Level Up Pass'];
+    if (dynamicCats.indexOf(cat) !== -1) {
+      loadDynamicProductsFromFB(cat);
     }
     document.getElementById("productLinkModal").classList.add("active");
   }
@@ -728,8 +765,9 @@ small {
   document.getElementById("linkModal").addEventListener("click", (e)=>{ if(e.target===document.getElementById("linkModal")) closeImageModal(); });
 
   document.getElementById("saveProductLinkBtn").addEventListener("click", ()=>{
-    if (currentProductCat === 'Free Fire UID Topup') {
-      saveProductLink('Free Fire UID Topup', '');
+    var dynamicCats = ['Free Fire UID Topup','Unipin Voucher','Weekly Lite','Weekly and Monthly','Level Up Pass'];
+    if (dynamicCats.indexOf(currentProductCat) !== -1) {
+      saveProductLink(currentProductCat, '');
       closeProductModal();
       return;
     }
