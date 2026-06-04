@@ -876,16 +876,20 @@ body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100
     // Product links
     const prodLinks = await window._fbGet('admin/productLinks');
 
-    // FF Products Firebase থেকে load করো
-    renderFFProducts(await window._fbGet('admin/ffProducts'));
-    // Unipin Products Firebase থেকে load করো
-    renderUnipinProducts(await window._fbGet('admin/unipinProducts'));
-    // Weekly Lite Products
-    renderWeeklyLiteProducts(await window._fbGet('admin/weeklyLiteProducts'));
-    // Weekly & Monthly Products
-    renderWeeklyMonthlyProducts(await window._fbGet('admin/weeklyMonthlyProducts'));
-    // Level Up Pass Products
-    renderLevelUpPassProducts(await window._fbGet('admin/levelUpPassProducts'));
+    // সব Products একসাথে Firebase থেকে load করো (parallel)
+    Promise.all([
+      window._fbGet('admin/ffProducts'),
+      window._fbGet('admin/unipinProducts'),
+      window._fbGet('admin/weeklyLiteProducts'),
+      window._fbGet('admin/weeklyMonthlyProducts'),
+      window._fbGet('admin/levelUpPassProducts')
+    ]).then(function(results) {
+      renderFFProducts(results[0]);
+      renderUnipinProducts(results[1]);
+      renderWeeklyLiteProducts(results[2]);
+      renderWeeklyMonthlyProducts(results[3]);
+      renderLevelUpPassProducts(results[4]);
+    });
     if (prodLinks) localStorage.setItem('uniqueShopProductLinks', JSON.stringify(prodLinks));
 
     // Rules
@@ -2992,19 +2996,17 @@ function openWeeklyLiteTopup() {
   // Change title
   document.getElementById('ffProductTitle').textContent = 'Weekly Lite (BD Server)';
 
-  var products = _weeklyLiteCached || weeklyLiteProducts;
-  // Rebuild recharge grid with Weekly Lite products only
   var grid = document.querySelector('.ff-recharge-grid');
-  grid.innerHTML = '';
-  products.forEach(function(p) {
-    var div = document.createElement('div');
-    div.className = 'ff-recharge-item';
-    div.setAttribute('onclick', "selectRecharge(this,'" + p.name.replace(/'/g,"\\'") + "','" + p.price + "')");
-    div.innerHTML = '<div class="ff-recharge-dot"></div>'
-      + '<div class="ff-recharge-name">' + p.name + '</div>'
-      + '<div class="ff-recharge-price">' + p.price + ' TK</div>';
-    grid.appendChild(div);
-  });
+  _buildFFGrid(grid, _weeklyLiteCached || weeklyLiteProducts);
+  if (window._fbGet) {
+    window._fbGet('admin/weeklyLiteProducts').then(function(data) {
+      if (data && Array.isArray(data) && data.length > 0) {
+        _weeklyLiteCached = data;
+        var g = document.querySelector('.ff-recharge-grid');
+        if (g && document.getElementById('ffOverlay').classList.contains('show')) _buildFFGrid(g, _weeklyLiteCached);
+      }
+    });
+  }
 
   // Reset state
   ffSelRecharge = ''; ffSelPrice = '0'; ffSelPay = 'instant';
@@ -3056,18 +3058,17 @@ function renderLevelUpPassProducts(data) {
 function openLevelUpPassTopup() {
   document.getElementById('ffProductTitle').textContent = 'Level Up Pass';
 
-  var products = _levelUpPassCached || levelUpPassProducts;
   var grid = document.querySelector('.ff-recharge-grid');
-  grid.innerHTML = '';
-  products.forEach(function(p) {
-    var div = document.createElement('div');
-    div.className = 'ff-recharge-item';
-    div.setAttribute('onclick', "selectRecharge(this,'" + p.name.replace(/'/g, "\\'") + "','" + p.price + "')");
-    div.innerHTML = '<div class="ff-recharge-dot"></div>'
-      + '<div class="ff-recharge-name">' + p.name + '</div>'
-      + '<div class="ff-recharge-price">' + p.price + ' TK</div>';
-    grid.appendChild(div);
-  });
+  _buildFFGrid(grid, _levelUpPassCached || levelUpPassProducts);
+  if (window._fbGet) {
+    window._fbGet('admin/levelUpPassProducts').then(function(data) {
+      if (data && Array.isArray(data) && data.length > 0) {
+        _levelUpPassCached = data;
+        var g = document.querySelector('.ff-recharge-grid');
+        if (g && document.getElementById('ffOverlay').classList.contains('show')) _buildFFGrid(g, _levelUpPassCached);
+      }
+    });
+  }
 
   ffSelRecharge = ''; ffSelPrice = '0'; ffSelPay = 'instant';
   document.getElementById('ffSelectedPrice').textContent = '0';
@@ -3085,18 +3086,17 @@ function openLevelUpPassTopup() {
 function openWeeklyMonthlyTopup() {
   document.getElementById('ffProductTitle').textContent = 'Weekly & Monthly [ Offer ]';
 
-  var products = _weeklyMonthlyCached || weeklyMonthlyProducts;
   var grid = document.querySelector('.ff-recharge-grid');
-  grid.innerHTML = '';
-  products.forEach(function(p) {
-    var div = document.createElement('div');
-    div.className = 'ff-recharge-item';
-    div.setAttribute('onclick', "selectRecharge(this,'" + p.name.replace(/'/g,"\\'") + "','" + p.price + "')");
-    div.innerHTML = '<div class="ff-recharge-dot"></div>'
-      + '<div class="ff-recharge-name">' + p.name + '</div>'
-      + '<div class="ff-recharge-price">' + p.price + ' TK</div>';
-    grid.appendChild(div);
-  });
+  _buildFFGrid(grid, _weeklyMonthlyCached || weeklyMonthlyProducts);
+  if (window._fbGet) {
+    window._fbGet('admin/weeklyMonthlyProducts').then(function(data) {
+      if (data && Array.isArray(data) && data.length > 0) {
+        _weeklyMonthlyCached = data;
+        var g = document.querySelector('.ff-recharge-grid');
+        if (g && document.getElementById('ffOverlay').classList.contains('show')) _buildFFGrid(g, _weeklyMonthlyCached);
+      }
+    });
+  }
 
   ffSelRecharge = ''; ffSelPrice = '0'; ffSelPay = 'instant';
   document.getElementById('ffSelectedPrice').textContent = '0';
@@ -3334,6 +3334,19 @@ function openFFTopup() {
   var grid = document.querySelector('.ff-recharge-grid');
   var prods = _ffCachedProducts || _ffDefault;
   _buildFFGrid(grid, prods);
+
+  // Background fresh data
+  if (window._fbGet) {
+    window._fbGet('admin/ffProducts').then(function(data) {
+      if (data && Array.isArray(data) && data.length > 0) {
+        _ffCachedProducts = data;
+        var g = document.getElementById('ffRechargeGrid');
+        if (g && document.getElementById('ffOverlay').classList.contains('show')) {
+          _buildFFGrid(g, _ffCachedProducts);
+        }
+      }
+    });
+  }
   // Reset state
   ffSelRecharge = ''; ffSelPrice = '0'; ffSelPay = 'instant';
   document.getElementById('ffSelectedPrice').textContent = '0';
