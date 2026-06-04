@@ -606,8 +606,13 @@ small {
     function doLoad() {
       if (!window._fbGet) { setTimeout(doLoad, 150); return; }
       window._fbGet(fbKey).then(function(data) {
-        if (data && Array.isArray(data) && data.length > 0) {
-          _dynProducts = data;
+        var arr = null;
+        if (data) {
+          if (Array.isArray(data) && data.length > 0) arr = data;
+          else if (typeof data === 'object') { arr = Object.values(data); if (arr.length === 0) arr = null; }
+        }
+        if (arr) {
+          _dynProducts = arr;
           renderDynProductList();
         }
       });
