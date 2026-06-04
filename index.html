@@ -876,20 +876,16 @@ body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100
     // Product links
     const prodLinks = await window._fbGet('admin/productLinks');
 
-    // সব Products একসাথে Firebase থেকে load করো (parallel)
-    Promise.all([
-      window._fbGet('admin/ffProducts'),
-      window._fbGet('admin/unipinProducts'),
-      window._fbGet('admin/weeklyLiteProducts'),
-      window._fbGet('admin/weeklyMonthlyProducts'),
-      window._fbGet('admin/levelUpPassProducts')
-    ]).then(function(results) {
-      renderFFProducts(results[0]);
-      renderUnipinProducts(results[1]);
-      renderWeeklyLiteProducts(results[2]);
-      renderWeeklyMonthlyProducts(results[3]);
-      renderLevelUpPassProducts(results[4]);
-    });
+    // FF Products Firebase থেকে load করো
+    renderFFProducts(await window._fbGet('admin/ffProducts'));
+    // Unipin Products Firebase থেকে load করো
+    renderUnipinProducts(await window._fbGet('admin/unipinProducts'));
+    // Weekly Lite Products
+    renderWeeklyLiteProducts(await window._fbGet('admin/weeklyLiteProducts'));
+    // Weekly & Monthly Products
+    renderWeeklyMonthlyProducts(await window._fbGet('admin/weeklyMonthlyProducts'));
+    // Level Up Pass Products
+    renderLevelUpPassProducts(await window._fbGet('admin/levelUpPassProducts'));
     if (prodLinks) localStorage.setItem('uniqueShopProductLinks', JSON.stringify(prodLinks));
 
     // Rules
@@ -2989,24 +2985,27 @@ var weeklyLiteProducts = [
 var _weeklyLiteCached = null;
 
 function renderWeeklyLiteProducts(data) {
-  _weeklyLiteCached = (data && Array.isArray(data) && data.length > 0) ? data : weeklyLiteProducts;
+  var arr = _toArray(data);
+  _weeklyLiteCached = arr || weeklyLiteProducts;
 }
 
 function openWeeklyLiteTopup() {
   // Change title
   document.getElementById('ffProductTitle').textContent = 'Weekly Lite (BD Server)';
 
+  var products = _weeklyLiteCached || weeklyLiteProducts;
+  // Rebuild recharge grid with Weekly Lite products only
   var grid = document.querySelector('.ff-recharge-grid');
-  _buildFFGrid(grid, _weeklyLiteCached || weeklyLiteProducts);
-  if (window._fbGet) {
-    window._fbGet('admin/weeklyLiteProducts').then(function(data) {
-      if (data && Array.isArray(data) && data.length > 0) {
-        _weeklyLiteCached = data;
-        var g = document.querySelector('.ff-recharge-grid');
-        if (g && document.getElementById('ffOverlay').classList.contains('show')) _buildFFGrid(g, _weeklyLiteCached);
-      }
-    });
-  }
+  grid.innerHTML = '';
+  products.forEach(function(p) {
+    var div = document.createElement('div');
+    div.className = 'ff-recharge-item';
+    div.setAttribute('onclick', "selectRecharge(this,'" + p.name.replace(/'/g,"\\'") + "','" + p.price + "')");
+    div.innerHTML = '<div class="ff-recharge-dot"></div>'
+      + '<div class="ff-recharge-name">' + p.name + '</div>'
+      + '<div class="ff-recharge-price">' + p.price + ' TK</div>';
+    grid.appendChild(div);
+  });
 
   // Reset state
   ffSelRecharge = ''; ffSelPrice = '0'; ffSelPay = 'instant';
@@ -3037,7 +3036,8 @@ var weeklyMonthlyProducts = [
 var _weeklyMonthlyCached = null;
 
 function renderWeeklyMonthlyProducts(data) {
-  _weeklyMonthlyCached = (data && Array.isArray(data) && data.length > 0) ? data : weeklyMonthlyProducts;
+  var arr = _toArray(data);
+  _weeklyMonthlyCached = arr || weeklyMonthlyProducts;
 }
 
 var levelUpPassProducts = [
@@ -3052,23 +3052,25 @@ var levelUpPassProducts = [
 var _levelUpPassCached = null;
 
 function renderLevelUpPassProducts(data) {
-  _levelUpPassCached = (data && Array.isArray(data) && data.length > 0) ? data : levelUpPassProducts;
+  var arr = _toArray(data);
+  _levelUpPassCached = arr || levelUpPassProducts;
 }
 
 function openLevelUpPassTopup() {
   document.getElementById('ffProductTitle').textContent = 'Level Up Pass';
 
+  var products = _levelUpPassCached || levelUpPassProducts;
   var grid = document.querySelector('.ff-recharge-grid');
-  _buildFFGrid(grid, _levelUpPassCached || levelUpPassProducts);
-  if (window._fbGet) {
-    window._fbGet('admin/levelUpPassProducts').then(function(data) {
-      if (data && Array.isArray(data) && data.length > 0) {
-        _levelUpPassCached = data;
-        var g = document.querySelector('.ff-recharge-grid');
-        if (g && document.getElementById('ffOverlay').classList.contains('show')) _buildFFGrid(g, _levelUpPassCached);
-      }
-    });
-  }
+  grid.innerHTML = '';
+  products.forEach(function(p) {
+    var div = document.createElement('div');
+    div.className = 'ff-recharge-item';
+    div.setAttribute('onclick', "selectRecharge(this,'" + p.name.replace(/'/g, "\\'") + "','" + p.price + "')");
+    div.innerHTML = '<div class="ff-recharge-dot"></div>'
+      + '<div class="ff-recharge-name">' + p.name + '</div>'
+      + '<div class="ff-recharge-price">' + p.price + ' TK</div>';
+    grid.appendChild(div);
+  });
 
   ffSelRecharge = ''; ffSelPrice = '0'; ffSelPay = 'instant';
   document.getElementById('ffSelectedPrice').textContent = '0';
@@ -3086,17 +3088,18 @@ function openLevelUpPassTopup() {
 function openWeeklyMonthlyTopup() {
   document.getElementById('ffProductTitle').textContent = 'Weekly & Monthly [ Offer ]';
 
+  var products = _weeklyMonthlyCached || weeklyMonthlyProducts;
   var grid = document.querySelector('.ff-recharge-grid');
-  _buildFFGrid(grid, _weeklyMonthlyCached || weeklyMonthlyProducts);
-  if (window._fbGet) {
-    window._fbGet('admin/weeklyMonthlyProducts').then(function(data) {
-      if (data && Array.isArray(data) && data.length > 0) {
-        _weeklyMonthlyCached = data;
-        var g = document.querySelector('.ff-recharge-grid');
-        if (g && document.getElementById('ffOverlay').classList.contains('show')) _buildFFGrid(g, _weeklyMonthlyCached);
-      }
-    });
-  }
+  grid.innerHTML = '';
+  products.forEach(function(p) {
+    var div = document.createElement('div');
+    div.className = 'ff-recharge-item';
+    div.setAttribute('onclick', "selectRecharge(this,'" + p.name.replace(/'/g,"\\'") + "','" + p.price + "')");
+    div.innerHTML = '<div class="ff-recharge-dot"></div>'
+      + '<div class="ff-recharge-name">' + p.name + '</div>'
+      + '<div class="ff-recharge-price">' + p.price + ' TK</div>';
+    grid.appendChild(div);
+  });
 
   ffSelRecharge = ''; ffSelPrice = '0'; ffSelPay = 'instant';
   document.getElementById('ffSelectedPrice').textContent = '0';
@@ -3334,19 +3337,6 @@ function openFFTopup() {
   var grid = document.querySelector('.ff-recharge-grid');
   var prods = _ffCachedProducts || _ffDefault;
   _buildFFGrid(grid, prods);
-
-  // Background fresh data
-  if (window._fbGet) {
-    window._fbGet('admin/ffProducts').then(function(data) {
-      if (data && Array.isArray(data) && data.length > 0) {
-        _ffCachedProducts = data;
-        var g = document.getElementById('ffRechargeGrid');
-        if (g && document.getElementById('ffOverlay').classList.contains('show')) {
-          _buildFFGrid(g, _ffCachedProducts);
-        }
-      }
-    });
-  }
   // Reset state
   ffSelRecharge = ''; ffSelPrice = '0'; ffSelPay = 'instant';
   document.getElementById('ffSelectedPrice').textContent = '0';
@@ -4308,6 +4298,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 // ── FF Products Render ──
+
+// Firebase থেকে আসা data object হতে পারে (array index as key) — convert করো
+function _toArray(data) {
+  if (!data) return null;
+  if (Array.isArray(data)) return data.length > 0 ? data : null;
+  if (typeof data === 'object') {
+    var arr = Object.values(data);
+    return arr.length > 0 ? arr : null;
+  }
+  return null;
+}
+
 var _ffDefault=[{name:'1850 Diamond',price:'1200'},{name:'Weekly Lite',price:'45'},{name:'2 Monthly',price:'1580'},{name:'Monthly',price:'790'},{name:'2 Weekly',price:'316'},{name:'Weekly',price:'158'},{name:'10120 Diamond',price:'6440'},{name:'5060 Diamond',price:'3220'},{name:'2530 Diamond',price:'1610'},{name:'25 Diamond',price:'22'},{name:'1240 Diamond',price:'800'},{name:'850 Diamond',price:'558'},{name:'610 Diamond',price:'400'},{name:'355 Diamond',price:'237'},{name:'240 Diamond',price:'158'},{name:'115 Diamond',price:'79'},{name:'50 Diamond',price:'38'}];
 var _ffCachedProducts = null;
 
@@ -4326,7 +4328,8 @@ function _buildFFGrid(grid, products) {
 }
 
 function renderFFProducts(data) {
-  _ffCachedProducts = (data && Array.isArray(data) && data.length > 0) ? data : _ffDefault;
+  var arr = _toArray(data);
+  _ffCachedProducts = arr || _ffDefault;
   var grid = document.getElementById('ffRechargeGrid');
   if (grid) _buildFFGrid(grid, _ffCachedProducts);
 }
@@ -4350,7 +4353,8 @@ function _buildUnipinGrid(grid, products) {
 }
 
 function renderUnipinProducts(data) {
-  _unipinCachedProducts = (data && Array.isArray(data) && data.length > 0) ? data : _unipinDefault;
+  var arr = _toArray(data);
+  _unipinCachedProducts = arr || _unipinDefault;
   var grid = document.getElementById('unipinRechargeGrid');
   if (grid) _buildUnipinGrid(grid, _unipinCachedProducts);
 }
