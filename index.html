@@ -878,6 +878,14 @@ body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100
 
     // FF Products Firebase থেকে load করো
     renderFFProducts(await window._fbGet('admin/ffProducts'));
+    // Unipin Products Firebase থেকে load করো
+    renderUnipinProducts(await window._fbGet('admin/unipinProducts'));
+    // Weekly Lite Products
+    renderWeeklyLiteProducts(await window._fbGet('admin/weeklyLiteProducts'));
+    // Weekly & Monthly Products
+    renderWeeklyMonthlyProducts(await window._fbGet('admin/weeklyMonthlyProducts'));
+    // Level Up Pass Products
+    renderLevelUpPassProducts(await window._fbGet('admin/levelUpPassProducts'));
     if (prodLinks) localStorage.setItem('uniqueShopProductLinks', JSON.stringify(prodLinks));
 
     // Rules
@@ -2025,52 +2033,8 @@ body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100
           <div class="unipin-section-num">1</div>
           <div class="unipin-section-title">Select Recharge</div>
         </div>
-        <div class="unipin-recharge-grid">
-          <div class="unipin-recharge-item" onclick="selectUnipinRecharge(this,'25 Diamond Code','22')">
-            <div class="unipin-recharge-dot"></div>
-            <div class="unipin-recharge-name">25 Diamond Code</div>
-            <div class="unipin-recharge-price">22 TK</div>
-          </div>
-          <div class="unipin-recharge-item" onclick="selectUnipinRecharge(this,'50 Diamond Code','38')">
-            <div class="unipin-recharge-dot"></div>
-            <div class="unipin-recharge-name">50 Diamond Code</div>
-            <div class="unipin-recharge-price">38 TK</div>
-          </div>
-          <div class="unipin-recharge-item" onclick="selectUnipinRecharge(this,'115 Diamond Code','79')">
-            <div class="unipin-recharge-dot"></div>
-            <div class="unipin-recharge-name">115 Diamond Code</div>
-            <div class="unipin-recharge-price">79 TK</div>
-          </div>
-          <div class="unipin-recharge-item" onclick="selectUnipinRecharge(this,'240 Diamond Code','158')">
-            <div class="unipin-recharge-dot"></div>
-            <div class="unipin-recharge-name">240 Diamond Code</div>
-            <div class="unipin-recharge-price">158 TK</div>
-          </div>
-          <div class="unipin-recharge-item" onclick="selectUnipinRecharge(this,'610 Diamond Code','400')">
-            <div class="unipin-recharge-dot"></div>
-            <div class="unipin-recharge-name">610 Diamond Code</div>
-            <div class="unipin-recharge-price">400 TK</div>
-          </div>
-          <div class="unipin-recharge-item" onclick="selectUnipinRecharge(this,'1240 Diamond Code','800')">
-            <div class="unipin-recharge-dot"></div>
-            <div class="unipin-recharge-name">1240 Diamond Code</div>
-            <div class="unipin-recharge-price">800 TK</div>
-          </div>
-          <div class="unipin-recharge-item" onclick="selectUnipinRecharge(this,'2530 Diamond Code','1610')">
-            <div class="unipin-recharge-dot"></div>
-            <div class="unipin-recharge-name">2530 Diamond Code</div>
-            <div class="unipin-recharge-price">1610 TK</div>
-          </div>
-          <div class="unipin-recharge-item" onclick="selectUnipinRecharge(this,'Weekly Code','158')">
-            <div class="unipin-recharge-dot"></div>
-            <div class="unipin-recharge-name">Weekly Code</div>
-            <div class="unipin-recharge-price">158 TK</div>
-          </div>
-          <div class="unipin-recharge-item" onclick="selectUnipinRecharge(this,'Monthly Code','790')">
-            <div class="unipin-recharge-dot"></div>
-            <div class="unipin-recharge-name">Monthly Code</div>
-            <div class="unipin-recharge-price">790 TK</div>
-          </div>
+        <div class="unipin-recharge-grid" id="unipinRechargeGrid">
+          <!-- Dynamically rendered by renderUnipinProducts() -->
         </div>
       </div>
 
@@ -3018,18 +2982,24 @@ var weeklyLiteProducts = [
   { name: 'Monthly',     price: '790' },
   { name: '2 Monthly',   price: '1580' }
 ];
+var _weeklyLiteCached = null;
+
+function renderWeeklyLiteProducts(data) {
+  _weeklyLiteCached = (data && Array.isArray(data) && data.length > 0) ? data : null;
+}
 
 function openWeeklyLiteTopup() {
   // Change title
   document.getElementById('ffProductTitle').textContent = 'Weekly Lite (BD Server)';
 
+  var products = _weeklyLiteCached || weeklyLiteProducts;
   // Rebuild recharge grid with Weekly Lite products only
   var grid = document.querySelector('.ff-recharge-grid');
   grid.innerHTML = '';
-  weeklyLiteProducts.forEach(function(p) {
+  products.forEach(function(p) {
     var div = document.createElement('div');
     div.className = 'ff-recharge-item';
-    div.setAttribute('onclick', "selectRecharge(this,'" + p.name + "','" + p.price + "')");
+    div.setAttribute('onclick', "selectRecharge(this,'" + p.name.replace(/'/g,"\\'") + "','" + p.price + "')");
     div.innerHTML = '<div class="ff-recharge-dot"></div>'
       + '<div class="ff-recharge-name">' + p.name + '</div>'
       + '<div class="ff-recharge-price">' + p.price + ' TK</div>';
@@ -3062,6 +3032,11 @@ var weeklyMonthlyProducts = [
   { name: '5X Monthly',       price: '3950' },
   { name: '10XWeekly 5Monthly', price: '5530' }
 ];
+var _weeklyMonthlyCached = null;
+
+function renderWeeklyMonthlyProducts(data) {
+  _weeklyMonthlyCached = (data && Array.isArray(data) && data.length > 0) ? data : null;
+}
 
 var levelUpPassProducts = [
   { name: '6 level (120 Diamond)',      price: '43'  },
@@ -3072,13 +3047,19 @@ var levelUpPassProducts = [
   { name: '30 level (350 Diamond)',     price: '105' },
   { name: 'Level Up Pass Full (1270 Diamond)', price: '448' }
 ];
+var _levelUpPassCached = null;
+
+function renderLevelUpPassProducts(data) {
+  _levelUpPassCached = (data && Array.isArray(data) && data.length > 0) ? data : null;
+}
 
 function openLevelUpPassTopup() {
   document.getElementById('ffProductTitle').textContent = 'Level Up Pass';
 
+  var products = _levelUpPassCached || levelUpPassProducts;
   var grid = document.querySelector('.ff-recharge-grid');
   grid.innerHTML = '';
-  levelUpPassProducts.forEach(function(p) {
+  products.forEach(function(p) {
     var div = document.createElement('div');
     div.className = 'ff-recharge-item';
     div.setAttribute('onclick', "selectRecharge(this,'" + p.name.replace(/'/g, "\\'") + "','" + p.price + "')");
@@ -3104,12 +3085,13 @@ function openLevelUpPassTopup() {
 function openWeeklyMonthlyTopup() {
   document.getElementById('ffProductTitle').textContent = 'Weekly & Monthly [ Offer ]';
 
+  var products = _weeklyMonthlyCached || weeklyMonthlyProducts;
   var grid = document.querySelector('.ff-recharge-grid');
   grid.innerHTML = '';
-  weeklyMonthlyProducts.forEach(function(p) {
+  products.forEach(function(p) {
     var div = document.createElement('div');
     div.className = 'ff-recharge-item';
-    div.setAttribute('onclick', "selectRecharge(this,'" + p.name + "','" + p.price + "')");
+    div.setAttribute('onclick', "selectRecharge(this,'" + p.name.replace(/'/g,"\\'") + "','" + p.price + "')");
     div.innerHTML = '<div class="ff-recharge-dot"></div>'
       + '<div class="ff-recharge-name">' + p.name + '</div>'
       + '<div class="ff-recharge-price">' + p.price + ' TK</div>';
@@ -4173,6 +4155,29 @@ function renderFFProducts(data) {
   _ffCachedProducts = (data && Array.isArray(data) && data.length > 0) ? data : _ffDefault;
   var grid = document.getElementById('ffRechargeGrid');
   if (grid) _buildFFGrid(grid, _ffCachedProducts);
+}
+
+// ── Unipin Products Render ──
+var _unipinDefault=[{name:'25 Diamond Code',price:'22'},{name:'50 Diamond Code',price:'38'},{name:'115 Diamond Code',price:'79'},{name:'240 Diamond Code',price:'158'},{name:'610 Diamond Code',price:'400'},{name:'1240 Diamond Code',price:'800'},{name:'2530 Diamond Code',price:'1610'},{name:'Weekly Code',price:'158'},{name:'Monthly Code',price:'790'}];
+
+function _buildUnipinGrid(grid, products) {
+  grid.innerHTML = '';
+  products.forEach(function(p) {
+    var item = document.createElement('div');
+    item.className = 'unipin-recharge-item';
+    item.setAttribute('onclick', "selectUnipinRecharge(this,'" + p.name.replace(/'/g,"\'") + "','" + p.price + "')");
+    item.innerHTML =
+      '<div class="unipin-recharge-dot"></div>' +
+      '<div class="unipin-recharge-name">' + p.name + '</div>' +
+      '<div class="unipin-recharge-price">৳' + p.price + '</div>';
+    grid.appendChild(item);
+  });
+}
+
+function renderUnipinProducts(data) {
+  _unipinCachedProducts = (data && Array.isArray(data) && data.length > 0) ? data : _unipinDefault;
+  var grid = document.getElementById('unipinRechargeGrid');
+  if (grid) _buildUnipinGrid(grid, _unipinCachedProducts);
 }
 </script>
 </body>
