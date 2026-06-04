@@ -1213,19 +1213,19 @@ body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100
       <div class="game-card-top gc-orange" data-card="Free Fire UID Topup">Free Fire Topup BD</div>
       <div class="game-card-bottom">Free Fire UID Topup (BD Server)<div class="game-tag">BD Server</div></div>
     </div>
-    <div class="game-card" onclick="openUnipinTopup()">
+    <div class="game-card" onclick="openUnipinTopupSafe()">
       <div class="game-card-top gc-blue" data-card="UniPin">Unipin Voucher</div>
       <div class="game-card-bottom">Unipin Voucher (Bd Server)<div class="game-tag">BD Server</div></div>
     </div>
-    <div class="game-card" onclick="openWeeklyLiteTopup()">
+    <div class="game-card" onclick="openWeeklyLiteTopupSafe()">
       <div class="game-card-top gc-purple" data-card="Weekly Lite">Weekly Lite</div>
       <div class="game-card-bottom">Weekly Lite (Bd Server)<div class="game-tag">BD Server</div></div>
     </div>
-    <div class="game-card" onclick="openWeeklyMonthlyTopup()">
+    <div class="game-card" onclick="openWeeklyMonthlyTopupSafe()">
       <div class="game-card-top gc-yellow" data-card="Weekly & Monthly">Weekly &amp; Monthly</div>
       <div class="game-card-bottom">Weekly &amp; Monthly (Bd Server)<div class="game-tag">BD Server</div></div>
     </div>
-    <div class="game-card" onclick="openLevelUpPassTopup()">
+    <div class="game-card" onclick="openLevelUpPassTopupSafe()">
       <div class="game-card-top gc-pink" data-card="Level Up Pass">Level Up Pass BD</div>
       <div class="game-card-bottom">Level Up Pass (Bd Server)<div class="game-tag">BD Server</div></div>
     </div>
@@ -2985,7 +2985,7 @@ var weeklyLiteProducts = [
 var _weeklyLiteCached = null;
 
 function renderWeeklyLiteProducts(data) {
-  _weeklyLiteCached = (data && Array.isArray(data) && data.length > 0) ? data : null;
+  _weeklyLiteCached = (data && Array.isArray(data) && data.length > 0) ? data : weeklyLiteProducts;
 }
 
 function openWeeklyLiteTopup() {
@@ -3035,7 +3035,7 @@ var weeklyMonthlyProducts = [
 var _weeklyMonthlyCached = null;
 
 function renderWeeklyMonthlyProducts(data) {
-  _weeklyMonthlyCached = (data && Array.isArray(data) && data.length > 0) ? data : null;
+  _weeklyMonthlyCached = (data && Array.isArray(data) && data.length > 0) ? data : weeklyMonthlyProducts;
 }
 
 var levelUpPassProducts = [
@@ -3050,7 +3050,7 @@ var levelUpPassProducts = [
 var _levelUpPassCached = null;
 
 function renderLevelUpPassProducts(data) {
-  _levelUpPassCached = (data && Array.isArray(data) && data.length > 0) ? data : null;
+  _levelUpPassCached = (data && Array.isArray(data) && data.length > 0) ? data : levelUpPassProducts;
 }
 
 function openLevelUpPassTopup() {
@@ -3131,6 +3131,167 @@ var ffOriginalProducts = [
   { name: '115 Diamond',  price: '79'   },
   { name: '50 Diamond',   price: '38'   }
 ];
+
+// ── Safe loaders for Unipin / Weekly Lite / Weekly Monthly / Level Up Pass ──
+// Exactly same pattern as openFFTopupSafe()
+
+function _makeSafeOpener(cachedVar, defaultVar, setCachedFn, openFn, cardSelector) {
+  return function() {
+    if (!window[cachedVar]) {
+      var card = document.querySelector(cardSelector);
+      if (card) {
+        var overlay = document.createElement('div');
+        overlay.className = '_safeLoadOverlay';
+        overlay.style.cssText = 'position:absolute;inset:0;border-radius:inherit;background:rgba(255,255,255,0.88);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;z-index:10;';
+        overlay.innerHTML = '<div style="width:22px;height:22px;border:3px solid #f0e0d0;border-top-color:#ff6b00;border-radius:50%;animation:ffSpin 0.7s linear infinite;"></div><div style="font-size:11px;font-weight:700;color:#ff6b00;">Loading...</div>';
+        card.style.position = 'relative';
+        card.appendChild(overlay);
+      }
+      var check = setInterval(function() {
+        if (window[cachedVar]) {
+          clearInterval(check);
+          if (card) { var ov = card.querySelector('._safeLoadOverlay'); if(ov) ov.remove(); }
+          openFn();
+        }
+      }, 100);
+      setTimeout(function() {
+        if (!window[cachedVar]) {
+          clearInterval(check);
+          if (card) { var ov = card.querySelector('._safeLoadOverlay'); if(ov) ov.remove(); }
+          window[setCachedFn](window[defaultVar]);
+          openFn();
+        }
+      }, 5000);
+      return;
+    }
+    openFn();
+  };
+}
+
+function openUnipinTopupSafe() {
+  if (!_unipinCachedProducts) {
+    var card = document.querySelector('.game-card[onclick="openUnipinTopupSafe()"]');
+    if (card) {
+      var overlay = document.createElement('div');
+      overlay.className = '_safeLoadOverlay';
+      overlay.style.cssText = 'position:absolute;inset:0;border-radius:inherit;background:rgba(255,255,255,0.88);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;z-index:10;';
+      overlay.innerHTML = '<div style="width:22px;height:22px;border:3px solid #f0e0d0;border-top-color:#ff6b00;border-radius:50%;animation:ffSpin 0.7s linear infinite;"></div><div style="font-size:11px;font-weight:700;color:#ff6b00;">Loading...</div>';
+      card.style.position = 'relative';
+      card.appendChild(overlay);
+    }
+    var check = setInterval(function() {
+      if (_unipinCachedProducts) {
+        clearInterval(check);
+        if (card) { var ov = card.querySelector('._safeLoadOverlay'); if(ov) ov.remove(); }
+        openUnipinTopup();
+      }
+    }, 100);
+    setTimeout(function() {
+      if (!_unipinCachedProducts) {
+        clearInterval(check);
+        if (card) { var ov = card.querySelector('._safeLoadOverlay'); if(ov) ov.remove(); }
+        _unipinCachedProducts = _unipinDefault;
+        openUnipinTopup();
+      }
+    }, 5000);
+    return;
+  }
+  openUnipinTopup();
+}
+
+function openWeeklyLiteTopupSafe() {
+  if (!_weeklyLiteCached) {
+    var card = document.querySelector('.game-card[onclick="openWeeklyLiteTopupSafe()"]');
+    if (card) {
+      var overlay = document.createElement('div');
+      overlay.className = '_safeLoadOverlay';
+      overlay.style.cssText = 'position:absolute;inset:0;border-radius:inherit;background:rgba(255,255,255,0.88);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;z-index:10;';
+      overlay.innerHTML = '<div style="width:22px;height:22px;border:3px solid #f0e0d0;border-top-color:#ff6b00;border-radius:50%;animation:ffSpin 0.7s linear infinite;"></div><div style="font-size:11px;font-weight:700;color:#ff6b00;">Loading...</div>';
+      card.style.position = 'relative';
+      card.appendChild(overlay);
+    }
+    var check = setInterval(function() {
+      if (_weeklyLiteCached) {
+        clearInterval(check);
+        if (card) { var ov = card.querySelector('._safeLoadOverlay'); if(ov) ov.remove(); }
+        openWeeklyLiteTopup();
+      }
+    }, 100);
+    setTimeout(function() {
+      if (!_weeklyLiteCached) {
+        clearInterval(check);
+        if (card) { var ov = card.querySelector('._safeLoadOverlay'); if(ov) ov.remove(); }
+        _weeklyLiteCached = weeklyLiteProducts;
+        openWeeklyLiteTopup();
+      }
+    }, 5000);
+    return;
+  }
+  openWeeklyLiteTopup();
+}
+
+function openWeeklyMonthlyTopupSafe() {
+  if (!_weeklyMonthlyCached) {
+    var card = document.querySelector('.game-card[onclick="openWeeklyMonthlyTopupSafe()"]');
+    if (card) {
+      var overlay = document.createElement('div');
+      overlay.className = '_safeLoadOverlay';
+      overlay.style.cssText = 'position:absolute;inset:0;border-radius:inherit;background:rgba(255,255,255,0.88);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;z-index:10;';
+      overlay.innerHTML = '<div style="width:22px;height:22px;border:3px solid #f0e0d0;border-top-color:#ff6b00;border-radius:50%;animation:ffSpin 0.7s linear infinite;"></div><div style="font-size:11px;font-weight:700;color:#ff6b00;">Loading...</div>';
+      card.style.position = 'relative';
+      card.appendChild(overlay);
+    }
+    var check = setInterval(function() {
+      if (_weeklyMonthlyCached) {
+        clearInterval(check);
+        if (card) { var ov = card.querySelector('._safeLoadOverlay'); if(ov) ov.remove(); }
+        openWeeklyMonthlyTopup();
+      }
+    }, 100);
+    setTimeout(function() {
+      if (!_weeklyMonthlyCached) {
+        clearInterval(check);
+        if (card) { var ov = card.querySelector('._safeLoadOverlay'); if(ov) ov.remove(); }
+        _weeklyMonthlyCached = weeklyMonthlyProducts;
+        openWeeklyMonthlyTopup();
+      }
+    }, 5000);
+    return;
+  }
+  openWeeklyMonthlyTopup();
+}
+
+function openLevelUpPassTopupSafe() {
+  if (!_levelUpPassCached) {
+    var card = document.querySelector('.game-card[onclick="openLevelUpPassTopupSafe()"]');
+    if (card) {
+      var overlay = document.createElement('div');
+      overlay.className = '_safeLoadOverlay';
+      overlay.style.cssText = 'position:absolute;inset:0;border-radius:inherit;background:rgba(255,255,255,0.88);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;z-index:10;';
+      overlay.innerHTML = '<div style="width:22px;height:22px;border:3px solid #f0e0d0;border-top-color:#ff6b00;border-radius:50%;animation:ffSpin 0.7s linear infinite;"></div><div style="font-size:11px;font-weight:700;color:#ff6b00;">Loading...</div>';
+      card.style.position = 'relative';
+      card.appendChild(overlay);
+    }
+    var check = setInterval(function() {
+      if (_levelUpPassCached) {
+        clearInterval(check);
+        if (card) { var ov = card.querySelector('._safeLoadOverlay'); if(ov) ov.remove(); }
+        openLevelUpPassTopup();
+      }
+    }, 100);
+    setTimeout(function() {
+      if (!_levelUpPassCached) {
+        clearInterval(check);
+        if (card) { var ov = card.querySelector('._safeLoadOverlay'); if(ov) ov.remove(); }
+        _levelUpPassCached = levelUpPassProducts;
+        openLevelUpPassTopup();
+      }
+    }, 5000);
+    return;
+  }
+  openLevelUpPassTopup();
+}
+
 function openFFTopupSafe() {
   if (!_ffCachedProducts) {
     // এখনো load হয়নি — loading দেখাও
