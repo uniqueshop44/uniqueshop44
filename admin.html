@@ -598,12 +598,21 @@ small {
 
   function loadDynamicProductsFromFB(cat) {
     var fbKey = _fbKeyMap[cat];
-    if (!fbKey || !window._fbGet) return;
-    window._fbGet(fbKey).then(function(data) {
-      _dynProducts = (data && Array.isArray(data) && data.length > 0)
-        ? data : JSON.parse(JSON.stringify(_dynDefaults[cat] || []));
-      renderDynProductList();
-    });
+    if (!fbKey) return;
+    // Show default immediately so list is never empty while waiting
+    _dynProducts = JSON.parse(JSON.stringify(_dynDefaults[cat] || []));
+    renderDynProductList();
+    // Then fetch from Firebase (retry if _fbGet not ready yet)
+    function doLoad() {
+      if (!window._fbGet) { setTimeout(doLoad, 150); return; }
+      window._fbGet(fbKey).then(function(data) {
+        if (data && Array.isArray(data) && data.length > 0) {
+          _dynProducts = data;
+          renderDynProductList();
+        }
+      });
+    }
+    doLoad();
   }
 
   // Keep old name for backward compat
